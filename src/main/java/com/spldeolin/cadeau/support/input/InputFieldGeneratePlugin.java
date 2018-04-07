@@ -53,6 +53,9 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
         }
         List<String> invalidAnnotations = new ArrayList<>();
         // @JsonFormat (日期时间)
+
+        /*
+            Java 8 time包下的“时间”类不再需要JsonFormat注解
         String jdbcType = introspectedColumn.getJdbcTypeName();
         if ("DATE".equals(jdbcType)) {
             invalidAnnotations.add("@JsonFormat(pattern = \"yyyy-MM-dd\")");
@@ -63,8 +66,9 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
         if ("TIMESTAMP".equals(jdbcType)) {
             invalidAnnotations.add("@JsonFormat(pattern = \"yyyy-MM-dd HH:mm:ss\")");
         }
+        */
         // @Size
-        if (new FullyQualifiedJavaType("java.lang.String").equals(field.getType())) {
+        if (new FullyQualifiedJavaType("java.lang.String").equals(fieldType)) {
             topLevelClass.addImportedType(new FullyQualifiedJavaType("javax.validation.constraints.Size"));
             invalidAnnotations.add("@Size(max = " + introspectedColumn.getLength() + ")");
         }
