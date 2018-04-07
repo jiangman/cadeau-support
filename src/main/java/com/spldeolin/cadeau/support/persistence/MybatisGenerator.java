@@ -11,9 +11,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.Context;
 import org.mybatis.generator.config.JDBCConnectionConfiguration;
@@ -21,12 +24,14 @@ import org.mybatis.generator.config.JavaClientGeneratorConfiguration;
 import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
+import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import com.spldeolin.cadeau.support.util.ConfigUtil;
 import com.spldeolin.cadeau.support.util.FileParseUtil;
+import com.spldeolin.cadeau.support.util.JdbcUtil;
 import com.spldeolin.cadeau.support.util.StringCaseUtil;
 import lombok.extern.log4j.Log4j2;
 
@@ -125,7 +130,29 @@ public class MybatisGenerator {
     }
 
     private static void configTable(String tableName) {
-        CONTEXT.getTableConfigurations().get(0).setTableName(tableName);
+        // 表名
+        TableConfiguration tableConfiguration = CONTEXT.getTableConfigurations().get(0);
+        tableConfiguration.setTableName(tableName);
+        // 添加columnOverride标签
+        for (Map<String, String> column : JdbcUtil.listColumnType(ConfigUtil.getMysqlDatabase(), tableName)) {
+            String jdbcType = column.get("columnType");
+            if (StringUtils.equalsAny(jdbcType, "date", "time", "datetime")) {
+                ColumnOverride columnOverride = new ColumnOverride(column.get("columnName"));
+                columnOverride.setJdbcType(jdbcType);
+                switch (jdbcType) {
+                    case "date":
+                        columnOverride.setJavaType("java.time.LocalDate");
+                        break;
+                    case "time":
+                        columnOverride.setJavaType("java.time.LocalTime");
+                        break;
+                    case "datetime":
+                        columnOverride.setJavaType("java.time.LocalDateTime");
+                        break;
+                }
+                tableConfiguration.addColumnOverride(columnOverride);
+            }
+        }
     }
 
     private static void generte() {

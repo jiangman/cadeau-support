@@ -10,6 +10,7 @@ import ${requestResult};
 import ${basePackage}.input${bussinessPart}.${modelName}Input;
 import ${basePackage}.service${bussinessPart}.${modelName}Service;
 import ${validableList};
+import com.spldeolin.cadeau.library.exception.ServiceException;
 
 /**
  * “${modelCn}”管理
@@ -35,7 +36,7 @@ public class ${modelName}Controller {
      */
     @GetMapping("{id}")
     public RequestResult get(@PathVariable Long id) {
-        return RequestResult.success(${modelName ?uncap_first}Service.get(id));
+        return RequestResult.success(${modelName ?uncap_first}Service.get(id).orElseThrow(() -> new ServiceException("${modelCn}不存在或是已被删除")));
     }
 
     /**

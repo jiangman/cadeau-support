@@ -2,7 +2,7 @@ package ${inputPackage};
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.*;
 import javax.validation.constraints.*;
 import org.springframework.beans.BeanUtils;
 import com.fasterxml.jackson.annotation.*;
