@@ -1,85 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="WARN">
-    <Properties>
-        <Property name="LOG_HOME">cadeau-support-log</Property>
-        <Property name="LOG_NAME">cadeau-support</Property>
-    </Properties>
+
     <appenders>
-        <!-- 控制台 -->
+        <!--控制台-->
         <Console name="console" target="SYSTEM_OUT">
-            <ThresholdFilter level="info" onMatch="ACCEPT"
-                    onMismatch="DENY" />
-            <PatternLayout charset="UTF-8"
-                    pattern="Deolin : %msg%n" />
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout charset="UTF-8" pattern="Deolin : %msg%n"/>
         </Console>
-        <!-- warn日志文件 -->
-        <RollingFile name="warnFile" fileName="${LOG_HOME}/${LOG_NAME}-WARN.log"
-                filePattern="${LOG_HOME}/${LOG_NAME}-WARN.%d{yyyy-MM-dd}.log"
-                append="true">
-            <Filters>
-                <ThresholdFilter level="error" onMatch="DENY"
-                        onMismatch="NEUTRAL" />
-                <ThresholdFilter level="warn" onMatch="ACCEPT"
-                        onMismatch="DENY" />
-            </Filters>
-            <PatternLayout charset="UTF-8"
-                    pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread][%file:%line] - %msg%n" />
-            <Policies>
-                <TimeBasedTriggeringPolicy
-                        modulate="true" interval="1" />
-            </Policies>
-            <DefaultRolloverStrategy max="180" />
-        </RollingFile>
-        <!-- error日志文件 -->
-        <RollingFile name="errorFile"
-                fileName="${LOG_HOME}/${LOG_NAME}-ERROR.log" filePattern="${LOG_HOME}/${LOG_NAME}-ERROR.%d{yyyy-MM-dd}.log"
-                append="true">
-            <ThresholdFilter level="error" onMatch="ACCEPT"
-                    onMismatch="DENY" />
-            <PatternLayout charset="UTF-8"
-                    pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread][%file:%line] - %msg%n" />
-            <Policies>
-                <TimeBasedTriggeringPolicy
-                        modulate="true" interval="1" />
-            </Policies>
-            <DefaultRolloverStrategy max="180" />
-        </RollingFile>
-        <!-- info以上日志文件 -->
-        <RollingFile name="infoFile"
-                fileName="${LOG_HOME}/${LOG_NAME}-INFO+.log" filePattern="${LOG_HOME}/${LOG_NAME}-INFO+.%d{yyyy-MM-dd}.log"
-                append="true">
-            <ThresholdFilter level="info" onMatch="ACCEPT"
-                    onMismatch="DENY" />
-            <PatternLayout charset="UTF-8"
-                    pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread][%file:%line] - %msg%n" />
-            <Policies>
-                <TimeBasedTriggeringPolicy
-                        modulate="true" interval="1" />
-            </Policies>
-            <DefaultRolloverStrategy max="180" />
-        </RollingFile>
-        <!-- debug以上日志文件 -->
-        <RollingFile name="debugFile"
-                fileName="${LOG_HOME}/${LOG_NAME}-DEBUG+.log" filePattern="${LOG_HOME}/${LOG_NAME}-DEBUG+.%d{yyyy-MM-dd}.log"
-                append="true">
-            <ThresholdFilter level="debug" onMatch="ACCEPT"
-                    onMismatch="DENY" />
-            <PatternLayout charset="UTF-8"
-                    pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread][%file:%line] - %msg%n" />
-            <Policies>
-                <TimeBasedTriggeringPolicy
-                        modulate="true" interval="1" />
-            </Policies>
-            <DefaultRolloverStrategy max="180" />
-        </RollingFile>
     </appenders>
+
     <loggers>
         <root level="all">
-            <appender-ref ref="console" />
-            <appender-ref ref="debugFile" />
-            <appender-ref ref="infoFile" />
-            <appender-ref ref="warnFile" />
-            <appender-ref ref="errorFile" />
+            <appender-ref ref="console"/>
         </root>
     </loggers>
+
 </configuration>

@@ -29,7 +29,8 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
     @Override
     public Long createEX(${modelName} ${modelName?uncap_first}) {
         /* 业务校验 */
-        return super.create(${modelName?uncap_first});
+        super.create(${modelName?uncap_first});
+        return ${modelName?uncap_first}.getId();
     }
 
     @Override
@@ -64,11 +65,9 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
     @Override
     public Page<${modelName}> page(Integer pageNo, Integer pageSize) {
         Condition condition = new Condition(User.class);
-        Example.Criteria criteria = condition.createCriteria();
-        criteria.andIsNull("deletedAt");
-        /* 其他条件 */
+        condition.createCriteria()/* 添加条件 */;
         PageHelper.startPage(pageNo, pageSize);
-        return Page.wrap(userMapper.selectByCondition(condition));
+        return Page.wrap(userMapper.selectBatchByCondition(condition));
     }
 
 }
