@@ -53,7 +53,7 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
 
     @Override
     public String deleteEX(List<Long> ids) {
-        List<${modelName}> exist = get(ids);
+        List<${modelName}> exist = super.get(ids);
         if (exist.size() == 0) {
             throw new ServiceException("选中的${modelCn}全部不存在或是已被删除");
         }
