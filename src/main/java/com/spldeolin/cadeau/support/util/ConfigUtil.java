@@ -7,7 +7,6 @@ import static com.spldeolin.cadeau.support.util.ConstantUtil.mavenRes;
 import static com.spldeolin.cadeau.support.util.ConstantUtil.sep;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -16,8 +15,11 @@ import java.util.Date;
 import java.util.Properties;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 
+@UtilityClass
 @Log4j2
 public class ConfigUtil {
 
@@ -177,15 +179,11 @@ public class ConfigUtil {
 
     public static void assign() {}
 
+    @SneakyThrows
     private static void readProps() {
         log.info("读取配置文件");
-        try {
-            props.load(
-                    new InputStreamReader(ConfigUtil.class.getClassLoader().getResourceAsStream("生成配置.properties"),
-                            StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            log.error("读取配置文件失败", e);
-        }
+        props.load(new InputStreamReader(ConfigUtil.class.getClassLoader().getResourceAsStream("生成配置.properties"),
+                StandardCharsets.UTF_8));
         log.info("读取配置文件完成");
     }
 

@@ -11,7 +11,7 @@ import com.spldeolin.cadeau.support.util.ConfigUtil;
  */
 public class CadeauSupport {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         ConfigUtil.assign();
         MybatisGenerator.daoMapperModel();
         InputGenerator.input();

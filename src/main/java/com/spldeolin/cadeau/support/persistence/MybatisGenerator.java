@@ -7,7 +7,6 @@ import static com.spldeolin.cadeau.support.util.ConstantUtil.sep;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,15 +25,17 @@ import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.config.SqlMapGeneratorConfiguration;
 import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
-import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import com.spldeolin.cadeau.support.util.ConfigUtil;
 import com.spldeolin.cadeau.support.util.FileParseUtil;
 import com.spldeolin.cadeau.support.util.JdbcUtil;
 import com.spldeolin.cadeau.support.util.StringCaseUtil;
+import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 
+@UtilityClass
 @Log4j2
 public class MybatisGenerator {
 
@@ -50,7 +51,6 @@ public class MybatisGenerator {
             CONFIGURATION = new ConfigurationParser(MBG_WARNINGS).parseConfiguration(
                     MybatisGenerator.class.getResourceAsStream("/mybatis-generator-config.xml"));
         } catch (IOException | XMLParserException e) {
-            log.error("checked", e);
             throw new RuntimeException();
         }
         CONTEXT = CONFIGURATION.getContext("Mysql");
@@ -98,14 +98,10 @@ public class MybatisGenerator {
         CONTEXT.addPluginConfiguration(mapperPlugin);
     }
 
+    @SneakyThrows
     private static void addInputGeneratePlugin() {
         // 清除临时文件
-        try {
-            FileUtils.deleteDirectory(new File(ConfigUtil.getProjectPath() + mavenRes + "ftl"));
-        } catch (IOException e) {
-            log.error("checked", e);
-            throw new RuntimeException();
-        }
+        FileUtils.deleteDirectory(new File(ConfigUtil.getProjectPath() + mavenRes + "ftl"));
         PluginConfiguration plugin = new PluginConfiguration();
         plugin.setConfigurationType("com.spldeolin.cadeau.support.input.InputFieldGeneratePlugin");
         CONTEXT.addPluginConfiguration(plugin);
@@ -155,18 +151,15 @@ public class MybatisGenerator {
         }
     }
 
+    @SneakyThrows
     private static void generte() {
         DefaultShellCallback callback = new DefaultShellCallback(ConfigUtil.getOverWrite());
         MyBatisGenerator myBatisGenerator;
-        try {
-            myBatisGenerator = new MyBatisGenerator(CONFIGURATION, callback, MBG_WARNINGS);
-            myBatisGenerator.generate(null);
-        } catch (SQLException | IOException | InterruptedException | InvalidConfigurationException e) {
-            log.error("checked", e);
-            throw new RuntimeException();
-        }
+        myBatisGenerator = new MyBatisGenerator(CONFIGURATION, callback, MBG_WARNINGS);
+        myBatisGenerator.generate(null);
     }
 
+    @SneakyThrows
     private static void addMapperAnnotation() {
         Iterator<File> files = FileUtils.iterateFiles(
                 new File(ConfigUtil.getDaoPath4mbg() + ConfigUtil.getDaoPackage().replace('.', sep)),
@@ -174,12 +167,7 @@ public class MybatisGenerator {
         while (files.hasNext()) {
             File file = files.next();
             String content;
-            try {
-                content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                log.error("checked", e);
-                throw new RuntimeException();
-            }
+            content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             if (content.contains("org.apache.ibatis.annotations.Mapper")) {
                 continue;
             }
@@ -187,12 +175,7 @@ public class MybatisGenerator {
             String doc = "/**" + br + " * “" + getModelCnsByFile(file) + "”数据库映射" + br + ConfigUtil.getClassDocEnd();
             content = content.replace(header,
                     "import org.apache.ibatis.annotations.Mapper;" + br + doc + br + "@Mapper" + br + header);
-            try {
-                FileUtils.write(file, content, StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                log.error("checked", e);
-                throw new RuntimeException();
-            }
+            FileUtils.write(file, content, StandardCharsets.UTF_8);
         }
     }
 

@@ -1,7 +1,6 @@
 package com.spldeolin.cadeau.support.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -9,8 +8,11 @@ import com.spldeolin.cadeau.support.util.ConfigUtil;
 import com.spldeolin.cadeau.support.util.FileMoveUtil;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
 import com.spldeolin.cadeau.support.util.StringCaseUtil;
+import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 
+@UtilityClass
 @Log4j2
 public class ServiceGenerator {
 
@@ -25,6 +27,7 @@ public class ServiceGenerator {
         }
     }
 
+    @SneakyThrows
     private static void service(String modelName, String modelCn) {
         ServiceFTL template = new ServiceFTL();
         template.setBasePackage(ConfigUtil.getBasePackage());
@@ -44,23 +47,19 @@ public class ServiceGenerator {
         String[] parts = derivedService.split("\\.");
         template.setDerivedServiceName(parts[parts.length - 1]);
         String serviceContent = FreeMarkerUtil.format(true, "service.ftl", template);
-        try {
-            if (ConfigUtil.getOverWrite()) {
-                FileUtils.write(new File(ConfigUtil.getServicePath() + modelName + "Service.java"),
-                        serviceContent, StandardCharsets.UTF_8);
-            } else {
-                File f = new File(ConfigUtil.getServicePath() + modelName + "Service.java");
-                if (f.exists()) {
-                    f = FileMoveUtil.renameFile(f, 1);
-                }
-                FileUtils.write(f, serviceContent, StandardCharsets.UTF_8);
+        if (ConfigUtil.getOverWrite()) {
+            FileUtils.write(new File(ConfigUtil.getServicePath() + modelName + "Service.java"),
+                    serviceContent, StandardCharsets.UTF_8);
+        } else {
+            File f = new File(ConfigUtil.getServicePath() + modelName + "Service.java");
+            if (f.exists()) {
+                f = FileMoveUtil.renameFile(f, 1);
             }
-        } catch (IOException e) {
-            log.error("checked", e);
-            throw new RuntimeException();
+            FileUtils.write(f, serviceContent, StandardCharsets.UTF_8);
         }
     }
 
+    @SneakyThrows
     private static void serviceImpl(String modelName, String modelCn) {
         ServiceImplFTL template = new ServiceImplFTL();
         template.setBasePackage(ConfigUtil.getBasePackage());
@@ -81,20 +80,15 @@ public class ServiceGenerator {
         String[] parts = derivedServiceImpl.split("\\.");
         template.setDerivedServiceImplName(parts[parts.length - 1]);
         String serviceImplContent = FreeMarkerUtil.format(true, "service-impl.ftl", template);
-        try {
-            if (ConfigUtil.getOverWrite()) {
-                FileUtils.write(new File(ConfigUtil.getServiceImplPath() + modelName + "ServiceImpl.java"),
-                        serviceImplContent, StandardCharsets.UTF_8);
-            } else {
-                File f = new File(ConfigUtil.getServiceImplPath() + modelName + "ServiceImpl.java");
-                if (f.exists()) {
-                    f = FileMoveUtil.renameFile(f, 1);
-                }
-                FileUtils.write(f, serviceImplContent, StandardCharsets.UTF_8);
+        if (ConfigUtil.getOverWrite()) {
+            FileUtils.write(new File(ConfigUtil.getServiceImplPath() + modelName + "ServiceImpl.java"),
+                    serviceImplContent, StandardCharsets.UTF_8);
+        } else {
+            File f = new File(ConfigUtil.getServiceImplPath() + modelName + "ServiceImpl.java");
+            if (f.exists()) {
+                f = FileMoveUtil.renameFile(f, 1);
             }
-        } catch (IOException e) {
-            log.error("checked", e);
-            throw new RuntimeException();
+            FileUtils.write(f, serviceImplContent, StandardCharsets.UTF_8);
         }
     }
 

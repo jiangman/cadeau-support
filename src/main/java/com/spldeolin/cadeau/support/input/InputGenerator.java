@@ -3,7 +3,6 @@ package com.spldeolin.cadeau.support.input;
 import static com.spldeolin.cadeau.support.util.ConstantUtil.ftlPath;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,11 +16,15 @@ import com.spldeolin.cadeau.support.util.FileMoveUtil;
 import com.spldeolin.cadeau.support.util.FileParseUtil;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
 import com.spldeolin.cadeau.support.util.StringCaseUtil;
+import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 
+@UtilityClass
 @Log4j2
 public class InputGenerator {
 
+    @SneakyThrows
     public static void input() {
         File ftlFolder = new File(ftlPath);
         Iterator<File> iterator = FileUtils.iterateFiles(ftlFolder, new String[] {"ftl"}, true);
@@ -56,30 +59,20 @@ public class InputGenerator {
         }
         // 生成Java文件
         for (InputFTL inputTemplate : inputTemplates) {
-            try {
-                String content = FreeMarkerUtil.format(true, "input-template.ftl", inputTemplate);
-                if (ConfigUtil.getOverWrite()) {
-                    FileUtils.write(new File(ConfigUtil.getInputPath() + inputTemplate.getModel() + "Input.java"),
-                            content, StandardCharsets.UTF_8);
-                } else {
-                    File f = new File(ConfigUtil.getInputPath() + inputTemplate.getModel() + "Input.java");
-                    if (f.exists()) {
-                        f = FileMoveUtil.renameFile(f, 1);
-                    }
-                    FileUtils.write(f, content, StandardCharsets.UTF_8);
+            String content = FreeMarkerUtil.format(true, "input-template.ftl", inputTemplate);
+            if (ConfigUtil.getOverWrite()) {
+                FileUtils.write(new File(ConfigUtil.getInputPath() + inputTemplate.getModel() + "Input.java"),
+                        content, StandardCharsets.UTF_8);
+            } else {
+                File f = new File(ConfigUtil.getInputPath() + inputTemplate.getModel() + "Input.java");
+                if (f.exists()) {
+                    f = FileMoveUtil.renameFile(f, 1);
                 }
-            } catch (IOException e) {
-                log.error("checked", e);
-                throw new RuntimeException();
+                FileUtils.write(f, content, StandardCharsets.UTF_8);
             }
         }
         // 删除ftl文件夹
-        try {
-            FileUtils.deleteDirectory(ftlFolder);
-        } catch (IOException e) {
-            log.error("checked", e);
-            throw new RuntimeException();
-        }
+        FileUtils.deleteDirectory(ftlFolder);
     }
 
     private static String getModelCnsByModel(String model) {
