@@ -39,7 +39,9 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
             throw new ServiceException("${modelCn}不存在或是已被删除");
         }
         /* 业务校验 */
-        super.update(${modelName?uncap_first});
+        if (!super.update(${modelName?uncap_first})) {
+            throw new ServiceException("${modelCn}数据过时");
+        }
     }
 
     @Override

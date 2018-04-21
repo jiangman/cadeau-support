@@ -37,6 +37,10 @@ public class CommentGenerator implements org.mybatis.generator.api.CommentGenera
             field.addJavaDocLine(" */");
         }
 
+        if ("updatedAt".equals(field.getName())) {
+            field.addAnnotation("@tk.mybatis.mapper.annotation.Version");
+        }
+
         /*
             以下代码参照自tk.mapper
          */
