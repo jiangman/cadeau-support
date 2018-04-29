@@ -23,4 +23,6 @@ public class ServiceImplFTL {
 
     private String derivedServiceImplName;
 
+    private String pageRef;
+
 }

@@ -3,7 +3,7 @@ package ${basePackage}.service${bussinessPart};
 import java.util.List;
 import ${basePackage}.model${bussinessPart}.${modelName};
 import ${derivedServiceRef};
-import com.spldeolin.cadeau.library.dto.Page;
+import ${pageRef};
 
 /**
  * “${modelCn}”业务
@@ -14,7 +14,7 @@ public interface ${modelName}Service extends ${derivedServiceName}<${modelName}>
      * 创建一个“${modelCn}”
      * （附带业务校验）
      *
-     * @param user 待创建“${modelCn}”
+     * @param ${modelName?uncap_first} 待创建“${modelCn}”
      * @return 自增ID
      */
     Long createEX(${modelName} ${modelName?uncap_first});
@@ -23,7 +23,7 @@ public interface ${modelName}Service extends ${derivedServiceName}<${modelName}>
      * 更新一个“${modelCn}”
      * （附带业务校验）
      *
-     * @param user 待更新“${modelCn}”
+     * @param ${modelName?uncap_first} 待更新“${modelCn}”
      */
     void updateEX(${modelName} ${modelName?uncap_first});
 

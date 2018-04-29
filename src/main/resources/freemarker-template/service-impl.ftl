@@ -11,7 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import tk.mybatis.mapper.entity.Condition;
 import com.spldeolin.cadeau.library.exception.ServiceException;
 import com.spldeolin.cadeau.library.util.FieldExtractUtil;
-import com.spldeolin.cadeau.library.dto.Page;
+import ${pageRef};
 import com.github.pagehelper.PageHelper;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
@@ -66,10 +66,10 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
 
     @Override
     public Page<${modelName}> page(Integer pageNo, Integer pageSize) {
-        Condition condition = new Condition(User.class);
+        Condition condition = new Condition(${modelName}.class);
         condition.createCriteria()/* 添加条件 */;
         PageHelper.startPage(pageNo, pageSize);
-        return Page.wrap(userMapper.selectBatchByCondition(condition));
+        return Page.wrap(${modelName?uncap_first}Mapper.selectBatchByCondition(condition));
     }
 
 }

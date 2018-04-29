@@ -21,4 +21,6 @@ public class ServiceFTL {
 
     private String derivedServiceName;
 
+    private String pageRef;
+
 }

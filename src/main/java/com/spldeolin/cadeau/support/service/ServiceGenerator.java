@@ -46,6 +46,7 @@ public class ServiceGenerator {
         template.setDerivedServiceRef(derivedService);
         String[] parts = derivedService.split("\\.");
         template.setDerivedServiceName(parts[parts.length - 1]);
+        template.setPageRef(ConfigUtil.getPage());
         String serviceContent = FreeMarkerUtil.format(true, "service.ftl", template);
         if (ConfigUtil.getOverWrite()) {
             FileUtils.write(new File(ConfigUtil.getServicePath() + modelName + "Service.java"),
@@ -79,6 +80,7 @@ public class ServiceGenerator {
         template.setDerivedServiceImplRef(derivedServiceImpl);
         String[] parts = derivedServiceImpl.split("\\.");
         template.setDerivedServiceImplName(parts[parts.length - 1]);
+        template.setPageRef(ConfigUtil.getPage());
         String serviceImplContent = FreeMarkerUtil.format(true, "service-impl.ftl", template);
         if (ConfigUtil.getOverWrite()) {
             FileUtils.write(new File(ConfigUtil.getServiceImplPath() + modelName + "ServiceImpl.java"),

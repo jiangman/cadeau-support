@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.Properties;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
@@ -28,145 +30,224 @@ public class ConfigUtil {
     /**
      * 作者
      */
+    @Getter
+    @Setter
     private static String author = "Deolin";
 
     /**
      * 生成日期
      */
+    @Getter
+    @Setter
     private static String date;
 
     /**
      * 业务模块
      */
+    @Getter
+    @Setter
     private static String bussiness = "";
 
     /**
      * 表名数组
      */
+    @Getter
+    @Setter
     private static String[] tableNames;
 
     /**
      * 模型中文名数组
      */
+    @Getter
+    @Setter
     private static String[] modelCns;
 
     /**
      * 数据库URL
      */
+    @Getter
+    @Setter
     private static String mysqlUrl = "jdbc:mysql://localhost:3306/information_schema?useSSL=false";
 
     /**
      * 数据库名
      */
+    @Getter
+    @Setter
     private static String mysqlDatabase = "information_schema";
 
     /**
      * 数据库用户名
      */
+    @Getter
+    @Setter
     private static String mysqlUsername = "root";
 
     /**
      * 数据库密码
      */
+    @Getter
+    @Setter
     private static String mysqlPassword = "root";
 
     /**
      * 文件重名时是否覆盖
      */
+    @Getter
+    @Setter
     private static Boolean overWrite = false;
 
     /**
      * 项目路径
      */
+    @Getter
+    @Setter
     private static String projectPath = System.getProperty("user.dir") + sep;
 
     /**
      * 基础包名
      */
+    @Getter
+    @Setter
     private static String basePackage = "com.spldeolin.cadeau.demo";
 
     /**
      * mapper.xml文件夹的Reference
      */
+    @Getter
+    @Setter
     private static String mapperFolder = "mapper";
 
     /**
      * 通用Service接口的Reference
      */
+    @Getter
+    @Setter
     private static String derivedService = "";
 
     /**
      * 通用ServiceImpl抽象类的Reference
      */
+    @Getter
+    @Setter
     private static String derivedServiceImpl = "";
 
     /**
      * 通用Mapper接口的Reference
      */
+    @Getter
+    @Setter
     private static String derivedMapper = "tk.mybatis.mapper.inherited.Mapper";
 
     /**
      * 控制层拓展注解的包名
      */
+    @Getter
+    @Setter
     private static String controllerExtraAnnotationPackage = "";
 
     /**
      * RequestResult的Reference
      */
+    @Getter
+    @Setter
     private static String requestResult = "";
 
     /**
      * ValidableList的Reference
      */
+    @Getter
+    @Setter
     private static String validableList = "";
 
     /**
      * TextOption的Reference
      */
+    @Getter
+    @Setter
     private static String textOption = "";
+
+    /**
+     * Page的Reference
+     */
+    @Getter
+    @Setter
+    private static String page = "";
 
     /**
      * 表注释数组
      */
+    @Getter
+    @Setter
     private static String[] tableComments;
 
     /**
      * 最终类级注释tag
      */
+    @Getter
+    @Setter
     private static String classDocEnd = " *" + br + " * @author ${author} ${date}" + br + generatorTag + br + " */";
 
     // 最终包名 start
 
+    @Getter
+    @Setter
     private static String daoPackage = "${basePackage}.dao${bussinessPart}";
 
+    @Getter
+    @Setter
     private static String mapperPackage = "mapper${bussinessPart}";
 
+    @Getter
+    @Setter
     private static String modelPackage = "${basePackage}.model${bussinessPart}";
 
+    @Getter
+    @Setter
     private static String inputPackage = "${basePackage}.input${bussinessPart}";
 
+    @Getter
+    @Setter
     private static String servicePackage = "${basePackage}.service${bussinessPart}";
 
+    @Getter
+    @Setter
     private static String serviceImplPackage = "${basePackage}.service.impl${bussinessPart}";
 
+    @Getter
+    @Setter
     private static String controllerPackage = "${basePackage}.controller${bussinessPart}";
 
     // 最终包名 end
 
     // 最终路径 start
 
+    @Getter
+    @Setter
     private static String daoPath4mbg;
 
+    @Getter
+    @Setter
     private static String mapperPath4mbg;
 
+    @Getter
+    @Setter
     private static String modelPath4mbg;
 
+    @Getter
+    @Setter
     private static String inputPath;
 
+    @Getter
+    @Setter
     private static String servicePath;
 
+    @Getter
+    @Setter
     private static String serviceImplPath;
 
+    @Getter
+    @Setter
     private static String controllerPath;
 
     // 最终路径 end
@@ -337,6 +418,12 @@ public class ConfigUtil {
         } else {
             ConfigUtil.textOption = textOption;
         }
+        String page = props.getProperty("page");
+        if (StringUtils.isBlank(page) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath, page)) {
+            log.info("\t“Page类”未指定或是路径不存在，缺省依赖Cadeau Library");
+        } else {
+            ConfigUtil.page = page;
+        }
         log.info("初始化配置完成");
     }
 
@@ -373,294 +460,6 @@ public class ConfigUtil {
         serviceImplPath = projectPath + mavenJava + serviceImplPackage.replace('.', sep) + sep;
         controllerPath = projectPath + mavenJava + controllerPackage.replace('.', sep) + sep;
         log.info("计算最终包名、最终路径完成");
-    }
-
-    public static String getAuthor() {
-        return author;
-    }
-
-    public static void setAuthor(String author) {
-        ConfigUtil.author = author;
-    }
-
-    public static String getDate() {
-        return date;
-    }
-
-    public static void setDate(String date) {
-        ConfigUtil.date = date;
-    }
-
-    public static String getBussiness() {
-        return bussiness;
-    }
-
-    public static void setBussiness(String bussiness) {
-        ConfigUtil.bussiness = bussiness;
-    }
-
-    public static String[] getTableNames() {
-        return tableNames;
-    }
-
-    public static void setTableNames(String[] tableNames) {
-        ConfigUtil.tableNames = tableNames;
-    }
-
-    public static String[] getModelCns() {
-        return modelCns;
-    }
-
-    public static void setModelCns(String[] modelCns) {
-        ConfigUtil.modelCns = modelCns;
-    }
-
-    public static String getMysqlUrl() {
-        return mysqlUrl;
-    }
-
-    public static void setMysqlUrl(String mysqlUrl) {
-        ConfigUtil.mysqlUrl = mysqlUrl;
-    }
-
-    public static String getMysqlDatabase() {
-        return mysqlDatabase;
-    }
-
-    public static void setMysqlDatabase(String mysqlDatabase) {
-        ConfigUtil.mysqlDatabase = mysqlDatabase;
-    }
-
-    public static String getMysqlUsername() {
-        return mysqlUsername;
-    }
-
-    public static void setMysqlUsername(String mysqlUsername) {
-        ConfigUtil.mysqlUsername = mysqlUsername;
-    }
-
-    public static String getMysqlPassword() {
-        return mysqlPassword;
-    }
-
-    public static void setMysqlPassword(String mysqlPassword) {
-        ConfigUtil.mysqlPassword = mysqlPassword;
-    }
-
-    public static Boolean getOverWrite() {
-        return overWrite;
-    }
-
-    public static void setOverWrite(Boolean overWrite) {
-        ConfigUtil.overWrite = overWrite;
-    }
-
-    public static String getProjectPath() {
-        return projectPath;
-    }
-
-    public static void setProjectPath(String projectPath) {
-        ConfigUtil.projectPath = projectPath;
-    }
-
-    public static String getBasePackage() {
-        return basePackage;
-    }
-
-    public static void setBasePackage(String basePackage) {
-        ConfigUtil.basePackage = basePackage;
-    }
-
-    public static String getMapperFolder() {
-        return mapperFolder;
-    }
-
-    public static void setMapperFolder(String mapperFolder) {
-        ConfigUtil.mapperFolder = mapperFolder;
-    }
-
-    public static String getDerivedService() {
-        return derivedService;
-    }
-
-    public static void setDerivedService(String derivedService) {
-        ConfigUtil.derivedService = derivedService;
-    }
-
-    public static String getDerivedServiceImpl() {
-        return derivedServiceImpl;
-    }
-
-    public static void setDerivedServiceImpl(String derivedServiceImpl) {
-        ConfigUtil.derivedServiceImpl = derivedServiceImpl;
-    }
-
-    public static String getDerivedMapper() {
-        return derivedMapper;
-    }
-
-    public static void setDerivedMapper(String derivedMapper) {
-        ConfigUtil.derivedMapper = derivedMapper;
-    }
-
-    public static String getControllerExtraAnnotationPackage() {
-        return controllerExtraAnnotationPackage;
-    }
-
-    public static void setControllerExtraAnnotationPackage(String controllerExtraAnnotationPackage) {
-        ConfigUtil.controllerExtraAnnotationPackage = controllerExtraAnnotationPackage;
-    }
-
-    public static String getRequestResult() {
-        return requestResult;
-    }
-
-    public static void setRequestResult(String requestResult) {
-        ConfigUtil.requestResult = requestResult;
-    }
-
-    public static String getValidableList() {
-        return validableList;
-    }
-
-    public static void setValidableList(String validableList) {
-        ConfigUtil.validableList = validableList;
-    }
-
-    public static String getTextOption() {
-        return textOption;
-    }
-
-    public static void setTextOption(String textOption) {
-        ConfigUtil.textOption = textOption;
-    }
-
-    public static String[] getTableComments() {
-        return tableComments;
-    }
-
-    public static void setTableComments(String[] tableComments) {
-        ConfigUtil.tableComments = tableComments;
-    }
-
-    public static String getClassDocEnd() {
-        return classDocEnd;
-    }
-
-    public static void setClassDocEnd(String classDocEnd) {
-        ConfigUtil.classDocEnd = classDocEnd;
-    }
-
-    public static String getDaoPackage() {
-        return daoPackage;
-    }
-
-    public static void setDaoPackage(String daoPackage) {
-        ConfigUtil.daoPackage = daoPackage;
-    }
-
-    public static String getMapperPackage() {
-        return mapperPackage;
-    }
-
-    public static void setMapperPackage(String mapperPackage) {
-        ConfigUtil.mapperPackage = mapperPackage;
-    }
-
-    public static String getModelPackage() {
-        return modelPackage;
-    }
-
-    public static void setModelPackage(String modelPackage) {
-        ConfigUtil.modelPackage = modelPackage;
-    }
-
-    public static String getInputPackage() {
-        return inputPackage;
-    }
-
-    public static void setInputPackage(String inputPackage) {
-        ConfigUtil.inputPackage = inputPackage;
-    }
-
-    public static String getServicePackage() {
-        return servicePackage;
-    }
-
-    public static void setServicePackage(String servicePackage) {
-        ConfigUtil.servicePackage = servicePackage;
-    }
-
-    public static String getServiceImplPackage() {
-        return serviceImplPackage;
-    }
-
-    public static void setServiceImplPackage(String serviceImplPackage) {
-        ConfigUtil.serviceImplPackage = serviceImplPackage;
-    }
-
-    public static String getControllerPackage() {
-        return controllerPackage;
-    }
-
-    public static void setControllerPackage(String controllerPackage) {
-        ConfigUtil.controllerPackage = controllerPackage;
-    }
-
-    public static String getDaoPath4mbg() {
-        return daoPath4mbg;
-    }
-
-    public static void setDaoPath4mbg(String daoPath4mbg) {
-        ConfigUtil.daoPath4mbg = daoPath4mbg;
-    }
-
-    public static String getMapperPath4mbg() {
-        return mapperPath4mbg;
-    }
-
-    public static void setMapperPath4mbg(String mapperPath4mbg) {
-        ConfigUtil.mapperPath4mbg = mapperPath4mbg;
-    }
-
-    public static String getModelPath4mbg() {
-        return modelPath4mbg;
-    }
-
-    public static void setModelPath4mbg(String modelPath4mbg) {
-        ConfigUtil.modelPath4mbg = modelPath4mbg;
-    }
-
-    public static String getInputPath() {
-        return inputPath;
-    }
-
-    public static void setInputPath(String inputPath) {
-        ConfigUtil.inputPath = inputPath;
-    }
-
-    public static String getServicePath() {
-        return servicePath;
-    }
-
-    public static void setServicePath(String servicePath) {
-        ConfigUtil.servicePath = servicePath;
-    }
-
-    public static String getServiceImplPath() {
-        return serviceImplPath;
-    }
-
-    public static void setServiceImplPath(String serviceImplPath) {
-        ConfigUtil.serviceImplPath = serviceImplPath;
-    }
-
-    public static String getControllerPath() {
-        return controllerPath;
-    }
-
-    public static void setControllerPath(String controllerPath) {
-        ConfigUtil.controllerPath = controllerPath;
     }
 
 }
