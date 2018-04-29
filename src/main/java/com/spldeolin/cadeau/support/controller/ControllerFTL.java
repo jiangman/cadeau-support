@@ -25,4 +25,6 @@ public class ControllerFTL {
 
     private String validableList;
 
+    private String serviceExceptionRef;
+
 }

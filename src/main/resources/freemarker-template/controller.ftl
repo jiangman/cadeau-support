@@ -10,7 +10,7 @@ import ${requestResult};
 import ${basePackage}.input${bussinessPart}.${modelName}Input;
 import ${basePackage}.service${bussinessPart}.${modelName}Service;
 import ${validableList};
-import com.spldeolin.cadeau.library.exception.ServiceException;
+import ${serviceExceptionRef};
 
 /**
  * “${modelCn}”管理

@@ -175,6 +175,13 @@ public class ConfigUtil {
     private static String page = "";
 
     /**
+     * ServiceException的Reference
+     */
+    @Getter
+    @Setter
+    private static String serviceException = "";
+
+    /**
      * 表注释数组
      */
     @Getter
@@ -366,7 +373,7 @@ public class ConfigUtil {
         String derivedService = props.getProperty("derived-service");
         if (StringUtils.isBlank(derivedService) ||
                 !FileExistsUtil.referenceExist(ConfigUtil.projectPath, derivedService)) {
-            log.info("\t“通用Service接口”未指定或是路径不存在，缺省依赖Cadeau Library");
+            log.info("\t“通用Service接口”未指定或是路径不存在，请指定");
             ConfigUtil.derivedService = "com.spldeolin.cadeau.library.inherited.CommonService";
         } else {
             ConfigUtil.derivedService = derivedService;
@@ -374,7 +381,7 @@ public class ConfigUtil {
         String derivedServiceImpl = props.getProperty("derived-service-impl");
         if (StringUtils.isBlank(derivedServiceImpl) ||
                 !FileExistsUtil.referenceExist(ConfigUtil.projectPath, derivedServiceImpl)) {
-            log.info("\t“通用ServiceImpl抽象类”未指定或是路径不存在，缺省依赖Cadeau Library");
+            log.info("\t“通用ServiceImpl抽象类”未指定或是路径不存在，请指定");
             ConfigUtil.derivedServiceImpl = "com.spldeolin.cadeau.library.inherited.CommonServiceImpl";
         } else {
             ConfigUtil.derivedServiceImpl = derivedServiceImpl;
@@ -382,7 +389,7 @@ public class ConfigUtil {
         String derivedMapper = props.getProperty("derived-mapper");
         if (StringUtils.isBlank(derivedMapper) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath,
                 derivedMapper)) {
-            log.info("\t“通用Mapper接口”未指定或是路径不存在，缺省依赖Cadeau Library");
+            log.info("\t“通用Mapper接口”未指定或是路径不存在，请指定");
             ConfigUtil.derivedMapper = "com.spldeolin.cadeau.library.inherited.CommonMapper";
         } else {
             ConfigUtil.derivedMapper = derivedMapper;
@@ -390,7 +397,7 @@ public class ConfigUtil {
         String controllerExtraAnnotationPackage = props.getProperty("controller-extra-annotation-package");
         if (StringUtils.isBlank(controllerExtraAnnotationPackage) ||
                 !FileExistsUtil.referenceExist(ConfigUtil.projectPath, controllerExtraAnnotationPackage)) {
-            log.info("\t“控制层拓展注解包”未指定或是路径不存在，缺省依赖Cadeau Library");
+            log.info("\t“控制层拓展注解包”未指定或是路径不存在，请指定");
             ConfigUtil.controllerExtraAnnotationPackage = "com.spldeolin.cadeau.library.annotation";
         } else {
             ConfigUtil.controllerExtraAnnotationPackage = controllerExtraAnnotationPackage;
@@ -398,7 +405,7 @@ public class ConfigUtil {
         String requestResult = props.getProperty("request-result");
         if (StringUtils.isBlank(requestResult) ||
                 !FileExistsUtil.referenceExist(ConfigUtil.projectPath, requestResult)) {
-            log.info("\t“RequestResult类”未指定或是路径不存在，缺省依赖Cadeau Library");
+            log.info("\t“RequestResult类”未指定或是路径不存在，请指定");
             ConfigUtil.requestResult = "com.spldeolin.cadeau.library.dto.RequestResult";
         } else {
             ConfigUtil.requestResult = requestResult;
@@ -406,23 +413,31 @@ public class ConfigUtil {
         String validableList = props.getProperty("validable-list");
         if (StringUtils.isBlank(validableList) ||
                 !FileExistsUtil.referenceExist(ConfigUtil.projectPath, validableList)) {
-            log.info("\t“ValidableList类”未指定或是路径不存在，缺省依赖Cadeau Library");
+            log.info("\t“ValidableList类”未指定或是路径不存在，请指定");
             ConfigUtil.validableList = "com.spldeolin.cadeau.library.valid.ValidableList";
         } else {
             ConfigUtil.validableList = validableList;
         }
         String textOption = props.getProperty("text-option");
         if (StringUtils.isBlank(textOption) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath, textOption)) {
-            log.info("\t“TextOption类”未指定或是路径不存在，缺省依赖Cadeau Library");
+            log.info("\t“TextOption类”未指定或是路径不存在，请指定");
             ConfigUtil.textOption = "com.spldeolin.cadeau.library.valid.annotation.TextOption";
         } else {
             ConfigUtil.textOption = textOption;
         }
         String page = props.getProperty("page");
         if (StringUtils.isBlank(page) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath, page)) {
-            log.info("\t“Page类”未指定或是路径不存在，缺省依赖Cadeau Library");
+            log.info("\t“Page类”未指定或是路径不存在，请指定");
+            return;
         } else {
             ConfigUtil.page = page;
+        }
+        String serviceException = props.getProperty("service-exception");
+        if (StringUtils.isBlank(serviceException) ||
+                !FileExistsUtil.referenceExist(ConfigUtil.projectPath, serviceException)) {
+            log.info("\t“ServiceException类”未指定或是路径不存在，请指定");
+        } else {
+            ConfigUtil.serviceException = serviceException;
         }
         log.info("初始化配置完成");
     }

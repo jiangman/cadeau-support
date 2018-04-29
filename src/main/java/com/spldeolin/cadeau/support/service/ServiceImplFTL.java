@@ -25,4 +25,6 @@ public class ServiceImplFTL {
 
     private String pageRef;
 
+    private String serviceExceptionRef;
+
 }

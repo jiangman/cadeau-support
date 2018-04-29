@@ -81,6 +81,7 @@ public class ServiceGenerator {
         String[] parts = derivedServiceImpl.split("\\.");
         template.setDerivedServiceImplName(parts[parts.length - 1]);
         template.setPageRef(ConfigUtil.getPage());
+        template.setServiceExceptionRef(ConfigUtil.getServiceException());
         String serviceImplContent = FreeMarkerUtil.format(true, "service-impl.ftl", template);
         if (ConfigUtil.getOverWrite()) {
             FileUtils.write(new File(ConfigUtil.getServiceImplPath() + modelName + "ServiceImpl.java"),

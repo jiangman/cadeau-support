@@ -9,8 +9,7 @@ import ${basePackage}.model${bussinessPart}.${modelName};
 import ${basePackage}.service${bussinessPart}.${modelName}Service;
 import lombok.extern.log4j.Log4j2;
 import tk.mybatis.mapper.entity.Condition;
-import com.spldeolin.cadeau.library.exception.ServiceException;
-import com.spldeolin.cadeau.library.util.FieldExtractUtil;
+import ${serviceExceptionRef};
 import ${pageRef};
 import com.github.pagehelper.PageHelper;
 import tk.mybatis.mapper.entity.Condition;
@@ -60,7 +59,7 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
             throw new ServiceException("选中的${modelCn}全部不存在或是已被删除");
         }
         /* 业务校验 */
-        super.delete(FieldExtractUtil.extractId(exist));
+        super.delete(ids);
         return "操作成功";
     }
 
