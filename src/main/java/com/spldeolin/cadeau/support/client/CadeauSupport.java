@@ -1,6 +1,6 @@
 package com.spldeolin.cadeau.support.client;
 
-import com.spldeolin.cadeau.support.controller.ControllerGenerator;
+import com.spldeolin.cadeau.support.service.ServiceGenerator;
 import com.spldeolin.cadeau.support.util.ConfigUtil;
 
 /**
@@ -12,8 +12,8 @@ public class CadeauSupport {
         ConfigUtil.assign();
         //MybatisGenerator.daoMapperModel();
         //InputGenerator.input();
-        //ServiceGenerator.serviceServiceImpl();
-        ControllerGenerator.controller();
+        ServiceGenerator.serviceServiceImpl();
+        //ControllerGenerator.controller();
 
 
 

@@ -1,3 +1,4 @@
+${blockComment}
 package ${basePackage}.service.impl${bussinessPart};
 
 import java.util.List;

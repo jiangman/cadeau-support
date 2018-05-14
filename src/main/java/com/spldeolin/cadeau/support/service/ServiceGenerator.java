@@ -41,6 +41,7 @@ public class ServiceGenerator {
         template.setBussinessPart(bussinessPart);
         template.setModelName(modelName);
         template.setModelCn(modelCn);
+        template.setBlockComment(ConfigUtil.getBlockComment());
         template.setClassDocEnd(ConfigUtil.getClassDocEnd());
         String derivedService = ConfigUtil.getDerivedService();
         template.setDerivedServiceRef(derivedService);
@@ -74,6 +75,7 @@ public class ServiceGenerator {
         template.setBussinessPart(bussinessPart);
         template.setModelName(modelName);
         template.setModelCn(modelCn);
+        template.setBlockComment(ConfigUtil.getBlockComment());
         template.setClassDocEnd(ConfigUtil.getClassDocEnd());
         String derivedServiceImpl = ConfigUtil.getDerivedServiceImpl();
         template.setDerivedServiceRef(ConfigUtil.getDerivedService());
