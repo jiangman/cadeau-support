@@ -1,3 +1,4 @@
+${blockComment}
 package ${basePackage}.controller${bussinessPart};
 
 import java.util.List;
@@ -16,7 +17,7 @@ import ${serviceExceptionRef};
  * “${modelCn}”管理
 ${classDocEnd}
 @RestController
-@RequestMapping("${modelSnake}")
+@RequestMapping("/${modelSnake}")
 @Validated
 public class ${modelName}Controller {
 
@@ -34,7 +35,7 @@ public class ${modelName}Controller {
     /**
      * 获取一个“${modelCn}”
      */
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public RequestResult get(@PathVariable Long id) {
         return RequestResult.success(${modelName ?uncap_first}Service.get(id).orElseThrow(() -> new ServiceException("${modelCn}不存在或是已被删除")));
     }
@@ -42,7 +43,7 @@ public class ${modelName}Controller {
     /**
      * 更新一个“${modelCn}”
      */
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public RequestResult update(@PathVariable Long id, @RequestBody @Valid ${modelName}Input ${modelName ?uncap_first}Input) {
         ${modelName ?uncap_first}Service.updateEX(${modelName ?uncap_first}Input.toModel().setId(id));
         return RequestResult.success();
@@ -51,7 +52,7 @@ public class ${modelName}Controller {
     /**
      * 删除一个“${modelCn}”
      */
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public RequestResult delete(@PathVariable Long id) {
         ${modelName ?uncap_first}Service.deleteEX(id);
         return RequestResult.success();
@@ -68,7 +69,7 @@ public class ${modelName}Controller {
     /**
      * 删除一批“${modelCn}”
      */
-    @PutMapping("batch_delete")
+    @PutMapping("/batch_delete")
     public RequestResult delete(@RequestBody List<Long> ids) {
         return RequestResult.success(${modelName ?uncap_first}Service.deleteEX(ids));
     }

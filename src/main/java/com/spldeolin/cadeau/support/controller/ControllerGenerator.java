@@ -24,7 +24,8 @@ public class ControllerGenerator {
         for (int i = 0; i < tableNames.length; i++) {
             String modelName = StringCaseUtil.snakeToUpperCamel(tableNames[i]);
             String modelCn = modelCns[i];
-            ControllerFTL template = new ControllerFTL().setBasePackage(ConfigUtil.getBasePackage()).setClassDocEnd(
+            ControllerFTL template = new ControllerFTL().setBasePackage(ConfigUtil.getBasePackage()).setBlockComment(
+                    ConfigUtil.getBlockComment()).setClassDocEnd(
                     ConfigUtil.getClassDocEnd()).setControllerExtraAnnotationPackage(
                     ConfigUtil.getControllerExtraAnnotationPackage()).setRequestResult(
                     ConfigUtil.getRequestResult()).setValidableList(ConfigUtil.getValidableList());

@@ -12,8 +12,6 @@ public class ConstantUtil {
 
     public final static String mavenRes = sep + "src" + sep + "main" + sep + "resources" + sep;
 
-    public final static String generatorTag = " * @generator Cadeau Support";
-
     public final static String ftlPath = System.getProperty("user.dir") + mavenRes + "freemarker-template" + sep +
             "temp" + sep;
 

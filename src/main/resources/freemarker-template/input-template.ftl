@@ -7,7 +7,6 @@ import javax.validation.constraints.*;
 import org.springframework.beans.BeanUtils;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import ${textOption};
 import ${modelPackage}.${model};
 
@@ -18,7 +17,6 @@ import ${modelPackage}.${model};
 ${generatorTag}
  */
 @Data
-@NoArgsConstructor
 public class ${model}Input implements Serializable {
 
 	<#list fieldFileNames as fieldFileName>

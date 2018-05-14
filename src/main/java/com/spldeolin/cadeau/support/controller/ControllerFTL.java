@@ -15,6 +15,8 @@ public class ControllerFTL {
 
     private String modelCn;
 
+    private String blockComment;
+
     private String classDocEnd;
 
     private String modelSnake;
