@@ -17,7 +17,7 @@ public class ControllerFTL {
 
     private String classDocEnd;
 
-    private String modelSnake;
+    private String controllerMapping;
 
     private String controllerExtraAnnotationPackage;
 

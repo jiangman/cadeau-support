@@ -21,7 +21,7 @@ import ${serviceExceptionRef};
  * “${modelCn}”管理
 ${classDocEnd}
 @RestController
-@RequestMapping("/${modelSnake}")
+@RequestMapping("/${controllerMapping}")
 @Validated
 public class ${modelName}Controller {
 

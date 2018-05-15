@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.spldeolin.cadeau.support.util.ConfigUtil;
 import com.spldeolin.cadeau.support.util.FileMoveUtil;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
-import com.spldeolin.cadeau.support.util.SingularAndPluralUtil;
 import com.spldeolin.cadeau.support.util.StringCaseUtil;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
@@ -38,8 +37,10 @@ public class ControllerGenerator {
                 bussinessPart = "." + bussiness;
             }
 
-            template.setBussinessPart(bussinessPart).setModelName(modelName).setModelCn(modelCn).setModelSnake(
-                    SingularAndPluralUtil.pluralize(StringCaseUtil.camelToSnake(modelName)));
+            template.setBussinessPart(bussinessPart);
+            template.setModelName(modelName);
+            template.setModelCn(modelCn);
+            template.setControllerMapping(StringCaseUtil.camelToSnake(modelName));
             template.setServiceExceptionRef(ConfigUtil.getServiceException());
             String controllerContent = FreeMarkerUtil.format(true, "controller.ftl", template);
             if (ConfigUtil.getOverWrite()) {
