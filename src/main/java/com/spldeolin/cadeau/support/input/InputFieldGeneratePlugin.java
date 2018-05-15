@@ -37,7 +37,7 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
             IntrospectedTable introspectedTable, Plugin.ModelClassType modelClassType) {
         String fieldName = field.getName();
         FullyQualifiedJavaType fieldType = field.getType();
-        if (StringUtils.equalsAny(fieldName, "insertedAt", "deletedAt") || "byte[]".equals(fieldType.getShortName())) {
+        if (StringUtils.equalsAny(fieldName, "insertedAt", "isDeleted") || "byte[]".equals(fieldType.getShortName())) {
             return true;
         }
         File folder = new File(ftlPath);
@@ -52,21 +52,6 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
             inputFieldFTL.setNameSnake(introspectedColumn.getActualColumnName());
         }
         List<String> invalidAnnotations = new ArrayList<>();
-        // @JsonFormat (日期时间)
-
-        /*
-            Java 8 time包下的“时间”类不再需要JsonFormat注解
-        String jdbcType = introspectedColumn.getJdbcTypeName();
-        if ("DATE".equals(jdbcType)) {
-            invalidAnnotations.add("@JsonFormat(pattern = \"yyyy-MM-dd\")");
-        }
-        if ("TIME".equals(jdbcType)) {
-            invalidAnnotations.add("@JsonFormat(pattern = \"HH:mm:ss\")");
-        }
-        if ("TIMESTAMP".equals(jdbcType)) {
-            invalidAnnotations.add("@JsonFormat(pattern = \"yyyy-MM-dd HH:mm:ss\")");
-        }
-        */
         // @Size
         if (new FullyQualifiedJavaType("java.lang.String").equals(fieldType)) {
             topLevelClass.addImportedType(new FullyQualifiedJavaType("javax.validation.constraints.Size"));

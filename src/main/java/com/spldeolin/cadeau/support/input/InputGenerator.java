@@ -36,9 +36,9 @@ public class InputGenerator {
             String model = FileParseUtil.fileName(ftl).split("#")[0].split("_")[1];
             inputTemplates.add(
                     new InputFTL().setIndex(Integer.parseInt(index)).setInputPackage(
-                            ConfigUtil.getInputPackage()).setTextOption(
-                            ConfigUtil.getTextOption()).setDescription("“" +
-                            getModelCnsByModel(model) + "”Input类").setModelPackage(
+                            ConfigUtil.getInputPackage()).setTextOption(ConfigUtil.getTextOption()).setDescription("“" +
+                            getModelCnsByModel(model) + "”Input类").setAuthor(ConfigUtil.getAuthor()).setDate(
+                            ConfigUtil.getDate()).setClassDocEnd(ConfigUtil.getClassDocEnd()).setModelPackage(
                             ConfigUtil.getModelPackage()).setModel(model));
         }
         // 去重与排序

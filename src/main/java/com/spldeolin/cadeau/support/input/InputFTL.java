@@ -1,7 +1,6 @@
 package com.spldeolin.cadeau.support.input;
 
 import java.util.List;
-import com.spldeolin.cadeau.support.util.Custom;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,11 +20,11 @@ public class InputFTL implements Comparable<InputFTL> {
 
     private String description;
 
-    private String author = Custom.author;
+    private String author;
 
-    private String date = Custom.date;
+    private String date;
 
-    private String generatorTag = Custom.generatorTag;
+    private String classDocEnd;
 
     private String modelPackage;
 

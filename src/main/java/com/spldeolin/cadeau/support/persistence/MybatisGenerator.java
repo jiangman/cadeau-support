@@ -132,11 +132,11 @@ public class MybatisGenerator {
         // 添加columnOverride标签
         for (Map<String, String> column : JdbcUtil.listColumnType(ConfigUtil.getMysqlDatabase(), tableName)) {
             String jdbcType = column.get("columnType");
-            if (StringUtils.equalsAny(jdbcType, "date", "time", "datetime")) {
+            if ("datetime".equals(jdbcType)) {
+                jdbcType = "timestamp";
+            }
+            if (StringUtils.equalsAny(jdbcType, "date", "time", "timestamp")) {
                 ColumnOverride columnOverride = new ColumnOverride(column.get("columnName"));
-                if ("datetime".equals(jdbcType)) {
-                    jdbcType = "timestamp";
-                }
                 columnOverride.setJdbcType(StringUtils.upperCase(jdbcType));
                 switch (jdbcType) {
                     case "date":
@@ -145,7 +145,7 @@ public class MybatisGenerator {
                     case "time":
                         columnOverride.setJavaType("java.time.LocalTime");
                         break;
-                    case "datetime":
+                    case "timestamp":
                         columnOverride.setJavaType("java.time.LocalDateTime");
                         break;
                 }

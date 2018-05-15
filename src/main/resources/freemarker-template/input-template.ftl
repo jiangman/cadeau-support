@@ -12,10 +12,7 @@ import ${modelPackage}.${model};
 
 /**
  * ${description}
- *
- * @author ${author} ${date}
-${generatorTag}
- */
+${classDocEnd}
 @Data
 public class ${model}Input implements Serializable {
 
