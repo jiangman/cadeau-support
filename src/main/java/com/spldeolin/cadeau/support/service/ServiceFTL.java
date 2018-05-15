@@ -15,8 +15,6 @@ public class ServiceFTL {
 
     private String modelCn;
 
-    private String blockComment;
-
     private String classDocEnd;
 
     private String derivedServiceRef;

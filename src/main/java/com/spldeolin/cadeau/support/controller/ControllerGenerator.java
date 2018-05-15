@@ -24,11 +24,12 @@ public class ControllerGenerator {
         for (int i = 0; i < tableNames.length; i++) {
             String modelName = StringCaseUtil.snakeToUpperCamel(tableNames[i]);
             String modelCn = modelCns[i];
-            ControllerFTL template = new ControllerFTL().setBasePackage(ConfigUtil.getBasePackage()).setBlockComment(
-                    ConfigUtil.getBlockComment()).setClassDocEnd(
-                    ConfigUtil.getClassDocEnd()).setControllerExtraAnnotationPackage(
-                    ConfigUtil.getControllerExtraAnnotationPackage()).setRequestResult(
-                    ConfigUtil.getRequestResult()).setValidableList(ConfigUtil.getValidableList());
+            ControllerFTL template = new ControllerFTL();
+            template.setBasePackage(ConfigUtil.getBasePackage());
+            template.setClassDocEnd(ConfigUtil.getClassDocEnd());
+            template.setControllerExtraAnnotationPackage(ConfigUtil.getControllerExtraAnnotationPackage());
+            template.setRequestResult(ConfigUtil.getRequestResult());
+            template.setValidableList(ConfigUtil.getValidableList());
             String bussiness = ConfigUtil.getBussiness();
             String bussinessPart;
             if (StringUtils.isBlank(bussiness)) {
