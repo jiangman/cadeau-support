@@ -134,6 +134,9 @@ public class MybatisGenerator {
             String jdbcType = column.get("columnType");
             if (StringUtils.equalsAny(jdbcType, "date", "time", "datetime")) {
                 ColumnOverride columnOverride = new ColumnOverride(column.get("columnName"));
+                if ("datetime".equals(jdbcType)) {
+                    jdbcType = "timestamp";
+                }
                 columnOverride.setJdbcType(StringUtils.upperCase(jdbcType));
                 switch (jdbcType) {
                     case "date":
