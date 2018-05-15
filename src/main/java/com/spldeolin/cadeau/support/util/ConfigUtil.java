@@ -1,5 +1,6 @@
 package com.spldeolin.cadeau.support.util;
 
+import static com.spldeolin.cadeau.support.util.ConstantUtil.SDF;
 import static com.spldeolin.cadeau.support.util.ConstantUtil.br;
 import static com.spldeolin.cadeau.support.util.ConstantUtil.mavenJava;
 import static com.spldeolin.cadeau.support.util.ConstantUtil.mavenRes;
@@ -9,7 +10,6 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import org.apache.commons.lang3.ArrayUtils;
@@ -291,17 +291,16 @@ public class ConfigUtil {
             ConfigUtil.author = author;
         }
         String date = props.getProperty("date");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/M/d");
         if (StringUtils.isBlank(date)) {
             log.info("\t“生成日期”未指定，使用缺省配置");
-            ConfigUtil.date = sdf.format(new Date());
+            ConfigUtil.date = SDF.format(new Date());
         } else {
             try {
-                sdf.parse(date);
+                SDF.parse(date);
                 ConfigUtil.date = date;
             } catch (ParseException e) {
                 log.info("\t“生成日期”无法解析，使用缺省配置");
-                ConfigUtil.date = sdf.format(new Date());
+                ConfigUtil.date = SDF.format(new Date());
             }
         }
         // bussiness
