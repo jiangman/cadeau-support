@@ -205,11 +205,11 @@ public class ConfigUtil {
 
     @Getter
     @Setter
-    private static String daoPackage = "${basePackage}.dao${bussinessPart}";
+    private static String daoPackage = "${basePackage}.dao${datasource}${bussinessPart}";
 
     @Getter
     @Setter
-    private static String mapperPackage = "mapper${bussinessPart}";
+    private static String mapperPackage = "mapper${datasource}${bussinessPart}";
 
     @Getter
     @Setter
@@ -369,7 +369,7 @@ public class ConfigUtil {
         } else {
             ConfigUtil.basePackage = basePackage;
         }
-        String mapperFolder = props.getProperty("mapper-folder");
+        String mapperFolder = props.getProperty("mapper-folder") + props.getProperty("datasource-folder");
         if (StringUtils.isBlank(mapperFolder) || !FileExistsUtil.resourceExist(ConfigUtil.projectPath, mapperFolder)) {
             log.info("\t“mapper.xml文件夹”未指定或是路径不存在，使用缺省配置");
         } else {
@@ -462,8 +462,10 @@ public class ConfigUtil {
         if (StringUtils.isNotBlank(bussinessPart)) {
             bussinessPart = "." + bussinessPart;
         }
-        daoPackage = daoPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}", bussinessPart);
-        mapperPackage = mapperPackage.replace("${bussinessPart}", bussinessPart);
+        daoPackage = daoPackage.replace("${basePackage}", basePackage).replace("${datasource}",
+                "." + props.getProperty("datasource-folder")).replace("${bussinessPart}", bussinessPart);
+        mapperPackage = mapperPackage.replace("${bussinessPart}", bussinessPart).replace("${datasource}",
+                "." + props.getProperty("datasource-folder"));
         modelPackage = modelPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}", bussinessPart);
         inputPackage = inputPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}", bussinessPart);
         servicePackage = servicePackage.replace("${basePackage}", basePackage).replace("${bussinessPart}",
