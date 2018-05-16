@@ -4,11 +4,8 @@ import static com.spldeolin.cadeau.support.util.ConstantUtil.ftlPath;
 import static com.spldeolin.cadeau.support.util.JdbcUtil.getColumnType;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -18,7 +15,6 @@ import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import com.spldeolin.cadeau.support.util.ConfigUtil;
-import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
 import com.spldeolin.cadeau.support.util.StringCaseUtil;
 import lombok.extern.log4j.Log4j2;
 
@@ -37,6 +33,7 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
             IntrospectedTable introspectedTable, Plugin.ModelClassType modelClassType) {
         String fieldName = field.getName();
         FullyQualifiedJavaType fieldType = field.getType();
+        // 忽略insertedAt，isDeleted和byte[]类型字段
         if (StringUtils.equalsAny(fieldName, "insertedAt", "isDeleted") || "byte[]".equals(fieldType.getShortName())) {
             return true;
         }
@@ -44,12 +41,13 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
         if (!folder.exists()) {
             folder.mkdirs();
         }
-        InputFieldFTL inputFieldFTL = new InputFieldFTL().setType(fieldType.getShortName()).setName(
-                fieldName).setJavadoc(
-                introspectedColumn.getRemarks());
+        DtoFieldFTL dtoFieldFTL = new DtoFieldFTL();
+        dtoFieldFTL.setType(fieldType.getShortName());
+        dtoFieldFTL.setName(fieldName);
+        dtoFieldFTL.setJavadoc(introspectedColumn.getRemarks());
         // @JsonProperty
         if (StringCaseUtil.hasUpperCase(fieldName)) {
-            inputFieldFTL.setNameSnake(introspectedColumn.getActualColumnName());
+            dtoFieldFTL.setNameSnake(introspectedColumn.getActualColumnName());
         }
         List<String> invalidAnnotations = new ArrayList<>();
         // @Size
@@ -78,17 +76,19 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
                 invalidAnnotations.add("@TextOption({" + enumStr.replaceAll("'", "\"").replaceAll(",", " ,") + "})");
             }
         }
-
-        inputFieldFTL.setInvalidAnnotations(invalidAnnotations);
-        try {
-            String content = FreeMarkerUtil.format(true, "input-field-template.ftl", inputFieldFTL);
-            FileUtils.write(
-                    new File(ftlPath + fieldIndex + "_" + topLevelClass.getType().getShortName() + "#"
-                            + field.getName() + ".ftl"), content, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            log.error("checked", e);
-            throw new RuntimeException();
-        }
+        dtoFieldFTL.setInvalidAnnotations(invalidAnnotations);
+        //try {
+        //    String content = FreeMarkerUtil.format(true, "input-field-template.ftl", dtoFieldFTL);
+        //    FileUtils.write(
+        //            new File(ftlPath + fieldIndex + "_" + topLevelClass.getType().getShortName() + "#"
+        //                    + field.getName() + ".ftl"), content, StandardCharsets.UTF_8);
+        //} catch (IOException e) {
+        //    log.error("checked", e);
+        //    throw new RuntimeException();
+        //}
+        // 存入Holder
+        DTOFieldFTLHolder.getInstance().getFields().put(fieldIndex + "_" + topLevelClass.getType().getShortName() + "#"
+                + field.getName(), dtoFieldFTL);
         synchronized (this) {
             fieldIndex++;
         }

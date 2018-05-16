@@ -4,6 +4,14 @@ public class StringCaseUtil {
 
     /**
      * @param s 任意字符串
+     * @return 第一个字符大写的字符串
+     */
+    public static String upperFirstChar(String s) {
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+    /**
+     * @param s 任意字符串
      * @return 字符串中是否有大写字母
      */
     public static boolean hasUpperCase(String s) {

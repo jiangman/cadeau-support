@@ -12,6 +12,7 @@ import javax.validation.constraints.*;
 import org.springframework.beans.BeanUtils;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import ${textOption};
 import ${modelPackage}.${model};
 
@@ -19,18 +20,30 @@ import ${modelPackage}.${model};
  * ${description}
 ${classDocEnd}
 @Data
+@Accessors(chain = true)
 public class ${model}Input implements Serializable {
 
-	<#list fieldFileNames as fieldFileName>
-        <#include "temp/${fieldFileName}.ftl"/>
+	<#list fields as field>
+<#if field.javadoc ??>
+<#if field.javadoc ? length gt 1>
+    /**
+     * ${field.javadoc}
+     */
+</#if>
+</#if>
+<#if field.nameSnake ??>
+    @JsonProperty("${field.nameSnake}")
+</#if>
+<#list field.invalidAnnotations as invalidAnnotation>
+    ${invalidAnnotation}
+</#list>
+    private ${field.type} ${field.name};
 
 	</#list>
 	private static final long serialVersionUID = 1L;
 
     public ${model} toModel() {
-        ${model} model = ${model}.builder().build();
-        BeanUtils.copyProperties(this, model);
-        return model;
+        return ${model}.builder()<#list fields as field>.${field.name}(${field.name})</#list>.build();
     }
 
 }

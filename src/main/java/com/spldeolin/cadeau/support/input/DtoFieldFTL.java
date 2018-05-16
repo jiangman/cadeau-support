@@ -2,11 +2,9 @@ package com.spldeolin.cadeau.support.input;
 
 import java.util.List;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 @Data
-@Accessors(chain = true)
-public class InputFieldFTL {
+public class DtoFieldFTL {
 
     private String javadoc;
 
