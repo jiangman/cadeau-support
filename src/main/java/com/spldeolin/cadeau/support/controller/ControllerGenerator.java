@@ -38,7 +38,6 @@ public class ControllerGenerator {
             template.setBussinessPart(bussinessPart);
             template.setModelName(modelName);
             template.setModelCn(modelCn);
-            template.setControllerMapping(StringCaseUtil.camelToSnake(modelName));
             template.setServiceExceptionRef(ConfigUtil.getServiceException());
             String controllerContent = FreeMarkerUtil.format(true, "controller.ftl", template);
             if (ConfigUtil.getOverWrite()) {

@@ -17,8 +17,6 @@ public class ControllerFTL {
 
     private String classDocEnd;
 
-    private String controllerMapping;
-
     private String requestResult;
 
     private String serviceExceptionRef;

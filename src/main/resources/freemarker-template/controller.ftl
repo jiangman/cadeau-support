@@ -20,7 +20,7 @@ import ${basePackage}.service${bussinessPart}.${modelName}Service;
  * “${modelCn}”管理
 ${classDocEnd}
 @RestController
-@RequestMapping("/${controllerMapping}")
+@RequestMapping("/${modelName ?uncap_first}")
 @Validated
 public class ${modelName}Controller {
 
@@ -72,7 +72,7 @@ ${modelName ?uncap_first}Service.deleteEX(id);
     /**
      * 删除一批“${modelCn}”
      */
-    @PutMapping("/batch_delete")
+    @PutMapping("/batchDelete")
     public RequestResult delete(@RequestBody List<Long> ids) {
         return RequestResult.success(${modelName ?uncap_first}Service.deleteEX(ids));
     }
