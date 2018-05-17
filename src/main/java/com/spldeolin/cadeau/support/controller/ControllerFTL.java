@@ -19,11 +19,7 @@ public class ControllerFTL {
 
     private String controllerMapping;
 
-    private String controllerExtraAnnotationPackage;
-
     private String requestResult;
-
-    private String validableList;
 
     private String serviceExceptionRef;
 

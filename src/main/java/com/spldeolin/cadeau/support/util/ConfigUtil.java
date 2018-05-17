@@ -141,25 +141,11 @@ public class ConfigUtil {
     private static String derivedMapper = "tk.mybatis.mapper.inherited.Mapper";
 
     /**
-     * 控制层拓展注解的包名
-     */
-    @Getter
-    @Setter
-    private static String controllerExtraAnnotationPackage = "";
-
-    /**
      * RequestResult的Reference
      */
     @Getter
     @Setter
     private static String requestResult = "";
-
-    /**
-     * ValidableList的Reference
-     */
-    @Getter
-    @Setter
-    private static String validableList = "";
 
     /**
      * TextOption的Reference
@@ -394,14 +380,6 @@ public class ConfigUtil {
         } else {
             ConfigUtil.derivedMapper = derivedMapper;
         }
-        String controllerExtraAnnotationPackage = props.getProperty("controller-extra-annotation-package");
-        if (StringUtils.isBlank(controllerExtraAnnotationPackage) ||
-                !FileExistsUtil.referenceExist(ConfigUtil.projectPath, controllerExtraAnnotationPackage)) {
-            log.info("\t“控制层拓展注解包”未指定或是路径不存在，请指定");
-            ConfigUtil.controllerExtraAnnotationPackage = "com.spldeolin.cadeau.library.annotation";
-        } else {
-            ConfigUtil.controllerExtraAnnotationPackage = controllerExtraAnnotationPackage;
-        }
         String requestResult = props.getProperty("request-result");
         if (StringUtils.isBlank(requestResult) ||
                 !FileExistsUtil.referenceExist(ConfigUtil.projectPath, requestResult)) {
@@ -409,14 +387,6 @@ public class ConfigUtil {
             ConfigUtil.requestResult = "com.spldeolin.cadeau.library.dto.RequestResult";
         } else {
             ConfigUtil.requestResult = requestResult;
-        }
-        String validableList = props.getProperty("validable-list");
-        if (StringUtils.isBlank(validableList) ||
-                !FileExistsUtil.referenceExist(ConfigUtil.projectPath, validableList)) {
-            log.info("\t“ValidableList类”未指定或是路径不存在，请指定");
-            ConfigUtil.validableList = "com.spldeolin.cadeau.library.valid.ValidableList";
-        } else {
-            ConfigUtil.validableList = validableList;
         }
         String textOption = props.getProperty("text-option");
         if (StringUtils.isBlank(textOption) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath, textOption)) {
