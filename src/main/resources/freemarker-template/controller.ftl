@@ -48,7 +48,7 @@ public class ${modelName}Controller {
      */
     @PutMapping("/{id}")
     public RequestResult update(@PathVariable Long id, @RequestBody @Valid ${modelName}Input ${modelName ?uncap_first}Input) {
-${modelName ?uncap_first}Service.updateEX(${modelName ?uncap_first}Input.toModel().setId(id));
+        ${modelName ?uncap_first}Service.updateEX(${modelName ?uncap_first}Input.toModel().setId(id));
         return RequestResult.success();
     }
 
@@ -57,7 +57,7 @@ ${modelName ?uncap_first}Service.updateEX(${modelName ?uncap_first}Input.toModel
      */
     @DeleteMapping("/{id}")
     public RequestResult delete(@PathVariable Long id) {
-${modelName ?uncap_first}Service.deleteEX(id);
+        ${modelName ?uncap_first}Service.deleteEX(id);
         return RequestResult.success();
     }
 
