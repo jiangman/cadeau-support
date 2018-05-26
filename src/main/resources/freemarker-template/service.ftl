@@ -3,6 +3,7 @@
  *
  * https://github.com/spldeolin/cadeau-support
  */
+
 package ${basePackage}.service${bussinessPart};
 
 import java.util.List;

@@ -3,6 +3,7 @@
  *
  * https://github.com/spldeolin/cadeau-support
  */
+
 package ${basePackage}.controller${bussinessPart};
 
 import java.util.List;
@@ -46,16 +47,18 @@ public class ${modelName}Controller {
      * 更新一个“${modelCn}”
      */
     @PostMapping("/update/{id}")
-    void update(@PathVariable Long id, @RequestBody @Valid ${modelName}Input ${modelName ?uncap_first}Input) {
+    Object update(@PathVariable Long id, @RequestBody @Valid ${modelName}Input ${modelName ?uncap_first}Input) {
         ${modelName ?uncap_first}Service.updateEX(${modelName ?uncap_first}Input.toModel().setId(id));
+        return null;
     }
 
     /**
      * 删除一个“${modelCn}”
      */
     @PostMapping("/delete/{id}")
-    void delete(@PathVariable Long id) {
+    Object delete(@PathVariable Long id) {
         ${modelName ?uncap_first}Service.deleteEX(id);
+        return null;
     }
 
     /**
