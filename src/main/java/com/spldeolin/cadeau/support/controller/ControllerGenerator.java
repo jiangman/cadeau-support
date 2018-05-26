@@ -26,7 +26,6 @@ public class ControllerGenerator {
             ControllerFTL template = new ControllerFTL();
             template.setBasePackage(ConfigUtil.getBasePackage());
             template.setClassDocEnd(ConfigUtil.getClassDocEnd());
-            template.setRequestResult(ConfigUtil.getRequestResult());
             String bussiness = ConfigUtil.getBussiness();
             String bussinessPart;
             if (StringUtils.isBlank(bussiness)) {

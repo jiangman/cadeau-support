@@ -12,8 +12,6 @@ public class DtoFieldFTL {
 
     private String name;
 
-    private String nameSnake;
-
     private List<String> invalidAnnotations;
 
 }

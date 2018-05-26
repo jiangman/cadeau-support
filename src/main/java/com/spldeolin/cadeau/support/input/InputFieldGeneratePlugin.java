@@ -15,7 +15,6 @@ import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import com.spldeolin.cadeau.support.util.ConfigUtil;
-import com.spldeolin.cadeau.support.util.StringCaseUtil;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -45,10 +44,6 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
         dtoFieldFTL.setType(fieldType.getShortName());
         dtoFieldFTL.setName(fieldName);
         dtoFieldFTL.setJavadoc(introspectedColumn.getRemarks());
-        // @JsonProperty
-        if (StringCaseUtil.hasUpperCase(fieldName)) {
-            dtoFieldFTL.setNameSnake(introspectedColumn.getActualColumnName());
-        }
         List<String> invalidAnnotations = new ArrayList<>();
         // @Size
         if (new FullyQualifiedJavaType("java.lang.String").equals(fieldType)) {
@@ -77,15 +72,6 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
             }
         }
         dtoFieldFTL.setInvalidAnnotations(invalidAnnotations);
-        //try {
-        //    String content = FreeMarkerUtil.format(true, "input-field-template.ftl", dtoFieldFTL);
-        //    FileUtils.write(
-        //            new File(ftlPath + fieldIndex + "_" + topLevelClass.getType().getShortName() + "#"
-        //                    + field.getName() + ".ftl"), content, StandardCharsets.UTF_8);
-        //} catch (IOException e) {
-        //    log.error("checked", e);
-        //    throw new RuntimeException();
-        //}
         // 存入Holder
         DTOFieldFTLHolder.getInstance().getFields().put(fieldIndex + "_" + topLevelClass.getType().getShortName() + "#"
                 + field.getName(), dtoFieldFTL);

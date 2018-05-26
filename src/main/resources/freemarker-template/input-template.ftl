@@ -31,9 +31,6 @@ public class ${model}Input implements Serializable {
      */
 </#if>
 </#if>
-<#if field.nameSnake ??>
-    @JsonProperty("${field.nameSnake}")
-</#if>
 <#list field.invalidAnnotations as invalidAnnotation>
     ${invalidAnnotation}
 </#list>

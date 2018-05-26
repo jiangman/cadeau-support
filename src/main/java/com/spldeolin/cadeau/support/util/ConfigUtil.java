@@ -141,13 +141,6 @@ public class ConfigUtil {
     private static String derivedMapper = "tk.mybatis.mapper.inherited.Mapper";
 
     /**
-     * RequestResult的Reference
-     */
-    @Getter
-    @Setter
-    private static String requestResult = "";
-
-    /**
      * TextOption的Reference
      */
     @Getter
@@ -379,14 +372,6 @@ public class ConfigUtil {
             ConfigUtil.derivedMapper = "com.spldeolin.cadeau.library.inherited.CommonMapper";
         } else {
             ConfigUtil.derivedMapper = derivedMapper;
-        }
-        String requestResult = props.getProperty("request-result");
-        if (StringUtils.isBlank(requestResult) ||
-                !FileExistsUtil.referenceExist(ConfigUtil.projectPath, requestResult)) {
-            log.info("\t“RequestResult类”未指定或是路径不存在，请指定");
-            ConfigUtil.requestResult = "com.spldeolin.cadeau.library.dto.RequestResult";
-        } else {
-            ConfigUtil.requestResult = requestResult;
         }
         String textOption = props.getProperty("text-option");
         if (StringUtils.isBlank(textOption) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath, textOption)) {
