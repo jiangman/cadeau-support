@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.*;
 import javax.validation.constraints.*;
+import org.hibernate.validator.constraints.*;
 import org.springframework.beans.BeanUtils;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
@@ -26,7 +27,7 @@ public class ${model}Input implements Serializable {
 
 	<#list fields as field>
 <#if field.javadoc ??>
-<#if field.javadoc ? length gt 1>
+<#if field.javadoc ? length gt 0>
     /**
      * ${field.javadoc}
      */
