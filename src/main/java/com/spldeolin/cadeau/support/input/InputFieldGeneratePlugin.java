@@ -45,10 +45,10 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
         dtoFieldFTL.setName(fieldName);
         dtoFieldFTL.setJavadoc(introspectedColumn.getRemarks());
         List<String> invalidAnnotations = new ArrayList<>();
-        // @Size
+        // @Length
         if (new FullyQualifiedJavaType("java.lang.String").equals(fieldType)) {
             topLevelClass.addImportedType(new FullyQualifiedJavaType("javax.validation.constraints.Size"));
-            invalidAnnotations.add("@Size(max = " + introspectedColumn.getLength() + ")");
+            invalidAnnotations.add("@Length(max = " + introspectedColumn.getLength() + ")");
         }
         // @Digits
         if (new FullyQualifiedJavaType("java.math.BigDecimal").equals(fieldType) ||
