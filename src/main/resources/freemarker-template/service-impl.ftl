@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ${derivedServiceImplRef};
-import ${basePackage}.dao${datasourcePart}${bussinessPart}.${modelName}Mapper;
+import ${basePackage}.dao${bussinessPart}.${modelName}Mapper;
 import ${basePackage}.model${bussinessPart}.${modelName};
 import ${basePackage}.service${bussinessPart}.${modelName}Service;
 import lombok.extern.log4j.Log4j2;

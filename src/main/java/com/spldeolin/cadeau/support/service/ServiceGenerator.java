@@ -71,7 +71,6 @@ public class ServiceGenerator {
         } else {
             bussinessPart = "." + bussiness;
         }
-        template.setDatasourcePart("." + ConfigUtil.getProps().getProperty("datasource-folder"));
         template.setBussinessPart(bussinessPart);
         template.setModelName(modelName);
         template.setModelCn(modelCn);

@@ -179,11 +179,11 @@ public class ConfigUtil {
 
     @Getter
     @Setter
-    private static String daoPackage = "${basePackage}.dao${datasource}${bussinessPart}";
+    private static String daoPackage = "${basePackage}.dao${bussinessPart}";
 
     @Getter
     @Setter
-    private static String mapperPackage = "mapper${datasource}${bussinessPart}";
+    private static String mapperPackage = "mapper${bussinessPart}";
 
     @Getter
     @Setter
@@ -342,13 +342,9 @@ public class ConfigUtil {
         } else {
             ConfigUtil.basePackage = basePackage;
         }
-        String datasourcePart = props.getProperty("datasource-folder");
-        if (StringUtils.isNotBlank(datasourcePart)) {
-            datasourcePart = File.separator + datasourcePart;
-        }
-        String mapperFolder = props.getProperty("mapper-folder") + datasourcePart;
         if (StringUtils.isBlank(mapperFolder) || !FileExistsUtil.resourceExist(ConfigUtil.projectPath, mapperFolder)) {
             log.info("\t“mapper.xml文件夹”未指定或是路径不存在，使用缺省配置");
+            ConfigUtil.mapperFolder = projectPath + mavenRes + mapperFolder.replace('.', sep) + "mapper";
         } else {
             ConfigUtil.mapperFolder = mapperFolder;
         }
@@ -415,14 +411,8 @@ public class ConfigUtil {
         if (StringUtils.isNotBlank(bussinessPart)) {
             bussinessPart = "." + bussinessPart;
         }
-        String datasourcePart = props.getProperty("datasource-folder");
-        if (StringUtils.isNotBlank(datasourcePart)) {
-            datasourcePart = "." + datasourcePart;
-        }
-        daoPackage = daoPackage.replace("${basePackage}", basePackage).replace("${datasource}", datasourcePart).replace(
-                "${bussinessPart}", bussinessPart);
-        mapperPackage = mapperPackage.replace("${bussinessPart}", bussinessPart).replace("${datasource}",
-                datasourcePart);
+        daoPackage = daoPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}", bussinessPart);
+        mapperPackage = mapperPackage.replace("${bussinessPart}", bussinessPart);
         modelPackage = modelPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}", bussinessPart);
         inputPackage = inputPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}", bussinessPart);
         servicePackage = servicePackage.replace("${basePackage}", basePackage).replace("${bussinessPart}",

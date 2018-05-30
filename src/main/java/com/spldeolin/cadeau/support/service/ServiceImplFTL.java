@@ -9,8 +9,6 @@ public class ServiceImplFTL {
 
     private String basePackage;
 
-    private String datasourcePart;
-
     private String bussinessPart;
 
     private String modelName;
