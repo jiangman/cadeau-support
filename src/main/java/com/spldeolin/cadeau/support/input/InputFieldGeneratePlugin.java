@@ -71,6 +71,14 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
                 invalidAnnotations.add("@TextOption({" + enumStr.replaceAll("'", "\"").replaceAll(",", " ,") + "})");
             }
         }
+        // @Mobile
+        if (fieldName.contains("mobile")) {
+            invalidAnnotations.add("@Mobile");
+        }
+        // @Email
+        if (fieldName.contains("email")) {
+            invalidAnnotations.add("@Email");
+        }
         dtoFieldFTL.setInvalidAnnotations(invalidAnnotations);
         // 存入Holder
         DTOFieldFTLHolder.getInstance().getFields().put(fieldIndex + "_" + topLevelClass.getType().getShortName() + "#"
