@@ -45,8 +45,9 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
         dtoFieldFTL.setName(fieldName);
         dtoFieldFTL.setJavadoc(introspectedColumn.getRemarks());
         List<String> invalidAnnotations = new ArrayList<>();
+        String enumStr = enumStr(introspectedColumn, introspectedTable);
         // @Length
-        if (new FullyQualifiedJavaType("java.lang.String").equals(fieldType)) {
+        if (enumStr == null && new FullyQualifiedJavaType("java.lang.String").equals(fieldType)) {
             topLevelClass.addImportedType(new FullyQualifiedJavaType("javax.validation.constraints.Size"));
             invalidAnnotations.add("@Length(max = " + introspectedColumn.getLength() + ")");
         }
@@ -60,16 +61,8 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
                             ", fraction = " + introspectedColumn.getScale() + ")");
         }
         // @TextOption
-        if (introspectedColumn.getJdbcType() == 1) {
-            // JdbcType为1时，Mysql类型是char或enum，通过查information_schema表获取真正的类型，如果是enum，追加@TextOption
-            String columnType = getColumnType(ConfigUtil.getMysqlDatabase(),
-                    introspectedTable.getFullyQualifiedTable().toString(),
-                    introspectedColumn.getActualColumnName());
-            if (StringUtils.startsWithIgnoreCase(columnType, "enum")) {
-                String enumStr = StringUtils.removeStartIgnoreCase(columnType, "enum(");
-                enumStr = StringUtils.removeEndIgnoreCase(enumStr, ")");
-                invalidAnnotations.add("@TextOption({" + enumStr.replaceAll("'", "\"").replaceAll(",", " ,") + "})");
-            }
+        if (enumStr != null) {
+            invalidAnnotations.add("@TextOption({" + enumStr.replaceAll("'", "\"").replaceAll(",", " ,") + "})");
         }
         // @Mobile
         if (fieldName.contains("mobile")) {
@@ -87,6 +80,26 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
             fieldIndex++;
         }
         return true;
+    }
+
+    /**
+     * 如果是enum，则返回可选值，否则返回null
+     *
+     * @return e.g.   "('male','female')"
+     */
+    private String enumStr(IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable) {
+        if (introspectedColumn.getJdbcType() == 1) {
+            // JdbcType为1时，Mysql类型是char或enum，通过查information_schema表获取真正的类型，如果是enum，追加@TextOption
+            String columnType = getColumnType(ConfigUtil.getMysqlDatabase(),
+                    introspectedTable.getFullyQualifiedTable().toString(),
+                    introspectedColumn.getActualColumnName());
+            if (StringUtils.startsWithIgnoreCase(columnType, "enum")) {
+                String enumStr = StringUtils.removeStartIgnoreCase(columnType, "enum(");
+                enumStr = StringUtils.removeEndIgnoreCase(enumStr, ")");
+                return enumStr;
+            }
+        }
+        return null;
     }
 
 }
