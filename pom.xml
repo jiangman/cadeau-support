@@ -64,6 +64,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.16.20</version>
             <optional>true</optional>
         </dependency>
         <!--用于消除生成代码中的Cannot resolve symbol错误-->
