@@ -3,6 +3,7 @@
         TODO javadoc
         TODO “说明”
  */
+
 package com.spldeolin.cadeau.support.doc;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -41,6 +42,8 @@ public class SampleJsonGenerator {
     public static void main(String[] args) {
         String basePackagePath = "C:\\java-development\\projects-repo\\deolin-projects\\beginning-mind\\src\\main\\java\\com\\spldeolin\\beginningmind\\core";
         files = newArrayList(FileUtils.iterateFiles(new File(basePackagePath), new String[] {"java"}, true));
+
+        sameNameCheck();
 
         // 打开文件
         File srcFile = new File(
@@ -228,6 +231,22 @@ public class SampleJsonGenerator {
         return files.stream().filter(
                 file -> FilenameUtils.getBaseName(file.getName()).equals(filename)).findFirst().orElseThrow(
                 () -> new RuntimeException("文件" + filename + ".java存在"));
+    }
+
+    private static void sameNameCheck() {
+        for (File file : files) {
+            String filename = FilenameUtils.getBaseName(file.getName());
+            boolean same = false;
+            for (File file2 : files) {
+                if (FilenameUtils.getBaseName(file2.getName()).equals(filename)) {
+                    if (same) {
+                        throw new RuntimeException("暂时不支持存在同名文件的项目");
+                    } else {
+                        same = true;
+                    }
+                }
+            }
+        }
     }
 
 }
