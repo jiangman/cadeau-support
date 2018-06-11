@@ -44,10 +44,11 @@ public class SampleJsonGenerator {
         files = newArrayList(FileUtils.iterateFiles(new File(basePackagePath), new String[] {"java"}, true));
 
         sameNameCheck();
+        JavaLoader.loadJavasAsType("C:\\java-development\\projects-repo\\deolin-projects\\beginning-mind\\src\\main\\java\\com\\spldeolin\\beginningmind\\core\\controller");
 
         // 打开文件
         File srcFile = new File(
-                "C:\\java-development\\projects-repo\\deolin-projects\\beginning-mind\\src\\main\\java\\com\\spldeolin\\beginningmind\\core\\model\\SecurityPermission.java");
+                "C:\\java-development\\projects-repo\\deolin-projects\\beginning-mind\\src\\main\\java\\com\\spldeolin\\beginningmind\\core\\controller\\SecurityRoleController.java");
         CompilationUnit unit;
         try (FileInputStream in = new FileInputStream(srcFile)) {
             unit = JavaParser.parse(in);
