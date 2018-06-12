@@ -52,7 +52,8 @@ public class ControllerParser {
                 ftl.setHttpUrl(getControllerMapping(controller) + getMethodMapping(requestMethod));
                 ftl.setHttpMethod(getMethodHttpMethod(requestMethod));
                 // TODO paramShow, paramJson, paramFields交给ParameterParser解析
-                // TODO returnShow, returnJson, isRetrunSimpleTypeParameterParser解析
+                // TODO returnShow, returnJson, isRetrunSimpleType交给ReturnParser解析
+                ReturnParser.parserReturn(ftl, requestMethod);
                 ftlSetAuthorAndDate(ftl, controller, requestMethod);
                 ftls.add(ftl);
             }

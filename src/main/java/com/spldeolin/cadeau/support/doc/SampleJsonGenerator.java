@@ -68,7 +68,7 @@ public class SampleJsonGenerator {
     }
 
     @SneakyThrows
-    private static void analysisField(StringBuilder sb, TypeDeclaration typeDeclaration, boolean ignoreUpdatedAt) {
+    public static void analysisField(StringBuilder sb, TypeDeclaration typeDeclaration, boolean ignoreUpdatedAt) {
         sb.append("{");
         for (BodyDeclaration bodyDeclaration : typeDeclaration.getMembers()) {
             if (bodyDeclaration instanceof FieldDeclaration) {
@@ -201,7 +201,7 @@ public class SampleJsonGenerator {
         return null;
     }
 
-    private static boolean typeJudgement(Type fieldType, String... typeNames) {
+    public static boolean typeJudgement(Type fieldType, String... typeNames) {
         return StringUtils.equalsAny(getTypeName(fieldType), typeNames);
     }
 

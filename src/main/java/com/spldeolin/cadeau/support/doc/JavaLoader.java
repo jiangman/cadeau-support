@@ -49,7 +49,7 @@ public class JavaLoader {
                 typeDeclarations.add(getJava(java.getPath()));
             } catch (Exception e) {
                 //log.info(e.getMessage());
-                log.error(FilenameUtils.getBaseName(java.getName()));
+                log.error(FilenameUtils.getBaseName(java.getName()) + "无法解析成TypeDeclaration");
             }
         }
         return typeDeclarations;
