@@ -123,14 +123,22 @@ public class ControllerParser {
      * 获取声明在类上的@Description注解的值
      */
     private static String getDescription(TypeDeclaration typeDeclaration) {
-        return getDescription(typeDeclaration.getAnnotations());
+        String description = getDescription(typeDeclaration.getAnnotations());
+        if (StringUtils.isBlank(description)) {
+            description = typeDeclaration.getName().replace("Controller", "");
+        }
+        return description;
     }
 
     /**
      * 获取声明在方法上的@Description注解的值
      */
     private static String getDescription(MethodDeclaration methodDeclaration) {
-        return getDescription(methodDeclaration.getAnnotations());
+        String description = getDescription(methodDeclaration.getAnnotations());
+        if (StringUtils.isBlank(description)) {
+            description = methodDeclaration.getName();
+        }
+        return description;
     }
 
     /**
@@ -283,21 +291,25 @@ public class ControllerParser {
 
     private static void ftlSetAuthorAndDate(MarkdownDocFTL ftl, TypeDeclaration typeDeclaration,
             MethodDeclaration methodDeclaration) {
-        String author = getAnnotationProperty(typeDeclaration.getAnnotations(), "Author", "value");
-        if (StringUtils.isBlank(author)) {
-            author = getAnnotationProperty(methodDeclaration.getAnnotations(), "Author", "value");
+        String author = "佚名";
+        String controllerAuthor = getAnnotationProperty(typeDeclaration.getAnnotations(), "Author", "value");
+        String methodAuthor = getAnnotationProperty(methodDeclaration.getAnnotations(), "Author", "value");
+        if (StringUtils.isNotBlank(controllerAuthor)) {
+            author = controllerAuthor;
         }
-        if (StringUtils.isBlank(author)) {
-            author = "佚名";
+        if (StringUtils.isNotBlank(methodAuthor)) {
+            author = methodAuthor;
+        }
+        String date = new SimpleDateFormat("yyyy/M/d").format(new Date());
+        String controllerDate = getAnnotationProperty(typeDeclaration.getAnnotations(), "Author", "date");
+        String methodDate = getAnnotationProperty(methodDeclaration.getAnnotations(), "Author", "date");
+        if (StringUtils.isNotBlank(controllerDate)) {
+            date = controllerDate;
+        }
+        if (StringUtils.isNotBlank(methodDate)) {
+            date = methodDate;
         }
         ftl.setCommonDeveloper(author);
-        String date = getAnnotationProperty(typeDeclaration.getAnnotations(), "Author", "date");
-        if (StringUtils.isBlank(date)) {
-            date = getAnnotationProperty(methodDeclaration.getAnnotations(), "Author", "date");
-        }
-        if (StringUtils.isBlank(date)) {
-            date = new SimpleDateFormat("yyyy/M/d").format(new Date());
-        }
         ftl.setCommonDate(date);
     }
 

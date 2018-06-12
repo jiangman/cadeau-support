@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import com.spldeolin.cadeau.support.util.JsonFormatUtil;
 import com.spldeolin.cadeau.support.util.StringCaseUtil;
 import japa.parser.JavaParser;
 import japa.parser.ast.CompilationUnit;
@@ -44,7 +43,8 @@ public class SampleJsonGenerator {
         files = newArrayList(FileUtils.iterateFiles(new File(basePackagePath), new String[] {"java"}, true));
 
         sameNameCheck();
-        JavaLoader.loadJavasAsType("C:\\java-development\\projects-repo\\deolin-projects\\beginning-mind\\src\\main\\java\\com\\spldeolin\\beginningmind\\core\\controller");
+        JavaLoader.loadJavasAsType(
+                "C:\\java-development\\projects-repo\\deolin-projects\\beginning-mind\\src\\main\\java\\com\\spldeolin\\beginningmind\\core\\controller");
 
         // 打开文件
         File srcFile = new File(
@@ -59,12 +59,7 @@ public class SampleJsonGenerator {
 
         analysisField(sb, modelType, false);
 
-        // 修剪掉每次递归到最后时的逗号
-        String json = sb.toString();
-        json = json.replace(",]", "]");
-        json = json.replace(",}", "}");
-        json = JsonFormatUtil.formatJson(json);
-        log.info(json);
+        log.info(sb.toString());
     }
 
     @SneakyThrows
@@ -126,6 +121,11 @@ public class SampleJsonGenerator {
             }
         }
         sb.append("}");
+        // 修剪掉多余的逗号
+        String json = sb.toString();
+        json = json.replace(",]", "]");
+        json = json.replace(",}", "}");
+        sb = new StringBuilder(json);
     }
 
     private static String fieldNameByField(FieldDeclaration fieldDeclaration) {
@@ -162,7 +162,7 @@ public class SampleJsonGenerator {
         return typeJudgement(fieldType, "List", "Set");
     }
 
-    private static String getTypeName(Type fieldType) {
+    public static String getTypeName(Type fieldType) {
         if (fieldType instanceof ReferenceType) {
             ReferenceType fieldTypeEx = (ReferenceType) fieldType;
             Type fieldTypeExType = fieldTypeEx.getType();

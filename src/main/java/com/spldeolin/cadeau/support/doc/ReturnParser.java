@@ -8,11 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.TypeDeclaration;
 import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.expr.ClassExpr;
 import japa.parser.ast.expr.Expression;
 import japa.parser.ast.expr.MemberValuePair;
 import japa.parser.ast.expr.NormalAnnotationExpr;
 import japa.parser.ast.expr.SingleMemberAnnotationExpr;
 import japa.parser.ast.expr.StringLiteralExpr;
+import japa.parser.ast.type.Type;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -23,7 +25,7 @@ public class ReturnParser {
 
     public static void parserReturn(MarkdownDocFTL ftl, MethodDeclaration requestMethod) {
         // 获取返回值类型
-        String returnTypeName = getReturnType(requestMethod, "ReturnStruction", "type");
+        String returnTypeName = getReturnTypeName(requestMethod);
         if ("".equals(returnTypeName)) {
             return;
         }
@@ -35,6 +37,8 @@ public class ReturnParser {
         } else {
             StringBuilder sb = new StringBuilder(400);
             SampleJsonGenerator.analysisField(sb, returnType, false);
+            // 美化JSON TODO 为了方便看日志，先注释掉
+            //sampleJson = JsonFormatUtil.formatJson(sb.toString());
             sampleJson = sb.toString();
         }
         ftl.setReturnJson(sampleJson);
@@ -53,38 +57,26 @@ public class ReturnParser {
     /**
      *
      */
-    private static String getReturnType(MethodDeclaration requestMethod , String annotationName,
-            String propertyName) {
+    private static String getReturnTypeName(MethodDeclaration requestMethod) {
         for (AnnotationExpr annotation : requestMethod.getAnnotations()) {
-            if (annotation.getName().getName().equals(annotationName)) {
+            if (annotation.getName().getName().equals("ReturnStruction")) {
                 // NormalAnnotationExpr代表注解内声明了多个属性
                 if (annotation instanceof NormalAnnotationExpr) {
                     NormalAnnotationExpr annotationEx = (NormalAnnotationExpr) annotation;
                     List<MemberValuePair> pairs = annotationEx.getPairs();
                     if (pairs != null) {
                         for (MemberValuePair pair : pairs) {
-                            if (pair.getName().equals(propertyName)) {
+                            if (pair.getName().equals("type")) {
                                 Expression expression = pair.getValue();
-                                if (expression instanceof StringLiteralExpr) {
-                                    StringLiteralExpr expressionEx = (StringLiteralExpr) expression;
-                                    String result = expressionEx.getValue();
+                                if (expression instanceof ClassExpr) {
+                                    ClassExpr expressionEx = (ClassExpr) expression;
+                                    Type type = expressionEx.getType();
+                                    String result = SampleJsonGenerator.getTypeName(type);
                                     if (StringUtils.isNotBlank(result)) {
                                         return result;
                                     }
                                 }
                             }
-                        }
-                    }
-                }
-                // SingleMemberAnnotationExpr代表注解内声明了一个属性，当需要获取的属性是"value"时，单属性注解也需要考虑
-                if ("value".equals(propertyName) && annotation instanceof SingleMemberAnnotationExpr) {
-                    SingleMemberAnnotationExpr annotationEx = (SingleMemberAnnotationExpr) annotation;
-                    Expression expression = annotationEx.getMemberValue();
-                    if (expression instanceof StringLiteralExpr) {
-                        StringLiteralExpr expressionEx = (StringLiteralExpr) expression;
-                        String result = expressionEx.getValue();
-                        if (StringUtils.isNotBlank(result)) {
-                            return result;
                         }
                     }
                 }
