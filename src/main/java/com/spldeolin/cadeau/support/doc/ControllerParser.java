@@ -12,6 +12,7 @@ import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.TypeDeclaration;
 import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.expr.BooleanLiteralExpr;
 import japa.parser.ast.expr.Expression;
 import japa.parser.ast.expr.FieldAccessExpr;
 import japa.parser.ast.expr.MemberValuePair;
@@ -210,7 +211,7 @@ public class ControllerParser {
      * 获取指定注解的指定属性的值，
      * 未指定或是指定的内容为空白，将会返回""
      */
-    private static String getAnnotationProperty(List<AnnotationExpr> annotations, String annotationName,
+    public static String getAnnotationProperty(List<AnnotationExpr> annotations, String annotationName,
             String propertyName) {
         for (AnnotationExpr annotation : annotations) {
             if (annotation.getName().getName().equals(annotationName)) {
@@ -228,6 +229,10 @@ public class ControllerParser {
                                     if (StringUtils.isNotBlank(result)) {
                                         return result;
                                     }
+                                }
+                                if (expression instanceof BooleanLiteralExpr) {
+                                    BooleanLiteralExpr expressionEx = (BooleanLiteralExpr) expression;
+                                    return String.valueOf(expressionEx.getValue());
                                 }
                             }
                         }
