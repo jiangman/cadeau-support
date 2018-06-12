@@ -42,7 +42,7 @@ public class ReturnParser {
             SampleJsonGenerator.analysisField(sb, returnType, false);
             sampleJson = sb.toString();
         }
-        sampleJson = wrapArrayOrPage(sampleJson, true, requestMethod);
+        sampleJson = wrapArrayOrPage(sampleJson, requestMethod);
         // 美化JSON TODO 为了方便看日志，先注释掉
         //sampleJson = JsonFormatUtil.formatJson(sb.toString());
         ftl.setReturnJson(sampleJson);
@@ -116,13 +116,19 @@ public class ReturnParser {
         return "\"" + string + "\"";
     }
 
-    private static String wrapArrayOrPage(String json, boolean isPage, MethodDeclaration requestMethod) {
+    private static String wrapArrayOrPage(String json, MethodDeclaration requestMethod) {
         String isArray = ControllerParser.getAnnotationProperty(requestMethod.getAnnotations(), "ReturnStruction",
                 "isArray");
+        String isPage = ControllerParser.getAnnotationProperty(requestMethod.getAnnotations(), "ReturnStruction",
+                "isPage");
+        if ("true".equals(isArray) && "true".equals(isPage)) {
+            log.warn(requestMethod.getName() + "同时指定了isArray与isPage为true，解析跳过");
+            return json;
+        }
         if ("true".equals(isArray)) {
             return "[" + json + "]";
         }
-        if (isPage) {
+        if ("true".equals(isPage)) {
             return "{\"pageNo\":1,\"hasPreviousPage\":false,\"hasNextPage\":true,\"entitiesInPage\":" + json +
                     ",\"pagesCount\":9,\"total\":65535}";
         }
