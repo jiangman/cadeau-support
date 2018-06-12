@@ -5,6 +5,9 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import com.google.common.collect.Lists;
+import japa.parser.ast.body.BodyDeclaration;
+import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.TypeDeclaration;
 import japa.parser.ast.expr.AnnotationExpr;
@@ -21,7 +24,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ReturnParser {
 
-    public static void parserReturn(MarkdownDocFTL ftl, MethodDeclaration requestMethod) {
+    public static void parseReturn(MarkdownDocFTL ftl, MethodDeclaration requestMethod) {
         // 获取返回值类型
         String returnTypeName = getReturnTypeName(requestMethod);
         // 没有返回值
@@ -46,6 +49,28 @@ public class ReturnParser {
         // 美化JSON TODO 为了方便看日志，先注释掉
         //sampleJson = JsonFormatUtil.formatJson(sb.toString());
         ftl.setReturnJson(sampleJson);
+    }
+
+    public static void parseReturnFields(MarkdownDocFTL ftl, MethodDeclaration requestMethod) {
+        // 获取返回值类型
+        String returnTypeName = getReturnTypeName(requestMethod);
+        // 没有返回值
+        if ("".equals(returnTypeName)) {
+            return;
+        }
+        // TODO 暂时不做简单类型返回值的说明
+        if (isSimpleType(returnTypeName)) {
+            return;
+        }
+        TypeDeclaration returnType = getReturnType(returnTypeName);
+        List<MarkdownDocFTL.RField> rFields = Lists.newArrayList();
+        for (BodyDeclaration bodyDeclaration : returnType.getMembers()) {
+            if (bodyDeclaration instanceof FieldDeclaration) {
+                FieldDeclaration fieldDeclaration = (FieldDeclaration) bodyDeclaration;
+                MarkdownDocFTL.RField rField = new MarkdownDocFTL.RField();
+            }
+        }
+
     }
 
     private static boolean isSimpleType(String typeName) {
@@ -135,5 +160,7 @@ public class ReturnParser {
         return json;
     }
 
+    // JsonType
+    //private static String typeNameToJsonType() {}
 
 }
