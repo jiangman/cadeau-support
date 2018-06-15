@@ -40,7 +40,7 @@ public class ${modelName}Controller {
      */
     @GetMapping("/get/{id}")
     Object get(@PathVariable Long id) {
-        return ${modelName ?uncap_first}Service.get(id).orElseThrow(() -> new ServiceException("${modelCn}不存在或是已被删除"));
+        return ${modelName ?uncap_first}Service.getEX(id);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ${modelName}Controller {
      * 获取一批“${modelCn}”
      */
     @GetMapping("/search")
-    Object page(@RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") @Max(1000) int pageSize) {
+    Object search(@RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") @Max(1000) int pageSize) {
         return ${modelName ?uncap_first}Service.page(pageNo, pageSize);
     }
 

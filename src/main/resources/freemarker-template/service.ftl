@@ -26,6 +26,15 @@ public interface ${modelName}Service extends ${derivedServiceName}<${modelName}>
     Long createEX(${modelName} ${modelName?uncap_first});
 
     /**
+     * 获取一个“${modelCn}”
+     * （附带业务校验）
+     *
+     * @param id 待获取“${modelCn}”的ID
+     * @return “${modelCn}”
+     */
+    ${modelName} getEX(Long id);
+
+    /**
      * 更新一个“${modelCn}”
      * （附带业务校验）
      *

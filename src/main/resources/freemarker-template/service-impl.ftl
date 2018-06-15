@@ -39,6 +39,11 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
     }
 
     @Override
+    public ${modelName} getEX(Long id) {
+        return super.get(id).orElseThrow(() -> new ServiceException("${modelCn}不存在或是已被删除"));
+    }
+
+    @Override
     public void updateEX(${modelName} ${modelName?uncap_first}) {
         if (!isExist(${modelName?uncap_first}.getId())) {
             throw new ServiceException("${modelCn}不存在或是已被删除");
