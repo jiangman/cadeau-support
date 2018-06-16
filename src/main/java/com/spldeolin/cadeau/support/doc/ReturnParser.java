@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.Lists;
 import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
+import com.spldeolin.cadeau.support.doc.helper.JsonTypeHelper;
 import com.spldeolin.cadeau.support.util.JsonFormatUtil;
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
@@ -80,10 +81,17 @@ public class ReturnParser {
                     continue;
                 }
                 MarkdownDocFTL.RField rField = new MarkdownDocFTL.RField();
+                boolean isSimpleType = true; // todo 判断fieldDeclaration是否是简单类型
                 rField.setReturnName(FieldDeclarationHelper.getFieldName(fieldDeclaration));
-                rField.setReturnType(FieldDeclarationHelper.getFieldType(fieldDeclaration));
+                if (isSimpleType) {
+                    rField.setReturnType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(
+                            FieldDeclarationHelper.getFieldType(fieldDeclaration)));
+                } else {
+                    rField.setReturnType("Object");
+                }
                 rField.setReturnDesc(FieldDeclarationHelper.getFieldDesc(fieldDeclaration));
                 rFields.add(rField);
+                // todo 递归rFields
             }
         }
         ftl.setReturnFields(rFields);
