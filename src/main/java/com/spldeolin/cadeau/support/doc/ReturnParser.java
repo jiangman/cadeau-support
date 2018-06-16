@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.Lists;
+import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
+import com.spldeolin.cadeau.support.util.JsonFormatUtil;
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
@@ -24,6 +26,9 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ReturnParser {
 
+    /**
+     * generate json sample
+     */
     public static void parseReturn(MarkdownDocFTL ftl, MethodDeclaration requestMethod) {
         // 获取返回值类型
         String returnTypeName = getReturnTypeName(requestMethod);
@@ -46,8 +51,11 @@ public class ReturnParser {
             sampleJson = sb.toString();
         }
         sampleJson = wrapArrayOrPage(sampleJson, requestMethod);
-        // 美化JSON TODO 为了方便看日志，先注释掉
-        //sampleJson = JsonFormatUtil.formatJson(sb.toString());
+        // 修剪掉多余的逗号
+        sampleJson = sampleJson.replace(",]", "]");
+        sampleJson = sampleJson.replace(",}", "}");
+        // 格式化JSON
+        sampleJson = JsonFormatUtil.formatJson(sampleJson);
         ftl.setReturnJson(sampleJson);
     }
 
@@ -67,10 +75,18 @@ public class ReturnParser {
         for (BodyDeclaration bodyDeclaration : returnType.getMembers()) {
             if (bodyDeclaration instanceof FieldDeclaration) {
                 FieldDeclaration fieldDeclaration = (FieldDeclaration) bodyDeclaration;
+                if (FieldDeclarationHelper.isSerialVersionUID(fieldDeclaration)
+                        || FieldDeclarationHelper.hasJsonIgnore(fieldDeclaration)) {
+                    continue;
+                }
                 MarkdownDocFTL.RField rField = new MarkdownDocFTL.RField();
+                rField.setReturnName(FieldDeclarationHelper.getFieldName(fieldDeclaration));
+                rField.setReturnType(FieldDeclarationHelper.getFieldType(fieldDeclaration));
+                rField.setReturnDesc(FieldDeclarationHelper.getFieldDesc(fieldDeclaration));
+                rFields.add(rField);
             }
         }
-
+        ftl.setReturnFields(rFields);
     }
 
     private static boolean isSimpleType(String typeName) {

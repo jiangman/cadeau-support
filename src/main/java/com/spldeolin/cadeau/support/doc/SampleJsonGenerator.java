@@ -121,11 +121,6 @@ public class SampleJsonGenerator {
             }
         }
         sb.append("}");
-        // 修剪掉多余的逗号
-        String json = sb.toString();
-        json = json.replace(",]", "]");
-        json = json.replace(",}", "}");
-        sb = new StringBuilder(json);
     }
 
     private static String fieldNameByField(FieldDeclaration fieldDeclaration) {

@@ -32,12 +32,7 @@ public class ControllerParser {
 
     private static final String br = System.lineSeparator();
 
-    public static void main(String[] args) {
-        parseController();
-        log.info("SUCCESS");
-    }
-
-    public static void parseController() {
+    public static List<MarkdownDocFTL> parseController() {
         // 获取所有controller包下的java文件，解析成TypeDeclaration
         List<TypeDeclaration> typeDeclarations = JavaLoader.loadJavasAsType(DocConfig.baseControllerPackagePath);
         // 过滤掉非控制器和ErrorController
@@ -62,6 +57,7 @@ public class ControllerParser {
             }
         }
         ftls.forEach(log::info);
+        return ftls;
     }
 
     /**
@@ -137,6 +133,10 @@ public class ControllerParser {
      * 获取声明在方法上的@Description注解的值
      */
     private static String getDescription(MethodDeclaration methodDeclaration) {
+        /*
+            想办法解析comment的话，似乎可以少一个@Description注解
+            methodDeclaration.getComment().getContent().split("\n")[1].trim().replace("* ", "");
+         */
         String description = getDescription(methodDeclaration.getAnnotations());
         if (StringUtils.isBlank(description)) {
             description = methodDeclaration.getName();

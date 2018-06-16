@@ -12,17 +12,17 @@
 
 ### 参数示例
 
-<#if paramShow == false>
+<#if paramShow !true>
 - 无需参数
 </#if>
-<#if paramShow == true>
+<#if paramShow !false>
 ```json
 ${paramJson}
 ```
 <br>
 </#if>
 
-<#if paramShow == true>
+<#if paramShow !false>
 ### 参数说明
 
 |名称|位置|必传|JSON类型|描述|
@@ -59,4 +59,4 @@ ${returnJson}
 
 ### 开发者
 
-- ${commonDeveloper} ${commonDate}
+- ${commonDeveloper}    ${commonDate}
