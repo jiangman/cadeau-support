@@ -3,7 +3,9 @@ package com.spldeolin.cadeau.support.doc.helper;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import com.spldeolin.cadeau.support.doc.SimpleType;
 import com.spldeolin.cadeau.support.util.Nulls;
 import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.VariableDeclarator;
@@ -74,11 +76,15 @@ public class FieldDeclarationHelper {
         return "serialVersionUID".equals(getFieldName(fieldDeclaration));
     }
 
+    public static boolean isUpdatedAt(FieldDeclaration fieldDeclaration) {
+        return "updatedAt".equals(getFieldName(fieldDeclaration));
+    }
+
     public static boolean hasJsonIgnore(FieldDeclaration fieldDeclaration) {
         return hasAnnotation(fieldDeclaration, "JsonIgnore");
     }
 
-    private static boolean hasAnnotation(FieldDeclaration fieldDeclaration, String annotationName) {
+    public static boolean hasAnnotation(FieldDeclaration fieldDeclaration, String annotationName) {
         List<AnnotationExpr> annotationExprs = fieldDeclaration.getAnnotations();
         if (annotationExprs != null) {
             for (AnnotationExpr annotationExpr : annotationExprs) {
@@ -142,5 +148,7 @@ public class FieldDeclarationHelper {
         }
         return "";
     }
+
+
 
 }

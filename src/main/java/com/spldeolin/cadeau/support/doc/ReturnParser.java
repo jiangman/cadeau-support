@@ -1,13 +1,11 @@
 package com.spldeolin.cadeau.support.doc;
 
-import static com.google.common.collect.Lists.newArrayList;
-
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.Lists;
 import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.JsonTypeHelper;
+import com.spldeolin.cadeau.support.doc.helper.TypeHelper;
 import com.spldeolin.cadeau.support.util.JsonFormatUtil;
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
@@ -41,14 +39,14 @@ public class ReturnParser {
         ftl.setReturnShow(true);
         // 生成返回值示例
         String sampleJson;
-        if (isSimpleType(returnTypeName)) {
-            sampleJson = sampleValueBySimpleTypeName(returnTypeName);
+        if (TypeHelper.isSimpleType(returnTypeName)) {
+            sampleJson = TypeHelper.sampleValueBySimpleType(returnTypeName);
             ftl.setIsRetrunSimpleType(true);
         } else {
             ftl.setIsRetrunSimpleType(false);
             TypeDeclaration returnType = getReturnType(returnTypeName);
             StringBuilder sb = new StringBuilder(400);
-            SampleJsonGenerator.analysisField(sb, returnType, false);
+            SampleJsonParser.analysisField(sb, returnType, false);
             sampleJson = sb.toString();
         }
         sampleJson = wrapArrayOrPage(sampleJson, requestMethod);
@@ -68,7 +66,7 @@ public class ReturnParser {
             return;
         }
         // TODO 暂时不做简单类型返回值的说明
-        if (isSimpleType(returnTypeName)) {
+        if (TypeHelper.isSimpleType(returnTypeName)) {
             return;
         }
         TypeDeclaration returnType = getReturnType(returnTypeName);
@@ -97,19 +95,6 @@ public class ReturnParser {
         ftl.setReturnFields(rFields);
     }
 
-    private static boolean isSimpleType(String typeName) {
-        List<SimpleType> simpleTypes = newArrayList(SimpleType.values());
-        List<String> simpleTypeNames = simpleTypes.stream().map(SimpleType::getName).collect(Collectors.toList());
-        return typeJudgement(typeName, simpleTypeNames.toArray(new String[] {}));
-    }
-
-    public static boolean typeJudgement(String typeName, String... typeNames) {
-        return StringUtils.equalsAny(typeName, typeNames);
-    }
-
-    /**
-     *
-     */
     private static String getReturnTypeName(MethodDeclaration requestMethod) {
         for (AnnotationExpr annotation : requestMethod.getAnnotations()) {
             if (annotation.getName().getName().equals("ReturnStruction")) {
@@ -124,7 +109,7 @@ public class ReturnParser {
                                 if (expression instanceof ClassExpr) {
                                     ClassExpr expressionEx = (ClassExpr) expression;
                                     Type type = expressionEx.getType();
-                                    String result = SampleJsonGenerator.getTypeName(type);
+                                    String result = TypeHelper.getTypeName(type);
                                     if (StringUtils.isNotBlank(result)) {
                                         return result;
                                     }
@@ -142,27 +127,6 @@ public class ReturnParser {
         List<TypeDeclaration> typeDeclarations = JavaLoader.loadJavasAsType(DocConfig.basePackagePath);
         return typeDeclarations.stream().filter(t -> t.getName().equals(returnTypeName)).findFirst().orElseThrow(
                 () -> new RuntimeException(returnTypeName + "不存在或是无法解析"));
-    }
-
-    private static String sampleValueBySimpleTypeName(String typeName) {
-        String sampleValue = "null";
-        for (SimpleType simpleType : SimpleType.values()) {
-            if (simpleType.getName().equals(typeName)) {
-                sampleValue = simpleType.getSampleValue();
-                for (SimpleType.JsonString jsonString : SimpleType.JsonString.values()) {
-                    if (jsonString.getName().equals(typeName)) {
-                        sampleValue = wrapDoubleQuotes(sampleValue);
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-        return sampleValue;
-    }
-
-    private static String wrapDoubleQuotes(String string) {
-        return "\"" + string + "\"";
     }
 
     private static String wrapArrayOrPage(String json, MethodDeclaration requestMethod) {
@@ -183,8 +147,5 @@ public class ReturnParser {
         }
         return json;
     }
-
-    // JsonType
-    //private static String typeNameToJsonType() {}
 
 }
