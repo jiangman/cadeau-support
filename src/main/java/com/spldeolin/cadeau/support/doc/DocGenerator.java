@@ -22,7 +22,7 @@ public class DocGenerator {
             FileUtils.writeStringToFile(new File("C:\\Users\\Deolin\\Desktop\\doc\\" + ftl.getCommonDesc() + ".md"),
                     ftlContent, StandardCharsets.UTF_8);
         }
-
+        // 发送到ShowDoc
     }
 
 }

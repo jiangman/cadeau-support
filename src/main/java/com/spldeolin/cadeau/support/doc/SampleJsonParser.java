@@ -106,7 +106,7 @@ public class SampleJsonParser {
         String filename = StringCaseUtil.upperFirstChar(fieldName);
         return files.stream().filter(
                 file -> FilenameUtils.getBaseName(file.getName()).equals(filename)).findFirst().orElseThrow(
-                () -> new RuntimeException("文件" + filename + ".java存在"));
+                () -> new RuntimeException("文件" + filename + ".java不存在"));
     }
 
 }

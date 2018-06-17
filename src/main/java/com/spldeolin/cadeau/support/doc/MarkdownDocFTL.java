@@ -29,19 +29,24 @@ public class MarkdownDocFTL {
     private String httpMethod;
 
     /**
-     * 是否显示“参数示例”和“参数说明”，通过ControllerParser分析得出
+     * 是否显示“参数说明”和“请求体示例”，通过ControllerParser分析得出
      */
     private Boolean paramShow;
-
-    /**
-     * 参数示例，通过SampleJsonGenerator生成
-     */
-    private String paramJson;
 
     /**
      * 参数说明列表，通过ExplainEntryGenerator生成
      */
     private List<PField> paramFields;
+
+    /**
+     * 是否显示“请求体示例”
+     */
+    private Boolean paramBodyShow;
+
+    /**
+     * 请求体示例，通过SampleJsonGenerator生成
+     */
+    private String paramJson;
 
     /**
      * 是否显示“返回值示例”和“返回值说明”，通过ControllerParser分析得出
