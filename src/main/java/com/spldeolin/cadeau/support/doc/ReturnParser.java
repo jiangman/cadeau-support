@@ -44,7 +44,7 @@ public class ReturnParser {
             ftl.setIsRetrunSimpleType(true);
         } else {
             ftl.setIsRetrunSimpleType(false);
-            TypeDeclaration returnType = getReturnType(returnTypeName);
+            TypeDeclaration returnType = getTypeFromTypeName(returnTypeName);
             StringBuilder sb = new StringBuilder(400);
             SampleJsonParser.analysisField(sb, returnType, false);
             sampleJson = sb.toString();
@@ -69,30 +69,63 @@ public class ReturnParser {
         if (TypeHelper.isSimpleType(returnTypeName)) {
             return;
         }
-        TypeDeclaration returnType = getReturnType(returnTypeName);
+        TypeDeclaration returnType = getTypeFromTypeName(returnTypeName);
         List<MarkdownDocFTL.RField> rFields = Lists.newArrayList();
-        for (BodyDeclaration bodyDeclaration : returnType.getMembers()) {
-            if (bodyDeclaration instanceof FieldDeclaration) {
-                FieldDeclaration fieldDeclaration = (FieldDeclaration) bodyDeclaration;
-                if (FieldDeclarationHelper.isSerialVersionUID(fieldDeclaration)
-                        || FieldDeclarationHelper.hasJsonIgnore(fieldDeclaration)) {
-                    continue;
+        generateRField(rFields, returnType.getMembers(), "", false);
+        ftl.setReturnFields(rFields);
+    }
+
+    private static void generateRField(List<MarkdownDocFTL.RField> rFields, List<BodyDeclaration> members,
+            String prefix, boolean ignoreUpdatedAt) {
+        if (members != null) {
+            for (BodyDeclaration bodyDeclaration : members) {
+                if (bodyDeclaration instanceof FieldDeclaration) {
+                    FieldDeclaration fieldDeclaration = (FieldDeclaration) bodyDeclaration;
+                    if (FieldDeclarationHelper.isSerialVersionUID(fieldDeclaration)
+                            || FieldDeclarationHelper.hasJsonIgnore(fieldDeclaration)) {
+                        continue;
+                    }
+                    if (ignoreUpdatedAt && FieldDeclarationHelper.isUpdatedAt(fieldDeclaration)) {
+                        continue;
+                    }
+                    MarkdownDocFTL.RField rField = new MarkdownDocFTL.RField();
+                    boolean isListOrSet = FieldDeclarationHelper.isListOrSet(fieldDeclaration);
+                    boolean isSimpleType = FieldDeclarationHelper.isSimpleType(fieldDeclaration);
+                    String returnName = FieldDeclarationHelper.getFieldName(fieldDeclaration);
+                    if (StringUtils.isNotBlank(prefix)) {
+                        returnName = prefix + "." + returnName;
+                    }
+                    rField.setReturnName(returnName);
+                    if (isSimpleType) {
+                        rField.setReturnType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(
+                                FieldDeclarationHelper.getFieldType(fieldDeclaration)));
+                    } else if (isListOrSet) {
+                        Type genericType = FieldDeclarationHelper.getGenericType(fieldDeclaration);
+                        if (TypeHelper.isSimpleType(genericType)) {
+                            rField.setReturnType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(TypeHelper.getTypeName(
+                                    genericType)) + " Array");
+                        } else {
+                            rField.setReturnType("Object Array");
+                        }
+                    } else {
+                        rField.setReturnType("Object");
+                    }
+                    rField.setReturnDesc(FieldDeclarationHelper.getFieldDesc(fieldDeclaration));
+                    rFields.add(rField);
+                    if (!isSimpleType) {
+                        String fieldTypeName;
+                        if (isListOrSet) {
+                            fieldTypeName = TypeHelper.getTypeName(FieldDeclarationHelper.getGenericType(
+                                    fieldDeclaration));
+                        } else {
+                            fieldTypeName = FieldDeclarationHelper.getFieldType(fieldDeclaration);
+                        }
+                        TypeDeclaration fieldType = getTypeFromTypeName(fieldTypeName);
+                        generateRField(rFields, fieldType.getMembers(), returnName, true);
+                    }
                 }
-                MarkdownDocFTL.RField rField = new MarkdownDocFTL.RField();
-                boolean isSimpleType = true; // todo 判断fieldDeclaration是否是简单类型
-                rField.setReturnName(FieldDeclarationHelper.getFieldName(fieldDeclaration));
-                if (isSimpleType) {
-                    rField.setReturnType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(
-                            FieldDeclarationHelper.getFieldType(fieldDeclaration)));
-                } else {
-                    rField.setReturnType("Object");
-                }
-                rField.setReturnDesc(FieldDeclarationHelper.getFieldDesc(fieldDeclaration));
-                rFields.add(rField);
-                // todo 递归rFields
             }
         }
-        ftl.setReturnFields(rFields);
     }
 
     private static String getReturnTypeName(MethodDeclaration requestMethod) {
@@ -123,10 +156,10 @@ public class ReturnParser {
         return "";
     }
 
-    private static TypeDeclaration getReturnType(String returnTypeName) {
+    private static TypeDeclaration getTypeFromTypeName(String typeName) {
         List<TypeDeclaration> typeDeclarations = JavaLoader.loadJavasAsType(DocConfig.basePackagePath);
-        return typeDeclarations.stream().filter(t -> t.getName().equals(returnTypeName)).findFirst().orElseThrow(
-                () -> new RuntimeException(returnTypeName + "不存在或是无法解析"));
+        return typeDeclarations.stream().filter(t -> t.getName().equals(typeName)).findFirst().orElseThrow(
+                () -> new RuntimeException(typeName + "不存在或是无法解析"));
     }
 
     private static String wrapArrayOrPage(String json, MethodDeclaration requestMethod) {

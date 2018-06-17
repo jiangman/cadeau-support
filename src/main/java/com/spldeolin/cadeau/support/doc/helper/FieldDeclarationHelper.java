@@ -3,12 +3,11 @@ package com.spldeolin.cadeau.support.doc.helper;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import com.spldeolin.cadeau.support.doc.SimpleType;
 import com.spldeolin.cadeau.support.util.Nulls;
 import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.VariableDeclarator;
+import japa.parser.ast.comments.Comment;
 import japa.parser.ast.expr.AnnotationExpr;
 import japa.parser.ast.expr.BooleanLiteralExpr;
 import japa.parser.ast.expr.Expression;
@@ -57,7 +56,11 @@ public class FieldDeclarationHelper {
     }
 
     public static String getFieldDesc(FieldDeclaration fieldDeclaration) {
-        List<String> commentLines = newArrayList(Nulls.toEmpty(fieldDeclaration.getComment().getContent()).split("\n"));
+        Comment comment = fieldDeclaration.getComment();
+        if (comment == null) {
+            return "";
+        }
+        List<String> commentLines = newArrayList(Nulls.toEmpty(comment.getContent()).split("\n"));
         List<String> informativeCommentLines = newArrayList();
         for (String commentLine : commentLines) {
             commentLine = commentLine.replaceFirst("\\*", "").trim();
@@ -149,6 +152,16 @@ public class FieldDeclarationHelper {
         return "";
     }
 
+    public static boolean isSimpleType(FieldDeclaration fieldDeclaration) {
+        return TypeHelper.isSimpleType(fieldDeclaration.getType());
+    }
 
+    public static boolean isListOrSet(FieldDeclaration fieldDeclaration) {
+        return TypeHelper.isListOrSet(fieldDeclaration.getType());
+    }
+
+    public static Type getGenericType(FieldDeclaration fieldDeclaration) {
+        return TypeHelper.getGenericType(fieldDeclaration.getType());
+    }
 
 }

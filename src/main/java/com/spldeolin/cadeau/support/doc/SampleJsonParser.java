@@ -9,7 +9,9 @@ package com.spldeolin.cadeau.support.doc;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import com.google.common.collect.Lists;
 import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.TypeDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.TypeHelper;
@@ -30,6 +32,14 @@ import lombok.extern.log4j.Log4j2;
 public class SampleJsonParser {
 
     private static List<File> files;
+
+    static {
+        // 加载所有Java
+        files = Lists.newArrayList(FileUtils.iterateFiles(new File(DocConfig.basePackagePath), new String[] {"java"},
+                true));
+        // 文件名重名检查
+        JavaLoader.sameFilenameCheck(files);
+    }
 
     @SneakyThrows
     public static void analysisField(StringBuilder sb, TypeDeclaration typeDeclaration, boolean ignoreUpdatedAt) {

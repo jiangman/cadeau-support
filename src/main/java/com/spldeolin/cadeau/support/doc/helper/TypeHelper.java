@@ -36,9 +36,9 @@ public class TypeHelper {
         return StringUtils.equalsAny(typeName, typeNames);
     }
 
-    public static String getTypeName(Type fieldType) {
-        if (fieldType instanceof ReferenceType) {
-            ReferenceType fieldTypeEx = (ReferenceType) fieldType;
+    public static String getTypeName(Type type) {
+        if (type instanceof ReferenceType) {
+            ReferenceType fieldTypeEx = (ReferenceType) type;
             Type fieldTypeExType = fieldTypeEx.getType();
             if (fieldTypeExType instanceof ClassOrInterfaceType) {
                 ClassOrInterfaceType fieldTypeExTypeEx = (ClassOrInterfaceType) fieldTypeExType;
@@ -46,21 +46,21 @@ public class TypeHelper {
             }
         }
         // 泛型会进入这个分支
-        if (fieldType instanceof ClassOrInterfaceType) {
-            ClassOrInterfaceType fieldTypeExTypeEx = (ClassOrInterfaceType) fieldType;
+        if (type instanceof ClassOrInterfaceType) {
+            ClassOrInterfaceType fieldTypeExTypeEx = (ClassOrInterfaceType) type;
             return fieldTypeExTypeEx.getName();
         }
         // 基本数据类型会进入这个分支
-        if (fieldType instanceof PrimitiveType) {
-            PrimitiveType primitiveType = (PrimitiveType) fieldType;
+        if (type instanceof PrimitiveType) {
+            PrimitiveType primitiveType = (PrimitiveType) type;
             return primitiveType.getType().name();
         }
         return null;
     }
 
-    public static Type getGenericType(Type fieldType) {
-        if (fieldType instanceof ReferenceType) {
-            ReferenceType fieldTypeEx = (ReferenceType) fieldType;
+    public static Type getGenericType(Type type) {
+        if (type instanceof ReferenceType) {
+            ReferenceType fieldTypeEx = (ReferenceType) type;
             Type fieldTypeExType = fieldTypeEx.getType();
             if (fieldTypeExType instanceof ClassOrInterfaceType) {
                 ClassOrInterfaceType fieldTypeExTypeEx = (ClassOrInterfaceType) fieldTypeExType;
