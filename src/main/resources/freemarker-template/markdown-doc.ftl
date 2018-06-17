@@ -29,7 +29,7 @@
 ### 请求体示例
 
 ```json
-    ${paramJson}
+    ${paramBodyJson}
 ```
 <br>
 </#if>

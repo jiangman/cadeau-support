@@ -46,7 +46,7 @@ public class MarkdownDocFTL {
     /**
      * 请求体示例，通过SampleJsonGenerator生成
      */
-    private String paramJson;
+    private String paramBodyJson;
 
     /**
      * 是否显示“返回值示例”和“返回值说明”，通过ControllerParser分析得出
