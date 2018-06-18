@@ -6,13 +6,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
 import com.spldeolin.cadeau.support.doc.helper.MethodDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.TypeDeclarationHelper;
+import com.spldeolin.cadeau.support.util.Nulls;
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.TypeDeclaration;
+import japa.parser.ast.comments.Comment;
 import japa.parser.ast.expr.AnnotationExpr;
 import japa.parser.ast.expr.BooleanLiteralExpr;
 import japa.parser.ast.expr.Expression;
@@ -45,8 +49,9 @@ public class ControllerParser {
             for (MethodDeclaration requestMethod : listRequsetMethod(controller)) {
                 log.info(controller.getName() + "#" + requestMethod.getName());
                 MarkdownDocFTL ftl = new MarkdownDocFTL();
-                ftl.setDirectoryName(getDescription(controller));
-                ftl.setCommonDesc(getDescription(requestMethod));
+                ftl.setDirectoryName(TypeDeclarationHelper.getFirstLineDescription(controller));
+                ftl.setFileName(MethodDeclarationHelper.getFirstLineDecription(requestMethod));
+                ftl.setCommonDesc(MethodDeclarationHelper.getDescription(requestMethod));
                 ftl.setHttpUrl(getControllerMapping(controller) + getMethodMapping(requestMethod));
                 ftl.setHttpMethod(getMethodHttpMethod(requestMethod));
                 // TODO paramShow, paramJson, paramFields交给ParameterParser解析
@@ -123,32 +128,6 @@ public class ControllerParser {
             }
         }
         return false;
-    }
-
-    /**
-     * 获取声明在类上的@Description注解的值
-     */
-    private static String getDescription(TypeDeclaration typeDeclaration) {
-        String description = getDescription(typeDeclaration.getAnnotations());
-        if (StringUtils.isBlank(description)) {
-            description = typeDeclaration.getName().replace("Controller", "");
-        }
-        return description;
-    }
-
-    /**
-     * 获取声明在方法上的@Description注解的值
-     */
-    private static String getDescription(MethodDeclaration methodDeclaration) {
-        /*
-            想办法解析comment的话，似乎可以少一个@Description注解
-            methodDeclaration.getComment().getContent().split("\n")[1].trim().replace("* ", "");
-         */
-        String description = getDescription(methodDeclaration.getAnnotations());
-        if (StringUtils.isBlank(description)) {
-            description = methodDeclaration.getName();
-        }
-        return description;
     }
 
     /**

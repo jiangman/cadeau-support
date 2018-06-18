@@ -14,6 +14,11 @@ public class MarkdownDocFTL {
     private String directoryName;
 
     /**
+     * 文件名
+     */
+    private String fileName;
+
+    /**
      * “描述”，也会作为文件名，通过ControllerParser分析得出
      */
     private String commonDesc;

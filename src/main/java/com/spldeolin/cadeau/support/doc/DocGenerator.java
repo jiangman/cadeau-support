@@ -21,7 +21,7 @@ public class DocGenerator {
             try {
                 String ftlContent = FreeMarkerUtil.format(true, "markdown-doc.ftl", ftl);
                 FileUtils.writeStringToFile(new File("C:\\Users\\Deolin\\Desktop\\doc\\" + ftl.getDirectoryName() +
-                                "\\" + ftl.getCommonDesc() + ".md"),
+                                "\\" + ftl.getFileName() + ".md"),
                         ftlContent, StandardCharsets.UTF_8);
             } catch (Exception e) {
                 log.error("啊" + ftl);
