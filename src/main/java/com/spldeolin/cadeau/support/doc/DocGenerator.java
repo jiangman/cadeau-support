@@ -18,9 +18,13 @@ public class DocGenerator {
     public static void main(String[] args) {
         List<MarkdownDocFTL> ftls = ControllerParser.parseController();
         for (MarkdownDocFTL ftl : ftls) {
-            String ftlContent = FreeMarkerUtil.format(true, "markdown-doc.ftl", ftl);
-            FileUtils.writeStringToFile(new File("C:\\Users\\Deolin\\Desktop\\doc\\" + ftl.getCommonDesc() + ".md"),
-                    ftlContent, StandardCharsets.UTF_8);
+            try {
+                String ftlContent = FreeMarkerUtil.format(true, "markdown-doc.ftl", ftl);
+                FileUtils.writeStringToFile(new File("C:\\Users\\Deolin\\Desktop\\doc\\" + ftl.getCommonDesc() + ".md"),
+                        ftlContent, StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                log.error("啊" + ftl);
+            }
         }
         // 发送到ShowDoc
     }

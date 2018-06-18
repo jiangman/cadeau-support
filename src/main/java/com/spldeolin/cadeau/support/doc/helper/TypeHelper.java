@@ -32,6 +32,10 @@ public class TypeHelper {
         return typeJudgement(getTypeName(type), "List", "Set");
     }
 
+    public static boolean isPage(Type type) {
+        return typeJudgement(getTypeName(type), "Page");
+    }
+
     public static boolean typeJudgement(String typeName, String... typeNames) {
         return StringUtils.equalsAny(typeName, typeNames);
     }
@@ -55,7 +59,7 @@ public class TypeHelper {
             PrimitiveType primitiveType = (PrimitiveType) type;
             return primitiveType.getType().name();
         }
-        return null;
+        return "";
     }
 
     public static Type getGenericType(Type type) {
@@ -64,15 +68,18 @@ public class TypeHelper {
             Type fieldTypeExType = fieldTypeEx.getType();
             if (fieldTypeExType instanceof ClassOrInterfaceType) {
                 ClassOrInterfaceType fieldTypeExTypeEx = (ClassOrInterfaceType) fieldTypeExType;
-                Object arg = fieldTypeExTypeEx.getTypeArgs().get(0);
-                if (arg instanceof ReferenceType) {
-                    ReferenceType argEx = (ReferenceType) arg;
-                    Type argExType = argEx.getType();
-                    return argExType;
+                List<Type> args = fieldTypeExTypeEx.getTypeArgs();
+                if (args != null && args.size() > 0) {
+                    Type arg = args.get(0);
+                    if (arg instanceof ReferenceType) {
+                        ReferenceType argEx = (ReferenceType) arg;
+                        Type argExType = argEx.getType();
+                        return argExType;
+                    }
                 }
             }
         }
-        return null;
+        return type;
     }
 
     public static String sampleValueBySimpleType(Type type) {

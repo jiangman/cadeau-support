@@ -48,10 +48,15 @@ public class ControllerParser {
                 ftl.setHttpUrl(getControllerMapping(controller) + getMethodMapping(requestMethod));
                 ftl.setHttpMethod(getMethodHttpMethod(requestMethod));
                 // TODO paramShow, paramJson, paramFields交给ParameterParser解析
-                // returnShow, returnJson, isRetrunSimpleType
-                ReturnParser.parseReturn(ftl, requestMethod);
-                // returnFields
-                ReturnParser.parseReturnFields(ftl, requestMethod);
+                try {
+                    // returnShow, returnJson, isRetrunSimpleType
+                    ReturnParser.parseReturn(ftl, requestMethod);
+                    // returnFields
+                    ReturnParser.parseReturnFields(ftl, requestMethod);
+                } catch (Exception e) {
+                    log.error("无法解析" + requestMethod.getName() + "的返回值，跳过", e);
+                    ftl.setReturnShow(false);
+                }
                 ftlSetAuthorAndDate(ftl, controller, requestMethod);
                 ftls.add(ftl);
             }
