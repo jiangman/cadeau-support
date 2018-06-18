@@ -12,12 +12,12 @@
 
 ### 参数说明
 
-<#if paramShow !true>
+<#if !paramShow>
 
 - 无需参数
 
 </#if>
-<#if paramShow !false>
+<#if paramShow>
 |名称|位置|必传|JSON类型|描述|
 |-|
 <#list paramFields as paramField>
@@ -25,7 +25,7 @@
 </#list>
 <br>
 
-<#if paramBodyShow !true>
+<#if !paramBodyShow>
 ### 请求体示例
 
 ```json
