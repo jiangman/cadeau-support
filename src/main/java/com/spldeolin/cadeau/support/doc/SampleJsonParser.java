@@ -57,7 +57,7 @@ public class SampleJsonParser {
                     continue;
                 }
                 Type fieldType = fieldDeclaration.getType();
-                String fieldName = TypeDeclarationHelper.fieldNameByField(fieldDeclaration);
+                String fieldName = FieldDeclarationHelper.getFieldName(fieldDeclaration);
                 sb.append(TypeHelper.wrapDoubleQuotes(fieldName));
                 sb.append(":");
                 if (TypeHelper.isSimpleType(fieldType)) {

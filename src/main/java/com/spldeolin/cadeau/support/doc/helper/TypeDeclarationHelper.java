@@ -1,6 +1,7 @@
 package com.spldeolin.cadeau.support.doc.helper;
 
 import japa.parser.ast.body.FieldDeclaration;
+import japa.parser.ast.body.TypeDeclaration;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 
@@ -11,9 +12,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class TypeDeclarationHelper {
 
-    public static String fieldNameByField(FieldDeclaration fieldDeclaration) {
-        return fieldDeclaration.getVariables().get(0).getId().getName();
-    }
 
+
+    public static String getAuthor(TypeDeclaration typeDeclaration) {
+        return null;
+    }
 
 }
