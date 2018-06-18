@@ -6,8 +6,11 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Joiner;
 import com.spldeolin.cadeau.support.util.Nulls;
+import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.TypeDeclaration;
 import japa.parser.ast.comments.Comment;
+import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.type.ClassOrInterfaceType;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 
@@ -77,6 +80,51 @@ public class TypeDeclarationHelper {
             }
         }
         return Joiner.on("\n").join(informativeCommentLines);
+    }
+
+    /**
+     * TypeDeclaration是否实现了ErrorController
+     */
+    public static boolean implementsErrorController(TypeDeclaration typeDeclaration) {
+        if (typeDeclaration instanceof ClassOrInterfaceDeclaration) {
+            ClassOrInterfaceDeclaration typeEx = (ClassOrInterfaceDeclaration) typeDeclaration;
+            List<ClassOrInterfaceType> interfaceTypes = typeEx.getImplements();
+            if (interfaceTypes != null) {
+                for (ClassOrInterfaceType interfaceType : typeEx.getImplements()) {
+                    if (interfaceType.getName().equals("ErrorController")) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * TypeDeclaration是否含有@Controller或@RestController注解
+     */
+    public static boolean hasControllerAnnotation(TypeDeclaration typeDeclaration) {
+        for (AnnotationExpr annotationExpr : typeDeclaration.getAnnotations()) {
+            String annotationName = annotationExpr.getName().getName();
+            if (StringUtils.equalsAny(annotationName, "RestController", "Controller")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取声明在类（控制器）上的@RequestMapping注解value属性的值，
+     * 没有声明则返回""，否则返回值将会确保以"/"开头
+     */
+    public static String getControllerMapping(TypeDeclaration typeDeclaration) {
+        String mapping = AnnotationHelper.getAnnotationProperty(typeDeclaration.getAnnotations(), "RequestMapping",
+                "value");
+        // 不会空时确保以"/"开头
+        if (!"".equals(mapping) && !mapping.startsWith("/")) {
+            mapping = "/" + mapping;
+        }
+        return mapping;
     }
 
 }

@@ -9,13 +9,7 @@ import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.VariableDeclarator;
 import japa.parser.ast.comments.Comment;
 import japa.parser.ast.expr.AnnotationExpr;
-import japa.parser.ast.expr.BooleanLiteralExpr;
-import japa.parser.ast.expr.Expression;
-import japa.parser.ast.expr.MemberValuePair;
 import japa.parser.ast.expr.NameExpr;
-import japa.parser.ast.expr.NormalAnnotationExpr;
-import japa.parser.ast.expr.SingleMemberAnnotationExpr;
-import japa.parser.ast.expr.StringLiteralExpr;
 import japa.parser.ast.type.ClassOrInterfaceType;
 import japa.parser.ast.type.ReferenceType;
 import japa.parser.ast.type.Type;
@@ -31,7 +25,8 @@ public class FieldDeclarationHelper {
 
     public static String getFieldName(FieldDeclaration fieldDeclaration) {
         // 优先考虑@JsonProperty的值
-        String jsonPropertyValue = getAnnotationProperty(fieldDeclaration, "JsonProperty", "value");
+        String jsonPropertyValue = AnnotationHelper.getAnnotationProperty(fieldDeclaration.getAnnotations(),
+                "JsonProperty", "value");
         if (StringUtils.isNotBlank(jsonPropertyValue)) {
             return jsonPropertyValue;
         }
@@ -98,58 +93,6 @@ public class FieldDeclarationHelper {
             }
         }
         return false;
-    }
-
-    /**
-     * 在AnnotationExpr列表中（可以来自类、方法、field、参数等），
-     * 获取指定注解的指定属性的值，
-     * 未指定或是指定的内容为空白，将会返回""
-     */
-    public static String getAnnotationProperty(FieldDeclaration fieldDeclaration, String annotationName,
-            String propertyName) {
-        List<AnnotationExpr> annotations = fieldDeclaration.getAnnotations();
-        if (annotations != null) {
-            for (AnnotationExpr annotation : annotations) {
-                if (annotation.getName().getName().equals(annotationName)) {
-                    // NormalAnnotationExpr代表注解内声明了多个属性
-                    if (annotation instanceof NormalAnnotationExpr) {
-                        NormalAnnotationExpr annotationEx = (NormalAnnotationExpr) annotation;
-                        List<MemberValuePair> pairs = annotationEx.getPairs();
-                        if (pairs != null) {
-                            for (MemberValuePair pair : pairs) {
-                                if (pair.getName().equals(propertyName)) {
-                                    Expression expression = pair.getValue();
-                                    if (expression instanceof StringLiteralExpr) {
-                                        StringLiteralExpr expressionEx = (StringLiteralExpr) expression;
-                                        String result = expressionEx.getValue();
-                                        if (StringUtils.isNotBlank(result)) {
-                                            return result;
-                                        }
-                                    }
-                                    if (expression instanceof BooleanLiteralExpr) {
-                                        BooleanLiteralExpr expressionEx = (BooleanLiteralExpr) expression;
-                                        return String.valueOf(expressionEx.getValue());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    // SingleMemberAnnotationExpr代表注解内声明了一个属性，当需要获取的属性是"value"时，单属性注解也需要考虑
-                    if ("value".equals(propertyName) && annotation instanceof SingleMemberAnnotationExpr) {
-                        SingleMemberAnnotationExpr annotationEx = (SingleMemberAnnotationExpr) annotation;
-                        Expression expression = annotationEx.getMemberValue();
-                        if (expression instanceof StringLiteralExpr) {
-                            StringLiteralExpr expressionEx = (StringLiteralExpr) expression;
-                            String result = expressionEx.getValue();
-                            if (StringUtils.isNotBlank(result)) {
-                                return result;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return "";
     }
 
     public static boolean isSimpleType(FieldDeclaration fieldDeclaration) {
