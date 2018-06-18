@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import com.spldeolin.cadeau.support.doc.helper.MethodDeclarationHelper;
+import com.spldeolin.cadeau.support.doc.helper.TypeDeclarationHelper;
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
@@ -57,7 +59,7 @@ public class ControllerParser {
                     log.error("无法解析" + requestMethod.getName() + "的返回值，跳过", e);
                     ftl.setReturnShow(false);
                 }
-                ftlSetAuthorAndDate(ftl, controller, requestMethod);
+                ftlSetAuthor(ftl, controller, requestMethod);
                 ftls.add(ftl);
             }
         }
@@ -301,28 +303,16 @@ public class ControllerParser {
         throw new RuntimeException("impossible");
     }
 
-    private static void ftlSetAuthorAndDate(MarkdownDocFTL ftl, TypeDeclaration typeDeclaration,
+    private static void ftlSetAuthor(MarkdownDocFTL ftl, TypeDeclaration typeDeclaration,
             MethodDeclaration methodDeclaration) {
-        String author = "佚名";
-        String controllerAuthor = getAnnotationProperty(typeDeclaration.getAnnotations(), "Author", "value");
-        String methodAuthor = getAnnotationProperty(methodDeclaration.getAnnotations(), "Author", "value");
-        if (StringUtils.isNotBlank(controllerAuthor)) {
-            author = controllerAuthor;
+        String author = MethodDeclarationHelper.getAuthor(methodDeclaration);
+        if (StringUtils.isBlank(author)) {
+            author = TypeDeclarationHelper.getAuthor(typeDeclaration);
         }
-        if (StringUtils.isNotBlank(methodAuthor)) {
-            author = methodAuthor;
-        }
-        String date = new SimpleDateFormat("yyyy/M/d").format(new Date());
-        String controllerDate = getAnnotationProperty(typeDeclaration.getAnnotations(), "Author", "date");
-        String methodDate = getAnnotationProperty(methodDeclaration.getAnnotations(), "Author", "date");
-        if (StringUtils.isNotBlank(controllerDate)) {
-            date = controllerDate;
-        }
-        if (StringUtils.isNotBlank(methodDate)) {
-            date = methodDate;
+        if (StringUtils.isBlank(author)) {
+            author = "佚名 " + new SimpleDateFormat("yyyy/M/d HH:mm:ss").format(new Date());
         }
         ftl.setCommonDeveloper(author);
-        ftl.setCommonDate(date);
     }
 
 }

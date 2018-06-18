@@ -62,4 +62,4 @@ ${returnJson}
 
 ### 开发者
 
-- ${commonDeveloper}    ${commonDate}
+- ${commonDeveloper}

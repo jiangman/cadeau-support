@@ -73,11 +73,6 @@ public class MarkdownDocFTL {
      */
     private String commonDeveloper;
 
-    /**
-     * 文档生成日期
-     */
-    private String commonDate;
-
     @Data
     public static class PField {
 
