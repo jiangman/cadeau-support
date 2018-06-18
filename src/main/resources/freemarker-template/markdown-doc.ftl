@@ -37,17 +37,17 @@
 
 ### 返回值示例
 
-<#if returnShow !true>
+<#if !returnShow>
 - 没有返回值
 </#if>
-<#if returnShow !false>
+<#if returnShow>
 ```json
 ${returnJson}
 ```
 <br>
 </#if>
 
-<#if returnShow >
+<#if returnShow>
 <#if !isRetrunSimpleType>
 ### 返回值说明
 
