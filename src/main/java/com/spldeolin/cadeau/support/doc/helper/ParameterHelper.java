@@ -2,7 +2,9 @@ package com.spldeolin.cadeau.support.doc.helper;
 
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.Parameter;
+import japa.parser.ast.comments.Comment;
 import japa.parser.ast.expr.AnnotationExpr;
 import japa.parser.ast.type.Type;
 import lombok.extern.log4j.Log4j2;
@@ -61,6 +63,32 @@ public class ParameterHelper {
 
     public static Type getParameterType(Parameter parameter) {
         return parameter.getType();
+    }
+
+    public static String getDescription(Parameter parameter) {
+        Comment comment = parameter.getComment();
+        String result = TypeDeclarationHelper.getDescription(comment);
+        if (StringUtils.isBlank(result)) {
+            result = "";
+        }
+        return result;
+    }
+
+    public static String getFirstLineDecription(Parameter parameter) {
+        String description = getDescription(parameter);
+        String[] descriptionLines = description.split("\n");
+        if (descriptionLines.length > 0) {
+            return descriptionLines[0];
+        }
+        return "";
+    }
+
+    public static boolean isRequiredFalse(Parameter parameter) {
+        return false;
+    }
+
+    public static boolean isAssignedDefaultValue() {
+        return false;
     }
 
 }

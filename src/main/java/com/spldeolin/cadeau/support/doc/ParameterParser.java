@@ -22,22 +22,29 @@ public class ParameterParser {
             ftl.setParamShow(false);
             return;
         }
+        ftl.setParamShow(true);
         List<MarkdownDocFTL.PField> pFields = Lists.newArrayList();
         for (Parameter parameter : parameters) {
             if (ParameterHelper.isRequestParam(parameter) || ParameterHelper.isPathVariable(parameter)) {
                 String parameterName = ParameterHelper.getParameterName(parameter);
                 Type parameterType = ParameterHelper.getParameterType(parameter);
                 MarkdownDocFTL.PField pField = new MarkdownDocFTL.PField();
+                // paramName
                 pField.setParamName(parameterName);
+                // paramPlace
                 if (ParameterHelper.isRequestParam(parameter)) {
                     pField.setParamPlace("QUERY");
                 } else {
                     pField.setParamPlace("PATH");
                 }
+                // paramType
                 if (TypeHelper.isSimpleType(parameterType)) {
                     String parameterTypeName = TypeHelper.getTypeName(parameterType);
                     pField.setParamType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(parameterTypeName));
                 }
+                // paramDesc
+                pField.setParamDesc(ParameterHelper.getDescription(parameter));
+                // paramRequired TODO required=false 或是 指定了defaultValue（即便是""）
             }
             if (ParameterHelper.isRequestBody(parameter)) {
 
