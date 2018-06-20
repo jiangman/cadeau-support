@@ -36,8 +36,8 @@ public class ControllerParser {
                 log.info(controller.getName() + "#" + requestMethod.getName());
                 MarkdownDocFTL ftl = new MarkdownDocFTL();
                 // 解析请求方法
-                ftl.setDirectoryName(TypeDeclarationHelper.getFirstLineDescription(controller));
-                ftl.setFileName(MethodDeclarationHelper.getFirstLineDecription(requestMethod));
+                ftl.setDirectoryName(TypeDeclarationHelper.getFirstLineDescription(controller).replace('/', '-'));
+                ftl.setFileName(MethodDeclarationHelper.getFirstLineDecription(requestMethod).replace('/', '-'));
                 ftl.setCommonDesc(MethodDeclarationHelper.getDescription(requestMethod));
                 ftl.setHttpUrl(TypeDeclarationHelper.getControllerMapping(controller) +
                         MethodDeclarationHelper.getMethodMapping(requestMethod));
