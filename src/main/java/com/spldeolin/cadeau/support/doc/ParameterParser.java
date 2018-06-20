@@ -1,5 +1,13 @@
 package com.spldeolin.cadeau.support.doc;
 
+import java.util.List;
+import com.google.common.collect.Lists;
+import com.spldeolin.cadeau.support.doc.helper.JsonTypeHelper;
+import com.spldeolin.cadeau.support.doc.helper.ParameterHelper;
+import com.spldeolin.cadeau.support.doc.helper.TypeHelper;
+import japa.parser.ast.body.MethodDeclaration;
+import japa.parser.ast.body.Parameter;
+import japa.parser.ast.type.Type;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -7,4 +15,34 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class ParameterParser {
+
+    public static void parseParameter(MarkdownDocFTL ftl, MethodDeclaration requestMethod) {
+        List<Parameter> parameters = requestMethod.getParameters();
+        if (parameters == null) {
+            ftl.setParamShow(false);
+            return;
+        }
+        List<MarkdownDocFTL.PField> pFields = Lists.newArrayList();
+        for (Parameter parameter : parameters) {
+            if (ParameterHelper.isRequestParam(parameter) || ParameterHelper.isPathVariable(parameter)) {
+                String parameterName = ParameterHelper.getParameterName(parameter);
+                Type parameterType = ParameterHelper.getParameterType(parameter);
+                MarkdownDocFTL.PField pField = new MarkdownDocFTL.PField();
+                pField.setParamName(parameterName);
+                if (ParameterHelper.isRequestParam(parameter)) {
+                    pField.setParamPlace("QUERY");
+                } else {
+                    pField.setParamPlace("PATH");
+                }
+                if (TypeHelper.isSimpleType(parameterType)) {
+                    String parameterTypeName = TypeHelper.getTypeName(parameterType);
+                    pField.setParamType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(parameterTypeName));
+                }
+            }
+            if (ParameterHelper.isRequestBody(parameter)) {
+
+            }
+        }
+    }
+
 }

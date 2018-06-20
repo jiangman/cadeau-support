@@ -43,7 +43,12 @@ public class ControllerParser {
                         MethodDeclarationHelper.getMethodMapping(requestMethod));
                 ftl.setHttpMethod(MethodDeclarationHelper.getMethodHttpMethod(requestMethod));
                 // 解析参数
-                // TODO paramShow, paramJson, paramFields交给ParameterParser解析
+                try {
+                    ParameterParser.parseParameter(ftl, requestMethod);
+                } catch (Exception e) {
+                    log.error("无法解析" + requestMethod.getName() + "的参数，跳过", e);
+                    ftl.setParamShow(false);
+                }
                 ftl.setParamShow(false);
                 // 解析返回值
                 try {
