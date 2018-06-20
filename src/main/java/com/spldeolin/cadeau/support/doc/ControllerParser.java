@@ -35,13 +35,17 @@ public class ControllerParser {
             for (MethodDeclaration requestMethod : listRequsetMethod(controller)) {
                 log.info(controller.getName() + "#" + requestMethod.getName());
                 MarkdownDocFTL ftl = new MarkdownDocFTL();
+                // 解析请求方法
                 ftl.setDirectoryName(TypeDeclarationHelper.getFirstLineDescription(controller));
                 ftl.setFileName(MethodDeclarationHelper.getFirstLineDecription(requestMethod));
                 ftl.setCommonDesc(MethodDeclarationHelper.getDescription(requestMethod));
                 ftl.setHttpUrl(TypeDeclarationHelper.getControllerMapping(controller) +
                         MethodDeclarationHelper.getMethodMapping(requestMethod));
                 ftl.setHttpMethod(MethodDeclarationHelper.getMethodHttpMethod(requestMethod));
+                // 解析参数
                 // TODO paramShow, paramJson, paramFields交给ParameterParser解析
+                ftl.setParamShow(false);
+                // 解析返回值
                 try {
                     // returnShow, returnJson, isRetrunSimpleType
                     ReturnParser.parseReturn(ftl, requestMethod);
