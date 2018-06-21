@@ -2,7 +2,6 @@ package com.spldeolin.cadeau.support.doc.helper;
 
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.Parameter;
 import japa.parser.ast.comments.Comment;
 import japa.parser.ast.expr.AnnotationExpr;
@@ -87,7 +86,7 @@ public class ParameterHelper {
         return false;
     }
 
-    public static boolean isAssignedDefaultValue() {
+    public static boolean isAssignedDefaultValue(Parameter parameter) {
         return false;
     }
 
