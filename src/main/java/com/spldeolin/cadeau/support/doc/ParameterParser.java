@@ -44,7 +44,7 @@ public class ParameterParser {
                 }
                 // paramDesc
                 pField.setParamDesc(ParameterHelper.getDescription(parameter));
-                // paramRequired TODO required=false 或是 指定了defaultValue（即便是""）
+                // paramRequired       required=false 或是 指定了defaultValue（即便是""）
                 if (ParameterHelper.isRequiredFalse(parameter) || ParameterHelper.isAssignedDefaultValue(parameter)) {
                     pField.setParamRequired("必传");
                 } else {
