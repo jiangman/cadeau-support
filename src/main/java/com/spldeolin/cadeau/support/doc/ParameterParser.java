@@ -23,6 +23,7 @@ public class ParameterParser {
             return;
         }
         ftl.setParamShow(true);
+        ftl.setParamBodyShow(false);
         List<MarkdownDocFTL.PField> pFields = Lists.newArrayList();
         for (Parameter parameter : parameters) {
             if (ParameterHelper.isRequestParam(parameter) || ParameterHelper.isPathVariable(parameter)) {
@@ -33,9 +34,9 @@ public class ParameterParser {
                 pField.setParamName(parameterName);
                 // paramPlace
                 if (ParameterHelper.isRequestParam(parameter)) {
-                    pField.setParamPlace("QUERY");
+                    pField.setParamPlace("query");
                 } else {
-                    pField.setParamPlace("PATH");
+                    pField.setParamPlace("path");
                 }
                 // paramType
                 if (TypeHelper.isSimpleType(parameterType)) {
@@ -50,11 +51,14 @@ public class ParameterParser {
                 } else {
                     pField.setParamRequired("必传");
                 }
+                pFields.add(pField);
             }
             if (ParameterHelper.isRequestBody(parameter)) {
 
             }
+
         }
+        ftl.setParamFields(pFields);
     }
 
 }

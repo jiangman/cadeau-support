@@ -25,7 +25,7 @@
 </#list>
 <br>
 
-<#if !paramBodyShow>
+<#if paramBodyShow>
 ### 请求体示例
 
 ```json

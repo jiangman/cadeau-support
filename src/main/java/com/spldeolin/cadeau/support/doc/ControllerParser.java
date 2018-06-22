@@ -49,7 +49,6 @@ public class ControllerParser {
                     log.error("无法解析" + requestMethod.getName() + "的参数，跳过", e);
                     ftl.setParamShow(false);
                 }
-                ftl.setParamShow(false);
                 // 解析返回值
                 try {
                     // returnShow, returnJson, isRetrunSimpleType

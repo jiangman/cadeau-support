@@ -85,8 +85,8 @@ public class ParameterHelper {
     }
 
     public static boolean isRequiredFalse(Parameter parameter) {
-        return "true".equals(AnnotationHelper.getAnnotationProperty(parameter.getAnnotations(),
-                "RequestParam", "isRequired"));
+        return "false".equals(AnnotationHelper.getAnnotationProperty(parameter.getAnnotations(),
+                "RequestParam", "required"));
     }
 
     public static boolean isAssignedDefaultValue(Parameter parameter) {
