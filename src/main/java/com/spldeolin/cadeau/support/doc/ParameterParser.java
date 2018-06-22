@@ -46,9 +46,9 @@ public class ParameterParser {
                 pField.setParamDesc(ParameterHelper.getDescription(parameter));
                 // paramRequired       required=false 或是 指定了defaultValue（即便是""）
                 if (ParameterHelper.isRequiredFalse(parameter) || ParameterHelper.isAssignedDefaultValue(parameter)) {
-                    pField.setParamRequired("必传");
-                } else {
                     pField.setParamRequired("非必传");
+                } else {
+                    pField.setParamRequired("必传");
                 }
             }
             if (ParameterHelper.isRequestBody(parameter)) {

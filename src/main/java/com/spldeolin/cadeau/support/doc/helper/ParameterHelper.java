@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import japa.parser.ast.body.Parameter;
 import japa.parser.ast.comments.Comment;
 import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.expr.MemberValuePair;
+import japa.parser.ast.expr.NormalAnnotationExpr;
 import japa.parser.ast.type.Type;
 import lombok.extern.log4j.Log4j2;
 
@@ -83,10 +85,29 @@ public class ParameterHelper {
     }
 
     public static boolean isRequiredFalse(Parameter parameter) {
-        return false;
+        return "true".equals(AnnotationHelper.getAnnotationProperty(parameter.getAnnotations(),
+                "RequestParam", "isRequired"));
     }
 
     public static boolean isAssignedDefaultValue(Parameter parameter) {
+        List<AnnotationExpr> annotations = parameter.getAnnotations();
+        if (annotations != null) {
+            for (AnnotationExpr annotation : annotations) {
+                if (annotation.getName().getName().equals("RequestParam")) {
+                    if (annotation instanceof NormalAnnotationExpr) {
+                        NormalAnnotationExpr annotationEx = (NormalAnnotationExpr) annotation;
+                        List<MemberValuePair> pairs = annotationEx.getPairs();
+                        if (pairs != null) {
+                            for (MemberValuePair pair : pairs) {
+                                if (pair.getName().equals("defaultValue")) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
