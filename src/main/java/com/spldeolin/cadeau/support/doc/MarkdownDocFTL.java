@@ -53,6 +53,8 @@ public class MarkdownDocFTL {
      */
     private String paramBodyJson;
 
+    private List<BField> paramBodyFields;
+
     /**
      * 是否显示“返回值示例”和“返回值说明”，通过ControllerParser分析得出
      */
@@ -94,6 +96,18 @@ public class MarkdownDocFTL {
 
         private String paramDesc;
 
+    }
+
+    @Data
+    public static class BField {
+
+        private String bodyName;
+
+        private String bodyRequired;
+
+        private String bodyType;
+
+        private String bodyDesc;
     }
 
     @Data

@@ -115,4 +115,9 @@ public class ParameterHelper {
         return false;
     }
 
+    public static boolean isNotCustomType(Parameter parameter) {
+        return (StringUtils.equalsAnyIgnoreCase(ParameterHelper.getParameterTypeName(parameter), "HttpServletRequest",
+                "HttpServletResponse", "HttpRequest", "HttpResponse", "HttpSession"));
+    }
+
 }

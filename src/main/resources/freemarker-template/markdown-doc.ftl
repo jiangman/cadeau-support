@@ -32,6 +32,15 @@
 ${paramBodyJson}
 ```
 <br>
+
+### 请求体说明
+
+|名称|JSON类型|描述|
+|-|
+<#list paramBodyFields as bodyField>
+|${bodyField.bodyName}|${bodyField.bodyType}|${bodyField.bodyDesc}|
+</#list>
+<br>
 </#if>
 </#if>
 

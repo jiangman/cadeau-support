@@ -38,9 +38,13 @@ public class ParameterParser {
         ftl.setParamShow(true);
         ftl.setParamBodyShow(false);
         List<MarkdownDocFTL.PField> pFields = Lists.newArrayList();
+        List<MarkdownDocFTL.BField> bFields = Lists.newArrayList();
         StringBuilder url = new StringBuilder(ftl.getHttpUrl());
         int loopCount = 0;
         for (Parameter parameter : parameters) {
+            if (ParameterHelper.isNotCustomType(parameter)) {
+                continue;
+            }
             // 非请求体
             if (ParameterHelper.isRequestParam(parameter) || ParameterHelper.isPathVariable(parameter)) {
                 // 说明
@@ -53,12 +57,6 @@ public class ParameterParser {
                 // sampleJson
                 generateBodySampleJson(ftl, parameter);
                 // 说明
-
-                /*
-                    @see ReturnParser.parseReturnFields()
-                 */
-
-                // 获取参数类型
                 Type rawParameterType = ParameterHelper.getParameterType(parameter);
                 Type genericParameterType = TypeHelper.getGenericType(rawParameterType);
                 // TODO 暂时不做简单类型BODY的说明
@@ -67,17 +65,18 @@ public class ParameterParser {
                 }
                 TypeDeclaration parameterType = SampleJsonParser.getTypeFromTypeName(
                         TypeHelper.getTypeName(genericParameterType));
-                List<MarkdownDocFTL.PField> bodyFields = Lists.newArrayList();
+                List<MarkdownDocFTL.BField> bodyFields = Lists.newArrayList();
                 parseBodyField(bodyFields, parameterType.getMembers(), "", false);
-                pFields.addAll(bodyFields);
+                bFields.addAll(bodyFields);
             }
             loopCount++;
         }
         ftl.setHttpUrl(url.toString());
         ftl.setParamFields(pFields);
+        ftl.setParamBodyFields(bFields);
     }
 
-    private static void parseBodyField(List<MarkdownDocFTL.PField> pFields, List<BodyDeclaration> members,
+    private static void parseBodyField(List<MarkdownDocFTL.BField> bFields, List<BodyDeclaration> members,
             String prefix, boolean ignoreUpdatedAt) {
         if (members != null) {
             for (BodyDeclaration bodyDeclaration : members) {
@@ -90,32 +89,31 @@ public class ParameterParser {
                     if (ignoreUpdatedAt && FieldDeclarationHelper.isUpdatedAt(fieldDeclaration)) {
                         continue;
                     }
-                    MarkdownDocFTL.PField pField = new MarkdownDocFTL.PField();
-                    pField.setParamRequired("必传");
-                    pField.setParamPlace("body");
+                    MarkdownDocFTL.BField bField = new MarkdownDocFTL.BField();
+                    bField.setBodyRequired("必传");
                     boolean isListOrSet = FieldDeclarationHelper.isListOrSet(fieldDeclaration);
                     boolean isSimpleType = FieldDeclarationHelper.isSimpleType(fieldDeclaration);
                     String parameterName = FieldDeclarationHelper.getFieldName(fieldDeclaration);
                     if (StringUtils.isNotBlank(prefix)) {
                         parameterName = prefix + "." + parameterName;
                     }
-                    pField.setParamName(parameterName);
+                    bField.setBodyName(parameterName);
                     if (isSimpleType) {
-                        pField.setParamType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(
+                        bField.setBodyType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(
                                 FieldDeclarationHelper.getFieldType(fieldDeclaration)));
                     } else if (isListOrSet) {
                         Type genericType = FieldDeclarationHelper.getGenericType(fieldDeclaration);
                         if (TypeHelper.isSimpleType(genericType)) {
-                            pField.setParamType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(TypeHelper.getTypeName(
+                            bField.setBodyType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(TypeHelper.getTypeName(
                                     genericType)) + " Array");
                         } else {
-                            pField.setParamType("Object Array");
+                            bField.setBodyType("Object Array");
                         }
                     } else {
-                        pField.setParamType("Object");
+                        bField.setBodyType("Object");
                     }
-                    pField.setParamDesc(FieldDeclarationHelper.getFieldDesc(fieldDeclaration));
-                    pFields.add(pField);
+                    bField.setBodyDesc(FieldDeclarationHelper.getFieldDesc(fieldDeclaration));
+                    bFields.add(bField);
                     if (!isSimpleType) {
                         String fieldTypeName;
                         if (isListOrSet) {
@@ -125,7 +123,7 @@ public class ParameterParser {
                             fieldTypeName = FieldDeclarationHelper.getFieldType(fieldDeclaration);
                         }
                         TypeDeclaration fieldType = SampleJsonParser.getTypeFromTypeName(fieldTypeName);
-                        parseBodyField(pFields, fieldType.getMembers(), parameterName, true);
+                        parseBodyField(bFields, fieldType.getMembers(), parameterName, true);
                     }
                 }
             }
