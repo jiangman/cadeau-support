@@ -2,7 +2,6 @@ package com.spldeolin.cadeau.support.doc.helper;
 
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.Parameter;
 import japa.parser.ast.comments.Comment;
 import japa.parser.ast.expr.AnnotationExpr;

@@ -13,7 +13,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import com.google.common.collect.Lists;
 import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
-import com.spldeolin.cadeau.support.doc.helper.TypeDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.TypeHelper;
 import com.spldeolin.cadeau.support.util.StringCaseUtil;
 import japa.parser.JavaParser;

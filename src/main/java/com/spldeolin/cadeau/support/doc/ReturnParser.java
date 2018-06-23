@@ -3,10 +3,8 @@ package com.spldeolin.cadeau.support.doc;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.JsonTypeHelper;
 import com.spldeolin.cadeau.support.doc.helper.MethodDeclarationHelper;

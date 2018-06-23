@@ -49,7 +49,8 @@ public class FileMoveUtil {
             log.info("文件[" + srcFile.getPath() + "]移动到了文件夹[" + destFolder.getPath() + "]");
         } else {
             log.info(
-                    "文件[" + srcFile.getPath() + "]移动到了文件夹[" + destFolder.getPath() + "]，并重命名为[" + destFile.getName() + "]");
+                    "文件[" + srcFile.getPath() + "]移动到了文件夹[" + destFolder.getPath() + "]，并重命名为[" + destFile.getName() +
+                            "]");
         }
     }
 
