@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.spldeolin.cadeau.support.doc.helper.JsonTypeHelper;
@@ -25,10 +26,11 @@ public class ParameterParser {
 
     public static void parseParameter(MarkdownDocFTL ftl, MethodDeclaration requestMethod) {
         List<Parameter> parameters = requestMethod.getParameters();
-        if (parameters == null) {
+        if (parameters == null || parameters.size() == 0) {
             ftl.setParamShow(false);
             return;
         }
+        Map<String, String> descs = parseParameterDesc(requestMethod);
         ftl.setParamShow(true);
         ftl.setParamBodyShow(false);
         List<MarkdownDocFTL.PField> pFields = Lists.newArrayList();
@@ -51,8 +53,14 @@ public class ParameterParser {
                     pField.setParamType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(parameterTypeName));
                 }
                 // paramDesc
-                pField.setParamDesc(ParameterHelper.getDescription(parameter));
-                parseParameterDesc(requestMethod);
+                String paramDesc = descs.get(parameterName);
+                if (StringUtils.isBlank(paramDesc)) {
+                    paramDesc = ParameterHelper.getDescription(parameter);
+                }
+                if (StringUtils.isBlank(paramDesc)) {
+                    paramDesc = "　";
+                }
+                pField.setParamDesc(paramDesc);
                 // paramRequired
                 if (ParameterHelper.isRequiredFalse(parameter) || ParameterHelper.isAssignedDefaultValue(parameter)) {
                     pField.setParamRequired("非必传");
