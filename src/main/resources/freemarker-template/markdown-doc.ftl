@@ -29,6 +29,7 @@ ${bodyJson}
 ```
 <br>
 
+<#if !isBodySimpleType>
 ### 请求体说明
 
 |名称|JSON类型|必传|描述|
@@ -37,6 +38,7 @@ ${bodyJson}
 |${bodyField.bodyName}|${bodyField.bodyType}|${bodyField.bodyRequired}|${bodyField.bodyDesc}|
 </#list>
 <br>
+</#if>
 </#if>
 
 ### 返回值示例
@@ -49,9 +51,7 @@ ${bodyJson}
 ${returnJson}
 ```
 <br>
-</#if>
 
-<#if returnShow>
 <#if !isRetrunSimpleType>
 ### 返回值说明
 

@@ -62,8 +62,10 @@ public class ParameterParser {
                 Type genericParameterType = TypeHelper.getGenericType(rawParameterType);
                 // TODO 暂时不做简单类型BODY的说明
                 if (TypeHelper.isSimpleType(genericParameterType)) {
+                    ftl.setIsBodySimpleType(true);
                     continue;
                 }
+                ftl.setIsBodySimpleType(false);
                 TypeDeclaration parameterType = SampleJsonParser.getTypeFromTypeName(
                         TypeHelper.getTypeName(genericParameterType));
                 List<MarkdownDocFTL.BField> bodyFields = Lists.newArrayList();

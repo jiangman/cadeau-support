@@ -56,6 +56,11 @@ public class MarkdownDocFTL {
     private String bodyJson;
 
     /**
+     * 返回值是否是简单类型，是的话则不显示“返回值说明”
+     */
+    private Boolean isBodySimpleType;
+
+    /**
      * 请求体说明
      */
     private List<BField> bodyFields;
