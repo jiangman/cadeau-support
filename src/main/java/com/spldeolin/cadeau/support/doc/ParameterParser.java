@@ -90,7 +90,11 @@ public class ParameterParser {
                         continue;
                     }
                     MarkdownDocFTL.BField bField = new MarkdownDocFTL.BField();
-                    bField.setBodyRequired("必传");
+                    if (FieldDeclarationHelper.isNotNullOrNotEmptyOrNotBlank(fieldDeclaration)) {
+                        bField.setBodyRequired("必传");
+                    } else {
+                        bField.setBodyRequired("非必传");
+                    }
                     boolean isListOrSet = FieldDeclarationHelper.isListOrSet(fieldDeclaration);
                     boolean isSimpleType = FieldDeclarationHelper.isSimpleType(fieldDeclaration);
                     String parameterName = FieldDeclarationHelper.getFieldName(fieldDeclaration);

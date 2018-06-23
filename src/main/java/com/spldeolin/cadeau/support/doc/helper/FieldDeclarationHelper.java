@@ -107,4 +107,16 @@ public class FieldDeclarationHelper {
         return TypeHelper.getGenericType(fieldDeclaration.getType());
     }
 
+    public static boolean isNotNullOrNotEmptyOrNotBlank(FieldDeclaration fieldDeclaration) {
+        List<AnnotationExpr> annotations = fieldDeclaration.getAnnotations();
+        if (annotations != null) {
+            for (AnnotationExpr annotation : annotations) {
+                if (StringUtils.equalsAny(annotation.getName().getName(), "NotNull", "NotEmpty", "NotBlank")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

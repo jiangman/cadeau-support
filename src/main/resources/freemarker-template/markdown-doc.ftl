@@ -10,18 +10,13 @@
 
 - ${httpMethod}
 
+<#if paramShow>
 ### 参数说明
 
-<#if !paramShow>
-
-- 无需参数
-
-</#if>
-<#if paramShow>
-|名称|必传|JSON类型|描述|
+|名称|JSON类型|必传|描述|
 |-|
 <#list paramFields as paramField>
-|${paramField.paramName}|${paramField.paramRequired}|${paramField.paramType}|${paramField.paramDesc}|
+|${paramField.paramName}|${paramField.paramType}|${paramField.paramRequired}|${paramField.paramDesc}|
 </#list>
 <br>
 
@@ -35,10 +30,10 @@ ${paramBodyJson}
 
 ### 请求体说明
 
-|名称|JSON类型|描述|
+|名称|JSON类型|必传|描述|
 |-|
 <#list paramBodyFields as bodyField>
-|${bodyField.bodyName}|${bodyField.bodyType}|${bodyField.bodyDesc}|
+|${bodyField.bodyName}|${bodyField.bodyType}|${bodyField.bodyRequired}|${bodyField.bodyDesc}|
 </#list>
 <br>
 </#if>
