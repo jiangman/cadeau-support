@@ -66,6 +66,10 @@ public class ParameterHelper {
         return parameter.getType();
     }
 
+    public static String getParameterTypeName(Parameter parameter) {
+        return TypeHelper.getTypeName(getParameterType(parameter));
+    }
+
     public static String getDescription(Parameter parameter) {
         Comment comment = parameter.getComment();
         String result = TypeDeclarationHelper.getDescription(comment);

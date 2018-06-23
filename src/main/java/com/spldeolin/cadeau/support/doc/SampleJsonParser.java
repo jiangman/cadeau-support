@@ -102,6 +102,12 @@ public class SampleJsonParser {
         sb.append("}");
     }
 
+    public static TypeDeclaration getTypeFromTypeName(String typeName) {
+        List<TypeDeclaration> typeDeclarations = JavaLoader.loadJavasAsType(DocConfig.basePackagePath);
+        return typeDeclarations.stream().filter(t -> t.getName().equals(typeName)).findFirst().orElseThrow(
+                () -> new RuntimeException("找不到" + typeName + "，原因由于它内部有Lambda、它是内部类、或是其他原因"));
+    }
+
     private static File filterFileByFieldTypeName(List<File> files, String fieldName) {
         String filename = StringCaseUtil.upperFirstChar(fieldName);
         return files.stream().filter(

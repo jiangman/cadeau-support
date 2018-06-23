@@ -81,6 +81,15 @@ public class JsonFormatUtil {
     }
 
     /**
+     * 修剪掉非标准JSON中多余的逗号
+     */
+    public static String trim(String invalidJson) {
+        // 修剪掉多余的逗号
+        String validJson = invalidJson.replace(",]", "]").replace(",}", "}");
+        return validJson;
+    }
+
+    /**
      * 添加缩进符
      */
     private static void addIndentBlank(StringBuilder sb, int indent) {

@@ -42,15 +42,15 @@ public class ReturnParser {
             ftl.setIsRetrunSimpleType(true);
         } else {
             ftl.setIsRetrunSimpleType(false);
-            TypeDeclaration returnTypeDeclaration = getTypeFromTypeName(TypeHelper.getTypeName(genericReturnType));
+            TypeDeclaration returnTypeDeclaration = SampleJsonParser.getTypeFromTypeName(
+                    TypeHelper.getTypeName(genericReturnType));
             StringBuilder sb = new StringBuilder(400);
             SampleJsonParser.analysisField(sb, returnTypeDeclaration, false);
             sampleJson = sb.toString();
         }
         sampleJson = wrapArrayOrPage(sampleJson, rawReturnType);
         // 修剪掉多余的逗号
-        sampleJson = sampleJson.replace(",]", "]");
-        sampleJson = sampleJson.replace(",}", "}");
+        sampleJson = JsonFormatUtil.trim(sampleJson);
         // 格式化JSON
         sampleJson = JsonFormatUtil.formatJson(sampleJson);
         ftl.setReturnJson(sampleJson);
@@ -69,7 +69,7 @@ public class ReturnParser {
         if (TypeHelper.isSimpleType(genericReturnType)) {
             return;
         }
-        TypeDeclaration returnType = getTypeFromTypeName(TypeHelper.getTypeName(genericReturnType));
+        TypeDeclaration returnType = SampleJsonParser.getTypeFromTypeName(TypeHelper.getTypeName(genericReturnType));
         List<MarkdownDocFTL.RField> rFields = Lists.newArrayList();
         generateRField(rFields, returnType.getMembers(), "", false);
         ftl.setReturnFields(rFields);
@@ -120,18 +120,12 @@ public class ReturnParser {
                         } else {
                             fieldTypeName = FieldDeclarationHelper.getFieldType(fieldDeclaration);
                         }
-                        TypeDeclaration fieldType = getTypeFromTypeName(fieldTypeName);
+                        TypeDeclaration fieldType = SampleJsonParser.getTypeFromTypeName(fieldTypeName);
                         generateRField(rFields, fieldType.getMembers(), returnName, true);
                     }
                 }
             }
         }
-    }
-
-    private static TypeDeclaration getTypeFromTypeName(String typeName) {
-        List<TypeDeclaration> typeDeclarations = JavaLoader.loadJavasAsType(DocConfig.basePackagePath);
-        return typeDeclarations.stream().filter(t -> t.getName().equals(typeName)).findFirst().orElseThrow(
-                () -> new RuntimeException("找不到" + typeName + "，原因由于它内部有Lambda、它是内部类、或是其他原因"));
     }
 
     private static String wrapArrayOrPage(String json, Type returnType) {

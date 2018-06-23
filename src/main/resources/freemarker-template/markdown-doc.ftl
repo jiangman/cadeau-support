@@ -18,10 +18,10 @@
 
 </#if>
 <#if paramShow>
-|名称|位置|必传|JSON类型|描述|
+|名称|必传|JSON类型|描述|
 |-|
 <#list paramFields as paramField>
-|${paramField.paramName}|${paramField.paramPlace}|${paramField.paramRequired}|${paramField.paramType}|${paramField.paramDesc}|
+|${paramField.paramName}|${paramField.paramRequired}|${paramField.paramType}|${paramField.paramDesc}|
 </#list>
 <br>
 
