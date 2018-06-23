@@ -47,11 +47,12 @@ public class ReturnParser {
             StringBuilder sb = new StringBuilder(400);
             SampleJsonParser.analysisField(sb, returnTypeDeclaration, false);
             sampleJson = sb.toString();
+            // 修剪掉多余的逗号
+            sampleJson = JsonFormatUtil.trim(sampleJson);
         }
+        // 包裹List或Page
         sampleJson = wrapArrayOrPage(sampleJson, rawReturnType);
-        // 修剪掉多余的逗号
-        sampleJson = JsonFormatUtil.trim(sampleJson);
-        // 格式化JSON
+        // 美化JSON
         sampleJson = JsonFormatUtil.formatJson(sampleJson);
         ftl.setReturnJson(sampleJson);
     }
@@ -128,7 +129,7 @@ public class ReturnParser {
         }
     }
 
-    private static String wrapArrayOrPage(String json, Type returnType) {
+    public static String wrapArrayOrPage(String json, Type returnType) {
         boolean isArray = TypeHelper.isListOrSet(returnType);
         boolean isPage = TypeHelper.isPage(returnType);
         if (isArray) {

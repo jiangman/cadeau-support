@@ -181,14 +181,22 @@ public class ParameterParser {
     private static void generateBodySampleJson(MarkdownDocFTL ftl, Parameter parameter) {
         // ftl.paramBodyJson
         String sampleJson;
-        StringBuilder sb = new StringBuilder(400);
-        TypeDeclaration type = SampleJsonParser.getTypeFromTypeName(
-                ParameterHelper.getParameterTypeName(parameter));
-        SampleJsonParser.analysisField(sb, type, false);
-        sampleJson = sb.toString();
-        // 修剪掉多余的逗号
-        sampleJson = JsonFormatUtil.trim(sampleJson);
-        // 格式化JSON
+        Type rawParameterType = ParameterHelper.getParameterType(parameter);
+        Type genericReturnType = TypeHelper.getGenericType(rawParameterType);
+        if (TypeHelper.isSimpleType(genericReturnType)) {
+            sampleJson = TypeHelper.sampleValueBySimpleType(genericReturnType);
+        } else {
+            TypeDeclaration parameterTypeDeclaration = SampleJsonParser.getTypeFromTypeName(
+                    TypeHelper.getTypeName(genericReturnType));
+            StringBuilder sb = new StringBuilder(400);
+            SampleJsonParser.analysisField(sb, parameterTypeDeclaration, false);
+            sampleJson = sb.toString();
+            // 修剪掉多余的逗号
+            sampleJson = JsonFormatUtil.trim(sampleJson);
+        }
+        // 包裹List或Page
+        sampleJson = ReturnParser.wrapArrayOrPage(sampleJson, rawParameterType);
+        // 美化JSON
         sampleJson = JsonFormatUtil.formatJson(sampleJson);
         ftl.setParamBodyJson(sampleJson);
     }
