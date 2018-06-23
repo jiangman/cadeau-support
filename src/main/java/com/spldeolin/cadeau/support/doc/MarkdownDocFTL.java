@@ -61,7 +61,12 @@ public class MarkdownDocFTL {
     private Boolean isBodySimpleType;
 
     /**
-     * 请求体说明
+     * 请求体描述
+     */
+    private String bodyDesc;
+
+    /**
+     * 请求体具体字段说明
      */
     private List<BField> bodyFields;
 
@@ -86,7 +91,7 @@ public class MarkdownDocFTL {
     private String returnDesc;
 
     /**
-     * 返回值具体条目说明
+     * 返回值具体字段说明
      */
     private List<RField> returnFields;
 

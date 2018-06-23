@@ -22,14 +22,17 @@
 </#if>
 
 <#if bodyShow>
-### 请求体示例
+### 请求BODY示例
 
 ```json
 ${bodyJson}
 ```
 <br>
 
-### 请求体说明
+### 请求BODY说明
+<#if bodyDesc ??>
+${bodyDesc}
+</#if>
 
 <#if !isBodySimpleType>
 |名称|JSON类型|必传|描述|

@@ -55,6 +55,7 @@ public class ParameterParser {
             if (ParameterHelper.isRequestBody(parameter)) {
                 // 开启显示
                 ftl.setBodyShow(true);
+                ftl.setBodyDesc(descs.get(ParameterHelper.getParameterName(parameter)));
                 // JSON示例
                 generateBodySampleJson(ftl, parameter);
                 // 说明
