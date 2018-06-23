@@ -38,72 +38,85 @@ public class ParameterParser {
         StringBuilder url = new StringBuilder(ftl.getHttpUrl());
         int loopCount = 0;
         for (Parameter parameter : parameters) {
-            MarkdownDocFTL.PField pField = new MarkdownDocFTL.PField();
             // 非请求体
             if (ParameterHelper.isRequestParam(parameter) || ParameterHelper.isPathVariable(parameter)) {
-                String parameterName = ParameterHelper.getParameterName(parameter);
-                Type parameterType = ParameterHelper.getParameterType(parameter);
-                // paramName
-                pField.setParamName(parameterName);
-                // paramPlace
-                if (ParameterHelper.isRequestParam(parameter)) {
-                    pField.setParamPlace("query");
-                } else {
-                    pField.setParamPlace("path");
-                }
-                // paramType
-                if (TypeHelper.isSimpleType(parameterType)) {
-                    String parameterTypeName = TypeHelper.getTypeName(parameterType);
-                    pField.setParamType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(parameterTypeName));
-                }
-                // paramDesc
-                String paramDesc = descs.get(parameterName);
-                if (StringUtils.isBlank(paramDesc)) {
-                    paramDesc = ParameterHelper.getDescription(parameter);
-                }
-                if (StringUtils.isBlank(paramDesc)) {
-                    paramDesc = "　";
-                }
-                pField.setParamDesc(paramDesc);
-                // paramRequired
-                if (ParameterHelper.isRequiredFalse(parameter) || ParameterHelper.isAssignedDefaultValue(parameter)) {
-                    pField.setParamRequired("非必传");
-                } else {
-                    pField.setParamRequired("必传");
-                }
-                pFields.add(pField);
-                // 在URL后追加?a=&b=
-                if (ParameterHelper.isRequestParam(parameter)) {
-                    if (loopCount == 0) {
-                        url.append("?");
-                    } else {
-                        url.append("&");
-                    }
-                    url.append(parameterName);
-                    url.append("=");
-                }
+                // 说明
+                parseNonBodyField(pFields, parameter, descs, loopCount, url);
             }
             // 请求体
             if (ParameterHelper.isRequestBody(parameter)) {
-                // 显示“请求体示例”
+                // 开启显示
                 ftl.setParamBodyShow(true);
-                // ftl.paramBodyJson
-                String sampleJson;
-                StringBuilder sb = new StringBuilder(400);
-                TypeDeclaration type = SampleJsonParser.getTypeFromTypeName(
-                        ParameterHelper.getParameterTypeName(parameter));
-                SampleJsonParser.analysisField(sb, type, false);
-                sampleJson = sb.toString();
-                // 修剪掉多余的逗号
-                sampleJson = JsonFormatUtil.trim(sampleJson);
-                // 格式化JSON
-                sampleJson = JsonFormatUtil.formatJson(sampleJson);
-                ftl.setParamBodyJson(sampleJson);
+                // sampleJson
+                generateBodySampleJson(ftl, parameter);
+                // 说明
+
             }
             loopCount++;
         }
         ftl.setHttpUrl(url.toString());
         ftl.setParamFields(pFields);
+    }
+
+    private static void parseNonBodyField(List<MarkdownDocFTL.PField> pFields, Parameter parameter,
+            Map<String, String> descs, int loopCount, StringBuilder url) {
+        MarkdownDocFTL.PField pField = new MarkdownDocFTL.PField();
+        String parameterName = ParameterHelper.getParameterName(parameter);
+        Type parameterType = ParameterHelper.getParameterType(parameter);
+        // paramName
+        pField.setParamName(parameterName);
+        // paramPlace
+        if (ParameterHelper.isRequestParam(parameter)) {
+            pField.setParamPlace("query");
+        } else {
+            pField.setParamPlace("path");
+        }
+        // paramType
+        if (TypeHelper.isSimpleType(parameterType)) {
+            String parameterTypeName = TypeHelper.getTypeName(parameterType);
+            pField.setParamType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(parameterTypeName));
+        }
+        // paramDesc
+        String paramDesc = descs.get(parameterName);
+        if (StringUtils.isBlank(paramDesc)) {
+            paramDesc = ParameterHelper.getDescription(parameter);
+        }
+        if (StringUtils.isBlank(paramDesc)) {
+            paramDesc = "　";
+        }
+        pField.setParamDesc(paramDesc);
+        // paramRequired
+        if (ParameterHelper.isRequiredFalse(parameter) || ParameterHelper.isAssignedDefaultValue(parameter)) {
+            pField.setParamRequired("非必传");
+        } else {
+            pField.setParamRequired("必传");
+        }
+        pFields.add(pField);
+        // 在URL后追加?a=&b=
+        if (ParameterHelper.isRequestParam(parameter)) {
+            if (loopCount == 0) {
+                url.append("?");
+            } else {
+                url.append("&");
+            }
+            url.append(parameterName);
+            url.append("=");
+        }
+    }
+
+    private static void generateBodySampleJson(MarkdownDocFTL ftl, Parameter parameter) {
+        // ftl.paramBodyJson
+        String sampleJson;
+        StringBuilder sb = new StringBuilder(400);
+        TypeDeclaration type = SampleJsonParser.getTypeFromTypeName(
+                ParameterHelper.getParameterTypeName(parameter));
+        SampleJsonParser.analysisField(sb, type, false);
+        sampleJson = sb.toString();
+        // 修剪掉多余的逗号
+        sampleJson = JsonFormatUtil.trim(sampleJson);
+        // 格式化JSON
+        sampleJson = JsonFormatUtil.formatJson(sampleJson);
+        ftl.setParamBodyJson(sampleJson);
     }
 
     private static Map<String, String> parseParameterDesc(MethodDeclaration requestMethod) {
