@@ -45,6 +45,11 @@ public class ControllerParser {
                 // 解析参数
                 try {
                     ParameterParser.parseParameter(ftl, requestMethod);
+                    if (ftl.getIsBodySimpleType() && StringUtils.isBlank(ftl.getBodyDesc())) {
+                        ftl.setDisplayBodyInfo(false);
+                    } else {
+                        ftl.setDisplayBodyInfo(true);
+                    }
                 } catch (Exception e) {
                     log.error("无法解析" + requestMethod.getName() + "的参数，跳过", e);
                     ftl.setParamShow(false);

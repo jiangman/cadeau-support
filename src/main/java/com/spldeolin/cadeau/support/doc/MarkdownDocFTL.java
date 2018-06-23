@@ -61,6 +61,11 @@ public class MarkdownDocFTL {
     private Boolean isBodySimpleType;
 
     /**
+     * 是否显示“请求体描述”和“请求体具体字段说明”
+     */
+    private Boolean displayBodyInfo;
+
+    /**
      * 请求体描述
      */
     private String bodyDesc;
