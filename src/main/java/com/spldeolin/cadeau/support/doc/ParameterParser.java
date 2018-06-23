@@ -29,14 +29,13 @@ import lombok.extern.log4j.Log4j2;
 public class ParameterParser {
 
     public static void parseParameter(MarkdownDocFTL ftl, MethodDeclaration requestMethod) {
+        ftl.setParamShow(false);
+        ftl.setBodyShow(false);
         List<Parameter> parameters = requestMethod.getParameters();
         if (parameters == null || parameters.size() == 0) {
-            ftl.setParamShow(false);
             return;
         }
         Map<String, String> descs = parseParameterDesc(requestMethod);
-        ftl.setParamShow(true);
-        ftl.setParamBodyShow(false);
         List<MarkdownDocFTL.PField> pFields = Lists.newArrayList();
         List<MarkdownDocFTL.BField> bFields = Lists.newArrayList();
         StringBuilder url = new StringBuilder(ftl.getHttpUrl());
@@ -47,14 +46,16 @@ public class ParameterParser {
             }
             // 非请求体
             if (ParameterHelper.isRequestParam(parameter) || ParameterHelper.isPathVariable(parameter)) {
+                // 开启显示
+                ftl.setParamShow(true);
                 // 说明
                 parseNonBodyField(pFields, parameter, descs, loopCount, url);
             }
             // 请求体
             if (ParameterHelper.isRequestBody(parameter)) {
                 // 开启显示
-                ftl.setParamBodyShow(true);
-                // sampleJson
+                ftl.setBodyShow(true);
+                // JSON示例
                 generateBodySampleJson(ftl, parameter);
                 // 说明
                 Type rawParameterType = ParameterHelper.getParameterType(parameter);
@@ -73,7 +74,7 @@ public class ParameterParser {
         }
         ftl.setHttpUrl(url.toString());
         ftl.setParamFields(pFields);
-        ftl.setParamBodyFields(bFields);
+        ftl.setBodyFields(bFields);
     }
 
     private static void parseBodyField(List<MarkdownDocFTL.BField> bFields, List<BodyDeclaration> members,
@@ -181,7 +182,7 @@ public class ParameterParser {
     }
 
     private static void generateBodySampleJson(MarkdownDocFTL ftl, Parameter parameter) {
-        // ftl.paramBodyJson
+        // ftl.bodyJson
         String sampleJson;
         Type rawParameterType = ParameterHelper.getParameterType(parameter);
         Type genericReturnType = TypeHelper.getGenericType(rawParameterType);
@@ -200,7 +201,7 @@ public class ParameterParser {
         sampleJson = ReturnParser.wrapArrayOrPage(sampleJson, rawParameterType);
         // 美化JSON
         sampleJson = JsonFormatUtil.formatJson(sampleJson);
-        ftl.setParamBodyJson(sampleJson);
+        ftl.setBodyJson(sampleJson);
     }
 
     private static Map<String, String> parseParameterDesc(MethodDeclaration requestMethod) {

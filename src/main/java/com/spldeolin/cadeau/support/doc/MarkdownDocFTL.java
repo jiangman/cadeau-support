@@ -9,69 +9,74 @@ import lombok.experimental.Accessors;
 public class MarkdownDocFTL {
 
     /**
-     * 上传到ShowDoc的目录名，本字段不用于渲染FreeMarker，通过ControllerParser分析得出
+     * 目录名
+     * （本字段不用于渲染FreeMarker）
      */
     private String directoryName;
 
     /**
      * 文件名
+     * （本字段不用于渲染FreeMarker）
      */
     private String fileName;
 
     /**
-     * “描述”，也会作为文件名，通过ControllerParser分析得出
+     * 描述
      */
     private String commonDesc;
 
     /**
-     * 请求URL，通过ControllerParser分析得出
+     * 请求URL
      */
     private String httpUrl;
 
     /**
-     * 请求动词，通过ControllerParser分析得出
+     * 请求动词
      */
     private String httpMethod;
 
     /**
-     * 是否显示“参数说明”和“请求体示例”，通过ControllerParser分析得出
+     * 是否显示“参数说明”
      */
     private Boolean paramShow;
 
     /**
-     * 参数说明列表，通过ExplainEntryGenerator生成
+     * 参数说明
      */
     private List<PField> paramFields;
 
     /**
-     * 是否显示“请求体示例”
+     * 是否显示“请求体示例”和“请求体说明”
      */
-    private Boolean paramBodyShow;
+    private Boolean bodyShow;
 
     /**
-     * 请求体示例，通过SampleJsonGenerator生成
+     * 请求体示例
      */
-    private String paramBodyJson;
-
-    private List<BField> paramBodyFields;
+    private String bodyJson;
 
     /**
-     * 是否显示“返回值示例”和“返回值说明”，通过ControllerParser分析得出
+     * 请求体说明
+     */
+    private List<BField> bodyFields;
+
+    /**
+     * 是否显示“返回值示例”和“返回值说明”
      */
     private Boolean returnShow;
 
     /**
-     * 返回值示例，通过SampleJsonGenerator生成
+     * 返回值示例
      */
     private String returnJson;
 
     /**
-     * 返回值是否是简单类型，如果是的话则不显示返回值说明，ExplainEntryGenerator分析
+     * 返回值是否是简单类型，是的话则不显示“返回值说明”
      */
     private Boolean isRetrunSimpleType;
 
     /**
-     * 返回值说明列表，通过ExplainEntryGenerator生成
+     * 返回值说明
      */
     private List<RField> returnFields;
 

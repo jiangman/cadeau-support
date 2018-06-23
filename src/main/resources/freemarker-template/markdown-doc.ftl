@@ -19,12 +19,13 @@
 |${paramField.paramName}|${paramField.paramType}|${paramField.paramRequired}|${paramField.paramDesc}|
 </#list>
 <br>
+</#if>
 
-<#if paramBodyShow>
+<#if bodyShow>
 ### 请求体示例
 
 ```json
-${paramBodyJson}
+${bodyJson}
 ```
 <br>
 
@@ -32,11 +33,10 @@ ${paramBodyJson}
 
 |名称|JSON类型|必传|描述|
 |-|
-<#list paramBodyFields as bodyField>
+<#list bodyFields as bodyField>
 |${bodyField.bodyName}|${bodyField.bodyType}|${bodyField.bodyRequired}|${bodyField.bodyDesc}|
 </#list>
 <br>
-</#if>
 </#if>
 
 ### 返回值示例
