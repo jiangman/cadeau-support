@@ -29,9 +29,9 @@ ${bodyJson}
 ```
 <br>
 
-<#if !isBodySimpleType>
 ### 请求体说明
 
+<#if !isBodySimpleType>
 |名称|JSON类型|必传|描述|
 |-|
 <#list bodyFields as bodyField>
@@ -52,9 +52,12 @@ ${returnJson}
 ```
 <br>
 
-<#if !isRetrunSimpleType>
 ### 返回值说明
+<#if returnDesc ??>
+${returnDesc}
+</#if>
 
+<#if !isRetrunSimpleType>
 |名称|JSON类型|描述|
 |-|
 <#list returnFields as returnField>

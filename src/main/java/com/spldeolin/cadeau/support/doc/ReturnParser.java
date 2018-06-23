@@ -1,17 +1,23 @@
 package com.spldeolin.cadeau.support.doc;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.JsonTypeHelper;
 import com.spldeolin.cadeau.support.doc.helper.MethodDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.TypeHelper;
 import com.spldeolin.cadeau.support.util.JsonFormatUtil;
+import com.spldeolin.cadeau.support.util.Nulls;
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.TypeDeclaration;
+import japa.parser.ast.comments.Comment;
 import japa.parser.ast.type.Type;
 import japa.parser.ast.type.VoidType;
 import lombok.extern.log4j.Log4j2;
@@ -34,6 +40,7 @@ public class ReturnParser {
             return;
         }
         ftl.setReturnShow(true);
+        ftl.setReturnDesc(parseReturnDesc(requestMethod));
         // 生成返回值示例
         String sampleJson;
         Type genericReturnType = TypeHelper.getGenericType(rawReturnType);
@@ -140,6 +147,23 @@ public class ReturnParser {
                     "],\"pagesCount\":9,\"total\":65535}";
         }
         return json;
+    }
+
+    private static String parseReturnDesc(MethodDeclaration requestMethod) {
+        Comment comment = requestMethod.getComment();
+        if (comment == null) {
+            return null;
+        }
+        List<String> commentLines = newArrayList(Nulls.toEmpty(comment.getContent()).split("\n"));
+        for (String commentLine : commentLines) {
+            commentLine = commentLine.replaceFirst("\\*", "").trim();
+            String[] nodes = commentLine.split(" ");
+            if (!commentLine.startsWith("@return ")) {
+                continue;
+            }
+            return commentLine.replace("@return ", "");
+        }
+        return null;
     }
 
 }

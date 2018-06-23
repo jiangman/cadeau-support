@@ -217,7 +217,7 @@ public class ParameterParser {
             commentLine = commentLine.replaceFirst("\\*", "").trim();
             String[] nodes = commentLine.split(" ");
             int nodeLength = nodes.length;
-            if (nodeLength < 3) {
+            if (nodeLength < 3 || !commentLine.startsWith("@param")) {
                 continue;
             }
             StringBuilder desc = new StringBuilder();

@@ -81,7 +81,12 @@ public class MarkdownDocFTL {
     private Boolean isRetrunSimpleType;
 
     /**
-     * 返回值说明
+     * 返回值描述
+     */
+    private String returnDesc;
+
+    /**
+     * 返回值具体条目说明
      */
     private List<RField> returnFields;
 
