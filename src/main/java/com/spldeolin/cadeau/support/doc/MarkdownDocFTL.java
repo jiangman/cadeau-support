@@ -84,7 +84,7 @@ public class MarkdownDocFTL {
         private String paramName;
 
         /**
-         * QUERY, BODY, PATH
+         * query, body, path
          */
         private String paramPlace;
 
