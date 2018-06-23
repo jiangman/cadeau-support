@@ -135,8 +135,8 @@ public class ReturnParser {
             return "[" + json + "]";
         }
         if (isPage) {
-            return "{\"pageNo\":1,\"hasPreviousPage\":false,\"hasNextPage\":true,\"entitiesInPage\":" + json +
-                    ",\"pagesCount\":9,\"total\":65535}";
+            return "{\"pageNo\":1,\"hasPreviousPage\":false,\"hasNextPage\":true,\"entitiesInPage\":[" + json +
+                    "],\"pagesCount\":9,\"total\":65535}";
         }
         return json;
     }

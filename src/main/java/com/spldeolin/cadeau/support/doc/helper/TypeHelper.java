@@ -29,7 +29,7 @@ public class TypeHelper {
     }
 
     public static boolean isListOrSet(Type type) {
-        return typeJudgement(getTypeName(type), "List", "Set");
+        return typeJudgement(getTypeName(type), "List", "Set", "ValidableList");
     }
 
     public static boolean isPage(Type type) {
