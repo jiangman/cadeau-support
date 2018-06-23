@@ -60,10 +60,13 @@ public class MethodDeclarationHelper {
      * MethodDeclaration是否有RequestMapping、GetMapping、PostMapping等注解
      */
     public static boolean hasRequestMapping(MethodDeclaration methodDeclaration) {
-        for (AnnotationExpr annotation : methodDeclaration.getAnnotations()) {
-            if (StringUtils.equalsAny(annotation.getName().getName(), "RequestMapping", "GetMapping", "PostMapping",
-                    "PutMapping", "DeleteMapping")) {
-                return true;
+        List<AnnotationExpr> annotations = methodDeclaration.getAnnotations();
+        if (annotations != null) {
+            for (AnnotationExpr annotation : annotations) {
+                if (StringUtils.equalsAny(annotation.getName().getName(), "RequestMapping", "GetMapping", "PostMapping",
+                        "PutMapping", "DeleteMapping")) {
+                    return true;
+                }
             }
         }
         return false;
@@ -95,31 +98,34 @@ public class MethodDeclarationHelper {
      * 获取请求方法的请求动词
      */
     public static String getMethodHttpMethod(MethodDeclaration methodDeclaration) {
-        for (AnnotationExpr annotation : methodDeclaration.getAnnotations()) {
-            String annotationName = annotation.getName().getName();
-            if ("GetMapping".equals(annotationName)) {
-                return "GET";
-            }
-            if ("PostMapping".equals(annotationName)) {
-                return "POST";
-            }
-            if ("PutMapping".equals(annotationName)) {
-                return "PUT";
-            }
-            if ("DeleteMapping".equals(annotationName)) {
-                return "DELETE";
-            }
-            if ("RequestMapping".equals(annotationName)) {
-                if (annotation instanceof NormalAnnotationExpr) {
-                    NormalAnnotationExpr annotationEx = (NormalAnnotationExpr) annotation;
-                    List<MemberValuePair> pairs = annotationEx.getPairs();
-                    if (pairs != null) {
-                        for (MemberValuePair pair : pairs) {
-                            if (pair.getName().equals("method")) {
-                                Expression expression = pair.getValue();
-                                if (expression instanceof FieldAccessExpr) {
-                                    FieldAccessExpr expressionEx = (FieldAccessExpr) expression;
-                                    return expressionEx.getField();
+        List<AnnotationExpr> annotations = methodDeclaration.getAnnotations();
+        if (annotations != null) {
+            for (AnnotationExpr annotation : annotations) {
+                String annotationName = annotation.getName().getName();
+                if ("GetMapping".equals(annotationName)) {
+                    return "GET";
+                }
+                if ("PostMapping".equals(annotationName)) {
+                    return "POST";
+                }
+                if ("PutMapping".equals(annotationName)) {
+                    return "PUT";
+                }
+                if ("DeleteMapping".equals(annotationName)) {
+                    return "DELETE";
+                }
+                if ("RequestMapping".equals(annotationName)) {
+                    if (annotation instanceof NormalAnnotationExpr) {
+                        NormalAnnotationExpr annotationEx = (NormalAnnotationExpr) annotation;
+                        List<MemberValuePair> pairs = annotationEx.getPairs();
+                        if (pairs != null) {
+                            for (MemberValuePair pair : pairs) {
+                                if (pair.getName().equals("method")) {
+                                    Expression expression = pair.getValue();
+                                    if (expression instanceof FieldAccessExpr) {
+                                        FieldAccessExpr expressionEx = (FieldAccessExpr) expression;
+                                        return expressionEx.getField();
+                                    }
                                 }
                             }
                         }

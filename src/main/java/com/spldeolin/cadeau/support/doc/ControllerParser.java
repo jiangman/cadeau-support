@@ -60,6 +60,11 @@ public class ControllerParser {
                     ReturnParser.parseReturn(ftl, requestMethod);
                     // returnFields
                     ReturnParser.parseReturnFields(ftl, requestMethod);
+                    if (ftl.getIsRetrunSimpleType() && StringUtils.isBlank(ftl.getReturnDesc())) {
+                        ftl.setDisplayReturnInfo(false);
+                    } else {
+                        ftl.setDisplayReturnInfo(true);
+                    }
                 } catch (Exception e) {
                     log.error("无法解析" + requestMethod.getName() + "的返回值，跳过", e);
                     ftl.setReturnShow(false);

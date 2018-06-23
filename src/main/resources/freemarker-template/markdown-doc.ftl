@@ -1,11 +1,11 @@
 ### 描述
-- ${commonDesc}
+${commonDesc}
 
 ### URL
-- `${httpUrl}`
+`${httpUrl}`
 
 ### 动词
-- ${httpMethod}
+${httpMethod}
 
 <#if paramShow>
 ### 参数说明
@@ -18,14 +18,14 @@
 </#if>
 
 <#if bodyShow>
-### 请求BODY示例
+### 请求体示例
 ```json
 ${bodyJson}
 ```
 <br>
 
 <#if displayBodyInfo>
-### 请求BODY说明
+### 请求体说明
 <#if bodyDesc ??>
 ${bodyDesc}
 </#if>
@@ -42,7 +42,7 @@ ${bodyDesc}
 
 ### 返回值示例
 <#if !returnShow>
-- 没有返回值
+没有返回值
 </#if>
 <#if returnShow>
 ```json
@@ -50,6 +50,7 @@ ${returnJson}
 ```
 <br>
 
+<#if displayReturnInfo>
 ### 返回值说明
 <#if returnDesc ??>
 ${returnDesc}
@@ -63,6 +64,7 @@ ${returnDesc}
 <br>
 </#if>
 </#if>
+</#if>
 
 ### 开发者
-- ${commonDeveloper}
+${commonDeveloper}

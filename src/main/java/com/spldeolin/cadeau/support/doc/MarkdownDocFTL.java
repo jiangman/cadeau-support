@@ -62,6 +62,7 @@ public class MarkdownDocFTL {
 
     /**
      * 是否显示“请求体描述”和“请求体具体字段说明”
+     * （如果请求体是个简单类型 且 请求体描述为空 则false）
      */
     private Boolean displayBodyInfo;
 
@@ -89,6 +90,12 @@ public class MarkdownDocFTL {
      * 返回值是否是简单类型，是的话则不显示“返回值说明”
      */
     private Boolean isRetrunSimpleType;
+
+    /**
+     * 是否显示“返回值描述”和“返回值具体字段说明”
+     * （如果返回值是个简单类型 且 返回值描述为空 则false）
+     */
+    private Boolean displayReturnInfo;
 
     /**
      * 返回值描述
