@@ -48,8 +48,14 @@ public class TypeDeclarationHelper {
      * 获取声明在类上的JavaDoc
      */
     public static String getDescription(TypeDeclaration typeDeclaration) {
+        // 获取comment
         Comment comment = typeDeclaration.getComment();
         String result = getDescription(comment);
+        // 获取Swagger注解
+        if (StringUtils.isBlank(result)) {
+            result = AnnotationHelper.getAnnotationProperty(typeDeclaration.getAnnotations(), "ApiOperation", "value");
+        }
+        // 获取方法名
         if (StringUtils.isBlank(result)) {
             result = getName(typeDeclaration);
         }
