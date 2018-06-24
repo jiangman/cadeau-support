@@ -16,8 +16,8 @@ public class DocConfig {
 
     static String controllerPackagePath = "C:\\java-development\\projects-repo\\women-projects\\船友-core\\src\\main\\java\\com\\womenhz\\shipmate\\core\\controller";
 
-    static String apiKey = "2569e9546844d494566c0f343ceebd35801538712";
+    static String apiKey = "6f73675a637d1215cb237a68f053c0181418538293";
 
-    static String apiToken = "5ef962f61d4b581c5337bb7e163077991964715205";
+    static String apiToken = "0a37fe2f77d7e83c2b31cc0fa67ae4c6675739166";
 
 }

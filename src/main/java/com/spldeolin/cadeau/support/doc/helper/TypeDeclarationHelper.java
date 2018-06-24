@@ -53,7 +53,7 @@ public class TypeDeclarationHelper {
         String result = getDescription(comment);
         // 获取Swagger注解
         if (StringUtils.isBlank(result)) {
-            result = AnnotationHelper.getAnnotationProperty(typeDeclaration.getAnnotations(), "ApiOperation", "value");
+            result = AnnotationHelper.getAnnotationProperty(typeDeclaration.getAnnotations(), "Api", "description");
         }
         // 获取方法名
         if (StringUtils.isBlank(result)) {
