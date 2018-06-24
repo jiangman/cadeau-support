@@ -22,7 +22,8 @@ public class FreeMarkerUtil {
      * @param datas 数据
      * @return 格式化后的内容
      */
-    public static String format(boolean isTemplate, String ftlFile, Object datas) {
+    public static String format(boolean isTemplate, String ftlFile,
+            Object datas) throws IOException, TemplateException {
         String extraPath = "";
         if (!isTemplate) {
             extraPath = "temp";
@@ -32,19 +33,14 @@ public class FreeMarkerUtil {
         }
         Version version = new Version("2.3.23");
         Configuration cfg = new Configuration(version);
-        try {
-            String folderPath = System.getProperty("user.dir") + sep + "src" + sep + "main" + sep + "resources" + sep
-                    + "freemarker-template" + sep + extraPath + sep;
-            cfg.setDirectoryForTemplateLoading(new File(folderPath));
-            Template template = cfg.getTemplate(ftlFile, "utf-8");
-            StringWriter out = new StringWriter();
+        String folderPath = System.getProperty("user.dir") + sep + "src" + sep + "main" + sep + "resources" + sep
+                + "freemarker-template" + sep + extraPath + sep;
+        cfg.setDirectoryForTemplateLoading(new File(folderPath));
+        Template template = cfg.getTemplate(ftlFile, "utf-8");
+        try (StringWriter out = new StringWriter()) {
             template.process(datas, out);
             out.flush();
-            out.close();
             return out.getBuffer().toString();
-        } catch (IOException | TemplateException e) {
-            log.error("checked", e);
-            throw new RuntimeException();
         }
     }
 
