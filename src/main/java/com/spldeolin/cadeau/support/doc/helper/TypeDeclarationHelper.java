@@ -5,6 +5,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
 import com.spldeolin.cadeau.support.util.Nulls;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.TypeDeclaration;
@@ -120,9 +121,13 @@ public class TypeDeclarationHelper {
     public static String getControllerMapping(TypeDeclaration typeDeclaration) {
         String mapping = AnnotationHelper.getAnnotationProperty(typeDeclaration.getAnnotations(), "RequestMapping",
                 "value");
-        // 不会空时确保以"/"开头
+        // 不为空时确保以"/"开头
         if (!"".equals(mapping) && !mapping.startsWith("/")) {
             mapping = "/" + mapping;
+        }
+        // 只有一个"/"时当作空
+        if ("/".equals(mapping)) {
+            mapping = "";
         }
         return mapping;
     }
