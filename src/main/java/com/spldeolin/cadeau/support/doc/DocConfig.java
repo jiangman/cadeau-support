@@ -8,8 +8,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DocConfig {
 
-    static String basePackagePath = "C:\\java-development\\projects-repo\\deolin-projects\\beginning-mind\\src\\main\\java\\com\\spldeolin\\beginningmind\\core";
+    static String basePackagePath = "C:\\java-development\\projects-repo\\women-projects\\船友-core\\src\\main\\java\\com\\womenhz\\shipmate\\core";
 
-    static String controllerPackagePath = "C:\\java-development\\projects-repo\\deolin-projects\\beginning-mind\\src\\main\\java\\com\\spldeolin\\beginningmind\\core\\controller";
+    static String controllerPackagePath = "C:\\java-development\\projects-repo\\women-projects\\船友-core\\src\\main\\java\\com\\womenhz\\shipmate\\core\\controller";
 
 }

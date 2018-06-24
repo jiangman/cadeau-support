@@ -44,29 +44,25 @@ public class ControllerParser {
                 // 参数
                 try {
                     ParameterParser.parseParameter(ftl, requestMethod);
-                    // 简单类型且没有@param说明，则不显示“请求体说明”
-                    if (Boolean.TRUE.equals(ftl.getIsBodySimpleType()) && StringUtils.isBlank(ftl.getBodyDesc())) {
-                        ftl.setDisplayBodyInfo(false);
-                    } else {
+                    // 非简单类型 或 有@param说明，则显示“请求体说明”
+                    if (Boolean.FALSE.equals(ftl.getIsBodySimpleType()) && StringUtils.isNotBlank(ftl.getBodyDesc())) {
                         ftl.setDisplayBodyInfo(true);
                     }
                 } catch (Exception e) {
-                    log.error("解析参数失败，跳过 " + commonLog, e);
-                    ftl.setParamShow(false);
+                    ftl.setParseBodyException(true);
+                    log.warn("解析参数失败，跳过 " + commonLog, e);
                 }
                 // 返回值
                 try {
                     ReturnParser.parseReturn(ftl, requestMethod);
                     ReturnParser.parseReturnFields(ftl, requestMethod);
-                    // 返回值是简单类型且没有@return说明，则不显示“返回值说明”
-                    if (Boolean.TRUE.equals(ftl.getIsRetrunSimpleType()) && StringUtils.isBlank(ftl.getReturnDesc())) {
-                        ftl.setDisplayReturnInfo(false);
-                    } else {
+                    // 非简单类型 或 有@return说明，则显示“返回值说明”
+                    if (Boolean.FALSE.equals(ftl.getIsRetrunSimpleType()) && StringUtils.isNotBlank(ftl.getReturnDesc())) {
                         ftl.setDisplayReturnInfo(true);
                     }
                 } catch (Exception e) {
-                    log.error("解析返回值失败，跳过 " + commonLog, e);
-                    ftl.setReturnShow(false);
+                    ftl.setParseReturnException(true);
+                    log.warn("解析返回值失败，跳过 " + commonLog, e);
                 }
                 ftlSetAuthor(ftl, controller, requestMethod);
                 ftls.add(ftl);

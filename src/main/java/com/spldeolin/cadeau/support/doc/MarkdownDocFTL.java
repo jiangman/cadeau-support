@@ -38,7 +38,7 @@ public class MarkdownDocFTL {
     /**
      * 是否显示“参数说明”
      */
-    private Boolean paramShow;
+    private Boolean paramShow = false;
 
     /**
      * 参数说明
@@ -46,9 +46,14 @@ public class MarkdownDocFTL {
     private List<PField> paramFields;
 
     /**
+     * 解析请求体时发生异常，需要手动补全
+     */
+    private Boolean parseBodyException = false;
+
+    /**
      * 是否显示“请求体示例”和“请求体说明”
      */
-    private Boolean bodyShow;
+    private Boolean bodyShow = false;
 
     /**
      * 请求体示例
@@ -58,13 +63,13 @@ public class MarkdownDocFTL {
     /**
      * 返回值是否是简单类型，是的话则不显示“返回值说明”
      */
-    private Boolean isBodySimpleType;
+    private Boolean isBodySimpleType = false;
 
     /**
      * 是否显示“请求体描述”和“请求体具体字段说明”
      * （如果请求体是个简单类型 且 请求体描述为空 则false）
      */
-    private Boolean displayBodyInfo;
+    private Boolean displayBodyInfo = false;
 
     /**
      * 请求体描述
@@ -77,9 +82,14 @@ public class MarkdownDocFTL {
     private List<BField> bodyFields;
 
     /**
+     * 解析返回值时发生异常，需要手动补全
+     */
+    private Boolean parseReturnException = false;
+
+    /**
      * 是否显示“返回值示例”和“返回值说明”
      */
-    private Boolean returnShow;
+    private Boolean returnShow = false;
 
     /**
      * 返回值示例
@@ -89,13 +99,13 @@ public class MarkdownDocFTL {
     /**
      * 返回值是否是简单类型，是的话则不显示“返回值说明”
      */
-    private Boolean isRetrunSimpleType;
+    private Boolean isRetrunSimpleType = false;
 
     /**
      * 是否显示“返回值描述”和“返回值具体字段说明”
      * （如果返回值是个简单类型 且 返回值描述为空 则false）
      */
-    private Boolean displayReturnInfo;
+    private Boolean displayReturnInfo = false;
 
     /**
      * 返回值描述

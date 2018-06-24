@@ -29,8 +29,6 @@ import lombok.extern.log4j.Log4j2;
 public class ParameterParser {
 
     public static void parseParameter(MarkdownDocFTL ftl, MethodDeclaration requestMethod) {
-        ftl.setParamShow(false);
-        ftl.setBodyShow(false);
         // 方法签名没有返回值时
         List<Parameter> parameters = requestMethod.getParameters();
         if (parameters == null || parameters.size() == 0) {
@@ -69,7 +67,6 @@ public class ParameterParser {
                     ftl.setIsBodySimpleType(true);
                     continue;
                 }
-                ftl.setIsBodySimpleType(false);
                 TypeDeclaration parameterType = SampleJsonParser.getTypeFromTypeName(
                         TypeHelper.getTypeName(genericParameterType));
                 List<MarkdownDocFTL.BField> bodyFields = Lists.newArrayList();

@@ -33,7 +33,7 @@ public class DocGenerator {
                 String ftlContent = FreeMarkerUtil.format(true, "markdown-doc.ftl", ftl);
                 FileUtils.writeStringToFile(mdFile, ftlContent, StandardCharsets.UTF_8);
             } catch (IOException | TemplateException e) {
-                log.error(ftl.getDirectoryName() + "#" + ftl.getFileName() + "格式化失败，跳过", e);
+                log.error("格式化失败，跳过 [" + ftl.getHttpUrl() + "]", e);
             }
         }
 

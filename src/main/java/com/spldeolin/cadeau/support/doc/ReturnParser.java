@@ -5,6 +5,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.Lists;
+import com.spldeolin.cadeau.support.doc.exception.ReturnParseException;
 import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.JsonTypeHelper;
 import com.spldeolin.cadeau.support.doc.helper.MethodDeclarationHelper;
@@ -34,7 +35,6 @@ public class ReturnParser {
         Type rawReturnType = MethodDeclarationHelper.getReturnType(requestMethod);
         // 返回值是void
         if (rawReturnType instanceof VoidType) {
-            ftl.setReturnShow(false);
             return;
         }
         ftl.setReturnShow(true);
@@ -46,9 +46,11 @@ public class ReturnParser {
             sampleJson = TypeHelper.sampleValueBySimpleType(genericReturnType);
             ftl.setIsRetrunSimpleType(true);
         } else {
-            ftl.setIsRetrunSimpleType(false);
-            TypeDeclaration returnTypeDeclaration = SampleJsonParser.getTypeFromTypeName(
-                    TypeHelper.getTypeName(genericReturnType));
+            String genericReturnTypeName = TypeHelper.getTypeName(genericReturnType);
+            if (StringUtils.equalsAny(genericReturnTypeName, "Object", "RequestResult")) {
+                throw new ReturnParseException("方法签名的返回类型为" + genericReturnTypeName + "，无法得知运行期类型");
+            }
+            TypeDeclaration returnTypeDeclaration = SampleJsonParser.getTypeFromTypeName(genericReturnTypeName);
             StringBuilder sb = new StringBuilder(400);
             SampleJsonParser.analysisField(sb, returnTypeDeclaration, false);
             sampleJson = sb.toString();
@@ -67,7 +69,6 @@ public class ReturnParser {
         Type rawReturnType = MethodDeclarationHelper.getReturnType(requestMethod);
         // 返回值是void
         if (rawReturnType instanceof VoidType) {
-            ftl.setReturnShow(false);
             return;
         }
         Type genericReturnType = TypeHelper.getGenericType(rawReturnType);
