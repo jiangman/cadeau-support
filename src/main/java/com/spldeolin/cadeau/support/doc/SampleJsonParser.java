@@ -1,9 +1,3 @@
-/*
-        TODO @JsonProperty
-        TODO javadoc
-        TODO “说明”
- */
-
 package com.spldeolin.cadeau.support.doc;
 
 import java.io.File;

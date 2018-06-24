@@ -25,7 +25,7 @@ public class ControllerParser {
 
     public static List<MarkdownDocFTL> parseController() {
         // 获取所有controller包下的java文件，解析成TypeDeclaration
-        List<TypeDeclaration> typeDeclarations = JavaLoader.loadJavasAsType(DocConfig.baseControllerPackagePath);
+        List<TypeDeclaration> typeDeclarations = JavaLoader.loadJavasAsType(DocConfig.ontrollerPackagePath);
         // 过滤掉非控制器和ErrorController
         typeDeclarations.removeIf(type -> !TypeDeclarationHelper.hasControllerAnnotation(type) ||
                 TypeDeclarationHelper.implementsErrorController(type));

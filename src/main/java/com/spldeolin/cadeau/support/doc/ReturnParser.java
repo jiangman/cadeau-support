@@ -71,7 +71,6 @@ public class ReturnParser {
             return;
         }
         Type genericReturnType = TypeHelper.getGenericType(rawReturnType);
-        // TODO 暂时不做简单类型返回值的说明
         if (TypeHelper.isSimpleType(genericReturnType)) {
             return;
         }

@@ -61,7 +61,6 @@ public class ParameterParser {
                 // 说明
                 Type rawParameterType = ParameterHelper.getParameterType(parameter);
                 Type genericParameterType = TypeHelper.getGenericType(rawParameterType);
-                // TODO 暂时不做简单类型BODY的说明
                 if (TypeHelper.isSimpleType(genericParameterType)) {
                     ftl.setIsBodySimpleType(true);
                     continue;
