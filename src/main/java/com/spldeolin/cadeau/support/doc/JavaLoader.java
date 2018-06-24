@@ -2,15 +2,18 @@ package com.spldeolin.cadeau.support.doc;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import com.google.common.collect.Lists;
 import japa.parser.JavaParser;
+import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.body.TypeDeclaration;
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -18,6 +21,8 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class JavaLoader {
+
+    private static final Map<String, List<TypeDeclaration>> typeDeclarationHolder = new ConcurrentHashMap<>();
 
     public static void sameFilenameCheck(List<File> javas) {
         for (File java : javas) {
@@ -35,28 +40,29 @@ public class JavaLoader {
         }
     }
 
-    public static List<File> loadJavas(String directoryPath) {
-        Iterator<File> javas = FileUtils.iterateFiles(new File(directoryPath), new String[] {"java"}, true);
-        return Lists.newArrayList(javas);
-    }
-
     public static List<TypeDeclaration> loadJavasAsType(String directoryPath) {
+        List<TypeDeclaration> result = typeDeclarationHolder.get(directoryPath);
+        // 命中缓存
+        if (result != null) {
+            return result;
+        }
+        log.info("读取[..." + directoryPath.substring(64, directoryPath.length()) + "]目录下的Java文件...");
         Iterator<File> javas = FileUtils.iterateFiles(new File(directoryPath), new String[] {"java"}, true);
-        List<TypeDeclaration> typeDeclarations = Lists.newArrayList();
+        result = Lists.newArrayList();
         while (javas.hasNext()) {
             File java = javas.next();
             try {
-                typeDeclarations.add(getJava(java.getPath()));
+                result.add(loadJavaAsType(java.getPath()));
             } catch (Exception e) {
-                //log.info(e.getMessage());
-                log.error(FilenameUtils.getBaseName(java.getName()) + "无法解析成TypeDeclaration");
+                log.warn("[" + FilenameUtils.getBaseName(java.getName()) + "] 无法读取成TypeDeclaration，跳过");
             }
         }
-        return typeDeclarations;
+        // 保存缓存
+        typeDeclarationHolder.put(directoryPath, result);
+        return result;
     }
 
-    @SneakyThrows
-    public static TypeDeclaration getJava(String javaFilePath) {
+    public static TypeDeclaration loadJavaAsType(String javaFilePath) throws IOException, ParseException {
         File srcFile = new File(javaFilePath);
         CompilationUnit unit;
         try (FileInputStream in = new FileInputStream(srcFile)) {

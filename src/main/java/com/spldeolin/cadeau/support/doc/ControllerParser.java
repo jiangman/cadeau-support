@@ -21,11 +21,9 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ControllerParser {
 
-    private static final String br = System.lineSeparator();
-
     public static List<MarkdownDocFTL> parseController() {
-        // 获取所有controller包下的java文件，解析成TypeDeclaration
-        List<TypeDeclaration> typeDeclarations = JavaLoader.loadJavasAsType(DocConfig.ontrollerPackagePath);
+        // 读取所有controller包下的java文件，解析成TypeDeclaration，无法解析的文件将会被忽略
+        List<TypeDeclaration> typeDeclarations = JavaLoader.loadJavasAsType(DocConfig.controllerPackagePath);
         // 过滤掉非控制器和ErrorController
         typeDeclarations.removeIf(type -> !TypeDeclarationHelper.hasControllerAnnotation(type) ||
                 TypeDeclarationHelper.implementsErrorController(type));
