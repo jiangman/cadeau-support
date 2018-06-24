@@ -22,25 +22,26 @@ import lombok.extern.log4j.Log4j2;
 public class ControllerParser {
 
     public static List<MarkdownDocFTL> parseController() {
-        // 读取所有controller包下的java文件，解析成TypeDeclaration，无法解析的文件将会被忽略
+        List<MarkdownDocFTL> ftls = newArrayList();
+        log.info("开始解析...");
+        // 获取所有控制器
         List<TypeDeclaration> typeDeclarations = JavaLoader.loadJavasAsTypes(DocConfig.controllerPackagePath);
-        // 过滤掉非控制器和ErrorController
         typeDeclarations.removeIf(type -> !TypeDeclarationHelper.hasControllerAnnotation(type) ||
                 TypeDeclarationHelper.implementsErrorController(type));
-        // 遍历每个控制器的每个请求方法
-        List<MarkdownDocFTL> ftls = newArrayList();
+        // 遍历每个请求方法
         for (TypeDeclaration controller : typeDeclarations) {
             for (MethodDeclaration requestMethod : listRequsetMethod(controller)) {
-                log.info(controller.getName() + "#" + requestMethod.getName());
                 MarkdownDocFTL ftl = new MarkdownDocFTL();
-                // 解析请求方法
+                String commonLog = "[" + controller.getName() + "] [" + requestMethod.getName() + "]";
+                log.info("开始解析请求方法... " + commonLog);
+                // 基本
                 ftl.setDirectoryName(TypeDeclarationHelper.getFirstLineDescription(controller).replace('/', '-'));
                 ftl.setFileName(MethodDeclarationHelper.getFirstLineDecription(requestMethod).replace('/', '-'));
                 ftl.setCommonDesc(MethodDeclarationHelper.getDescription(requestMethod));
                 ftl.setHttpUrl(TypeDeclarationHelper.getControllerMapping(controller) +
                         MethodDeclarationHelper.getMethodMapping(requestMethod));
                 ftl.setHttpMethod(MethodDeclarationHelper.getMethodHttpMethod(requestMethod));
-                // 解析参数
+                // 参数
                 try {
                     ParameterParser.parseParameter(ftl, requestMethod);
                     if (ftl.getIsBodySimpleType() && StringUtils.isBlank(ftl.getBodyDesc())) {
@@ -52,7 +53,7 @@ public class ControllerParser {
                     log.error("无法解析" + requestMethod.getName() + "的参数，跳过", e);
                     ftl.setParamShow(false);
                 }
-                // 解析返回值
+                // 返回值
                 try {
                     // returnShow, returnJson, isRetrunSimpleType
                     ReturnParser.parseReturn(ftl, requestMethod);
@@ -69,20 +70,24 @@ public class ControllerParser {
                 }
                 ftlSetAuthor(ftl, controller, requestMethod);
                 ftls.add(ftl);
+                log.info("...解析完毕 " + commonLog);
             }
         }
         ftls.forEach(log::info);
+
         return ftls;
     }
 
     private static List<MethodDeclaration> listRequsetMethod(TypeDeclaration typeDeclaration) {
-        List<BodyDeclaration> bodyDeclarations = typeDeclaration.getMembers();
         List<MethodDeclaration> result = newArrayList();
-        for (BodyDeclaration bodyDeclaration : bodyDeclarations) {
-            if (bodyDeclaration instanceof MethodDeclaration) {
-                MethodDeclaration methodDeclaration = (MethodDeclaration) bodyDeclaration;
-                if (MethodDeclarationHelper.hasRequestMapping(methodDeclaration)) {
-                    result.add(methodDeclaration);
+        List<BodyDeclaration> bodyDeclarations = typeDeclaration.getMembers();
+        if (bodyDeclarations != null) {
+            for (BodyDeclaration bodyDeclaration : bodyDeclarations) {
+                if (bodyDeclaration instanceof MethodDeclaration) {
+                    MethodDeclaration methodDeclaration = (MethodDeclaration) bodyDeclaration;
+                    if (MethodDeclarationHelper.hasRequestMapping(methodDeclaration)) {
+                        result.add(methodDeclaration);
+                    }
                 }
             }
         }
