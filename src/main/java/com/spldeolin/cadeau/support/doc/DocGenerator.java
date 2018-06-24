@@ -19,8 +19,8 @@ public class DocGenerator {
 
     public static void main(String[] args) {
         // 预读取
-        JavaLoader.loadJavasAsType(DocConfig.controllerPackagePath);
-        JavaLoader.loadJavasAsType(DocConfig.basePackagePath);
+        JavaLoader.loadJavasAsTypes(DocConfig.controllerPackagePath);
+        JavaLoader.loadJavasAsTypes(DocConfig.basePackagePath);
 
         // 解析目标控制器，生成freemarker实体对象
         List<MarkdownDocFTL> ftls = ControllerParser.parseController();
