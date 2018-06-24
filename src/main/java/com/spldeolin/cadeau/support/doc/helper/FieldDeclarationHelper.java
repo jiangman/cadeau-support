@@ -11,6 +11,7 @@ import japa.parser.ast.comments.Comment;
 import japa.parser.ast.expr.AnnotationExpr;
 import japa.parser.ast.expr.NameExpr;
 import japa.parser.ast.type.ClassOrInterfaceType;
+import japa.parser.ast.type.PrimitiveType;
 import japa.parser.ast.type.ReferenceType;
 import japa.parser.ast.type.Type;
 import lombok.experimental.UtilityClass;
@@ -41,11 +42,12 @@ public class FieldDeclarationHelper {
 
     public static String getFieldType(FieldDeclaration fieldDeclaration) {
         Type type = fieldDeclaration.getType();
-        ReferenceType typeEx = (ReferenceType) type;
-        Type typeEx2 = typeEx.getType();
-        if (typeEx2 instanceof ClassOrInterfaceType) {
-            ClassOrInterfaceType typeEx3 = (ClassOrInterfaceType) typeEx2;
-            return typeEx3.getName();
+        if (type instanceof PrimitiveType) {
+            PrimitiveType typeEx = (PrimitiveType) type;
+            return typeEx.getType().name();
+        }
+        if (type instanceof  ReferenceType) {
+            return TypeHelper.getTypeName(type);
         }
         return "";
     }
