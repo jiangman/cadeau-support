@@ -44,6 +44,12 @@ public class ControllerParser {
                 // 参数
                 try {
                     ParameterParser.parseParameter(ftl, requestMethod);
+                    // 简单类型且没有@param说明，则不显示“请求体说明”
+                    if (Boolean.TRUE.equals(ftl.getIsBodySimpleType()) && StringUtils.isBlank(ftl.getBodyDesc())) {
+                        ftl.setDisplayBodyInfo(false);
+                    } else {
+                        ftl.setDisplayBodyInfo(true);
+                    }
                 } catch (Exception e) {
                     log.error("解析参数失败，跳过 " + commonLog, e);
                     ftl.setParamShow(false);
@@ -52,6 +58,12 @@ public class ControllerParser {
                 try {
                     ReturnParser.parseReturn(ftl, requestMethod);
                     ReturnParser.parseReturnFields(ftl, requestMethod);
+                    // 返回值是简单类型且没有@return说明，则不显示“返回值说明”
+                    if (Boolean.TRUE.equals(ftl.getIsRetrunSimpleType()) && StringUtils.isBlank(ftl.getReturnDesc())) {
+                        ftl.setDisplayReturnInfo(false);
+                    } else {
+                        ftl.setDisplayReturnInfo(true);
+                    }
                 } catch (Exception e) {
                     log.error("解析返回值失败，跳过 " + commonLog, e);
                     ftl.setReturnShow(false);

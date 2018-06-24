@@ -31,14 +31,17 @@ public class ParameterParser {
     public static void parseParameter(MarkdownDocFTL ftl, MethodDeclaration requestMethod) {
         ftl.setParamShow(false);
         ftl.setBodyShow(false);
+        // 方法签名没有返回值时
         List<Parameter> parameters = requestMethod.getParameters();
         if (parameters == null || parameters.size() == 0) {
             return;
         }
-        Map<String, String> descs = parseParameterDesc(requestMethod);
         List<MarkdownDocFTL.PField> pFields = Lists.newArrayList();
         List<MarkdownDocFTL.BField> bFields = Lists.newArrayList();
         StringBuilder url = new StringBuilder(ftl.getHttpUrl());
+        // 解析方法的JavaDoc的@param注释
+        Map<String, String> paramTagDescs = parseParamTagDesc(requestMethod);
+        // 遍历方法签名的参数
         int loopCount = 0;
         for (Parameter parameter : parameters) {
             if (ParameterHelper.isNotCustomType(parameter)) {
@@ -48,17 +51,18 @@ public class ParameterParser {
             if (ParameterHelper.isRequestParam(parameter) || ParameterHelper.isPathVariable(parameter)) {
                 // 开启显示
                 ftl.setParamShow(true);
-                // 说明
-                parseNonBodyField(pFields, parameter, descs, loopCount, url);
+                // 条目说明
+                parseNonBodyField(pFields, parameter, paramTagDescs, loopCount, url);
             }
             // 请求体
             if (ParameterHelper.isRequestBody(parameter)) {
                 // 开启显示
                 ftl.setBodyShow(true);
-                ftl.setBodyDesc(descs.get(ParameterHelper.getParameterName(parameter)));
+                // 请求体说明
+                ftl.setBodyDesc(paramTagDescs.get(ParameterHelper.getParameterName(parameter)));
                 // JSON示例
                 generateBodySampleJson(ftl, parameter);
-                // 说明
+                // 条目说明
                 Type rawParameterType = ParameterHelper.getParameterType(parameter);
                 Type genericParameterType = TypeHelper.getGenericType(rawParameterType);
                 if (TypeHelper.isSimpleType(genericParameterType)) {
@@ -77,12 +81,6 @@ public class ParameterParser {
         ftl.setHttpUrl(url.toString());
         ftl.setParamFields(pFields);
         ftl.setBodyFields(bFields);
-        // 简单类型且没有@param说明，则不显示“请求体说明”
-        if (ftl.getIsBodySimpleType() && StringUtils.isBlank(ftl.getBodyDesc())) {
-            ftl.setDisplayBodyInfo(false);
-        } else {
-            ftl.setDisplayBodyInfo(true);
-        }
     }
 
     private static void parseBodyField(List<MarkdownDocFTL.BField> bFields, List<BodyDeclaration> members,
@@ -212,7 +210,7 @@ public class ParameterParser {
         ftl.setBodyJson(sampleJson);
     }
 
-    private static Map<String, String> parseParameterDesc(MethodDeclaration requestMethod) {
+    private static Map<String, String> parseParamTagDesc(MethodDeclaration requestMethod) {
         Map<String, String> result = Maps.newHashMap();
         Comment comment = requestMethod.getComment();
         if (comment == null) {
