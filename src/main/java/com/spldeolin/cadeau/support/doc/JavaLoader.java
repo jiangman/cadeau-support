@@ -46,7 +46,7 @@ public class JavaLoader {
         if (result != null) {
             return result;
         }
-        log.info("读取[..." + directoryPath.substring(64, directoryPath.length()) + "]目录下的Java文件...");
+        log.info("读取Java文件... [" + directoryPath + "]");
         Iterator<File> javas = FileUtils.iterateFiles(new File(directoryPath), new String[] {"java"}, true);
         result = Lists.newArrayList();
         while (javas.hasNext()) {
@@ -54,9 +54,10 @@ public class JavaLoader {
             try {
                 result.add(loadJavaAsType(java.getPath()));
             } catch (Exception e) {
-                log.warn("[" + FilenameUtils.getBaseName(java.getName()) + "] 无法读取成TypeDeclaration，跳过");
+                log.warn("无法失败，跳过 [" + FilenameUtils.getBaseName(java.getName()) + ".java]");
             }
         }
+        log.info("...读取完毕");
         // 保存缓存
         typeDeclarationHolder.put(directoryPath, result);
         return result;

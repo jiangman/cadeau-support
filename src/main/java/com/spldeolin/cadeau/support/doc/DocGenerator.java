@@ -18,6 +18,10 @@ import lombok.extern.log4j.Log4j2;
 public class DocGenerator {
 
     public static void main(String[] args) {
+        // 预读取
+        JavaLoader.loadJavasAsType(DocConfig.controllerPackagePath);
+        JavaLoader.loadJavasAsType(DocConfig.basePackagePath);
+
         // 解析目标控制器，生成freemarker实体对象
         List<MarkdownDocFTL> ftls = ControllerParser.parseController();
 
