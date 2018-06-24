@@ -45,7 +45,7 @@ public class ControllerParser {
                 try {
                     ParameterParser.parseParameter(ftl, requestMethod);
                     // 非简单类型 或 有@param说明，则显示“请求体说明”
-                    if (Boolean.FALSE.equals(ftl.getIsBodySimpleType()) && StringUtils.isNotBlank(ftl.getBodyDesc())) {
+                    if (Boolean.FALSE.equals(ftl.getIsBodySimpleType()) || StringUtils.isNotBlank(ftl.getBodyDesc())) {
                         ftl.setDisplayBodyInfo(true);
                     }
                 } catch (Exception e) {
@@ -57,7 +57,7 @@ public class ControllerParser {
                     ReturnParser.parseReturn(ftl, requestMethod);
                     ReturnParser.parseReturnFields(ftl, requestMethod);
                     // 非简单类型 或 有@return说明，则显示“返回值说明”
-                    if (Boolean.FALSE.equals(ftl.getIsRetrunSimpleType()) && StringUtils.isNotBlank(ftl.getReturnDesc())) {
+                    if (Boolean.FALSE.equals(ftl.getIsRetrunSimpleType()) || StringUtils.isNotBlank(ftl.getReturnDesc())) {
                         ftl.setDisplayReturnInfo(true);
                     }
                 } catch (Exception e) {
