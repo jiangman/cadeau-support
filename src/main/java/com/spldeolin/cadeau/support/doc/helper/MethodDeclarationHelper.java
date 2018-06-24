@@ -39,8 +39,14 @@ public class MethodDeclarationHelper {
      * 获取声明在方法上的JavaDoc
      */
     public static String getDescription(MethodDeclaration methodDeclaration) {
+        // 获取comment
         Comment comment = methodDeclaration.getComment();
         String result = TypeDeclarationHelper.getDescription(comment);
+        // 获取Swagger注解
+        if (StringUtils.isBlank(result)) {
+            result = AnnotationHelper.getAnnotationProperty(methodDeclaration.getAnnotations(), "ApiOperation", "value");
+        }
+        // 获取方法名
         if (StringUtils.isBlank(result)) {
             result = getName(methodDeclaration);
         }
