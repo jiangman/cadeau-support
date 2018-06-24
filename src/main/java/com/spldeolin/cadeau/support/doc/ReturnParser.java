@@ -78,6 +78,12 @@ public class ReturnParser {
         List<MarkdownDocFTL.RField> rFields = Lists.newArrayList();
         generateRField(rFields, returnType.getMembers(), "", false);
         ftl.setReturnFields(rFields);
+        // 返回值是简单类型且没有@return说明，则不显示“返回值说明”
+        if (ftl.getIsRetrunSimpleType() && StringUtils.isBlank(ftl.getReturnDesc())) {
+            ftl.setDisplayReturnInfo(false);
+        } else {
+            ftl.setDisplayReturnInfo(true);
+        }
     }
 
     private static void generateRField(List<MarkdownDocFTL.RField> rFields, List<BodyDeclaration> members,

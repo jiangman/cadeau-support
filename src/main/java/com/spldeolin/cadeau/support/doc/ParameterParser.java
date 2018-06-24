@@ -77,6 +77,12 @@ public class ParameterParser {
         ftl.setHttpUrl(url.toString());
         ftl.setParamFields(pFields);
         ftl.setBodyFields(bFields);
+        // 简单类型且没有@param说明，则不显示“请求体说明”
+        if (ftl.getIsBodySimpleType() && StringUtils.isBlank(ftl.getBodyDesc())) {
+            ftl.setDisplayBodyInfo(false);
+        } else {
+            ftl.setDisplayBodyInfo(true);
+        }
     }
 
     private static void parseBodyField(List<MarkdownDocFTL.BField> bFields, List<BodyDeclaration> members,

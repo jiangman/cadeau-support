@@ -44,28 +44,16 @@ public class ControllerParser {
                 // 参数
                 try {
                     ParameterParser.parseParameter(ftl, requestMethod);
-                    if (ftl.getIsBodySimpleType() && StringUtils.isBlank(ftl.getBodyDesc())) {
-                        ftl.setDisplayBodyInfo(false);
-                    } else {
-                        ftl.setDisplayBodyInfo(true);
-                    }
                 } catch (Exception e) {
-                    log.error("无法解析" + requestMethod.getName() + "的参数，跳过", e);
+                    log.error("解析参数失败，跳过 " + commonLog, e);
                     ftl.setParamShow(false);
                 }
                 // 返回值
                 try {
-                    // returnShow, returnJson, isRetrunSimpleType
                     ReturnParser.parseReturn(ftl, requestMethod);
-                    // returnFields
                     ReturnParser.parseReturnFields(ftl, requestMethod);
-                    if (ftl.getIsRetrunSimpleType() && StringUtils.isBlank(ftl.getReturnDesc())) {
-                        ftl.setDisplayReturnInfo(false);
-                    } else {
-                        ftl.setDisplayReturnInfo(true);
-                    }
                 } catch (Exception e) {
-                    log.error("无法解析" + requestMethod.getName() + "的返回值，跳过", e);
+                    log.error("解析返回值失败，跳过 " + commonLog, e);
                     ftl.setReturnShow(false);
                 }
                 ftlSetAuthor(ftl, controller, requestMethod);
@@ -73,8 +61,6 @@ public class ControllerParser {
                 log.info("...解析完毕 " + commonLog);
             }
         }
-        ftls.forEach(log::info);
-
         return ftls;
     }
 
