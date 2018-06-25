@@ -17,6 +17,7 @@ public class ControllerFTL {
 
     private String classDocEnd;
 
-    private String serviceExceptionRef;
+    private String pageRef;
+
 
 }

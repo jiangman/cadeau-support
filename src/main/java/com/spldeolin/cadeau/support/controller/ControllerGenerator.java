@@ -37,7 +37,7 @@ public class ControllerGenerator {
             template.setBussinessPart(bussinessPart);
             template.setModelName(modelName);
             template.setModelCn(modelCn);
-            template.setServiceExceptionRef(ConfigUtil.getServiceException());
+            template.setPageRef(ConfigUtil.getPage());
             String controllerContent = FreeMarkerUtil.format(true, "controller.ftl", template);
             if (ConfigUtil.getOverWrite()) {
                 FileUtils.write(new File(ConfigUtil.getControllerPath() + modelName + "Controller.java"),

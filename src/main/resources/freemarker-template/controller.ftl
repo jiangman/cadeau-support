@@ -12,9 +12,10 @@ import javax.validation.constraints.Max;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ${serviceExceptionRef};
+import ${basePackage}.model${bussinessPart}.${modelName};
 import ${basePackage}.input${bussinessPart}.${modelName}Input;
 import ${basePackage}.service${bussinessPart}.${modelName}Service;
+import ${pageRef};
 
 /**
  * “${modelCn}”管理
@@ -29,51 +30,68 @@ public class ${modelName}Controller {
 
     /**
      * 创建一个“${modelCn}”
+     *
+     * @param ${modelName ?uncap_first}Input 待创建的“${modelCn}”
+     * @return 创建成功后生成的ID
      */
     @PostMapping("/create")
-    Object create(@RequestBody @Valid ${modelName}Input ${modelName ?uncap_first}Input) {
+    Long create(@RequestBody @Valid ${modelName}Input ${modelName ?uncap_first}Input) {
         return ${modelName ?uncap_first}Service.createEX(${modelName ?uncap_first}Input.toModel());
     }
 
     /**
      * 获取一个“${modelCn}”
+     *
+     * @param id 待获取“${modelCn}”的ID
+     * @return ${modelCn}
      */
     @GetMapping("/get/{id}")
-    Object get(@PathVariable Long id) {
+    ${modelName} get(@PathVariable Long id) {
         return ${modelName ?uncap_first}Service.getEX(id);
     }
 
     /**
      * 更新一个“${modelCn}”
+     *
+     * @param id 待更新“${modelCn}”的ID
+     * @param ${modelName ?uncap_first}Input 待更新的“${modelCn}”
      */
     @PostMapping("/update/{id}")
-    Object update(@PathVariable Long id, @RequestBody @Valid ${modelName}Input ${modelName ?uncap_first}Input) {
+    void update(@PathVariable Long id, @RequestBody @Valid ${modelName}Input ${modelName ?uncap_first}Input) {
         ${modelName ?uncap_first}Service.updateEX(${modelName ?uncap_first}Input.toModel().setId(id));
-        return null;
     }
 
     /**
      * 删除一个“${modelCn}”
+     *
+     * @param id 待删除“${modelCn}”的ID
      */
     @PostMapping("/delete/{id}")
-    Object delete(@PathVariable Long id) {
+    void delete(@PathVariable Long id) {
         ${modelName ?uncap_first}Service.deleteEX(id);
-        return null;
     }
 
     /**
      * 获取一批“${modelCn}”
+     *
+     * @param pageNo 页码
+     * @param pageSize 每页条目数
+     * @return “${modelCn}”分页
      */
     @GetMapping("/search")
-    Object search(@RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") @Max(1000) int pageSize) {
+    Page<${modelName}> search(@RequestParam(defaultValue = "1") int pageNo,
+            @RequestParam(defaultValue = "10") @Max(1000) int pageSize) {
         return ${modelName ?uncap_first}Service.page(pageNo, pageSize);
     }
 
     /**
      * 删除一批“${modelCn}”
+     *
+     * @param ids 待删除“${modelCn}”的ID列表
+     * @return 删除情况
      */
     @PostMapping("/batchDelete")
-    Object delete(@RequestBody List<Long> ids) {
+    String delete(@RequestBody List<Long> ids) {
         return ${modelName ?uncap_first}Service.deleteEX(ids);
     }
 
