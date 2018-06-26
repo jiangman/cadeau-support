@@ -118,7 +118,7 @@ public class ReturnParser {
                     }
                     rField.setReturnDesc(FieldDeclarationHelper.getFieldDesc(fieldDeclaration));
                     rFields.add(rField);
-                    if (!isSimpleType) {
+                    if (!TypeHelper.isSimpleType(FieldDeclarationHelper.getGenericType(fieldDeclaration))) {
                         String fieldTypeName;
                         if (isListOrSet) {
                             fieldTypeName = TypeHelper.getTypeName(FieldDeclarationHelper.getGenericType(
