@@ -122,7 +122,7 @@ public class ParameterParser {
                     }
                     bField.setBodyDesc(FieldDeclarationHelper.getFieldDesc(fieldDeclaration));
                     bFields.add(bField);
-                    if (!isSimpleType) {
+                    if (!TypeHelper.isSimpleType(FieldDeclarationHelper.getGenericType(fieldDeclaration))) {
                         String fieldTypeName;
                         if (isListOrSet) {
                             fieldTypeName = TypeHelper.getTypeName(FieldDeclarationHelper.getGenericType(
