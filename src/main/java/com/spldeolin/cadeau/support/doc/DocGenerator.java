@@ -37,8 +37,7 @@ public class DocGenerator {
         }
 
         // 发送到ShowDoc
-
-        ShowDocSender.sendToShowDocByFTLs(ftls);
+        //ShowDocSender.sendToShowDocByFTLs(ftls);
 
         // 删除临时文件
         //log.info("删除临时文件");

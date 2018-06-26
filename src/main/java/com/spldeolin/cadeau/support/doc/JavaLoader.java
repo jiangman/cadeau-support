@@ -101,4 +101,17 @@ public class JavaLoader {
         return result;
     }
 
+    /**
+     * 通过路径名和类名定位到指定类（普通类、内部类或非default类）
+     */
+    public static TypeDeclaration loadClassByClassName(String directoryPath, String className) {
+        List<TypeDeclaration> types = loadJavasAsTypes(directoryPath);
+        for (TypeDeclaration type : types) {
+            if (type.getName().equals(className)) {
+                return type;
+            }
+        }
+        throw new RuntimeException("无法定位到指定类");
+    }
+
 }

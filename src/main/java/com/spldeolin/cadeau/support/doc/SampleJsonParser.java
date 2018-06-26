@@ -1,7 +1,6 @@
 package com.spldeolin.cadeau.support.doc;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -9,8 +8,6 @@ import com.google.common.collect.Lists;
 import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.TypeHelper;
 import com.spldeolin.cadeau.support.util.StringCaseUtil;
-import japa.parser.JavaParser;
-import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.TypeDeclaration;
@@ -63,13 +60,9 @@ public class SampleJsonParser {
                         sb.append(TypeHelper.sampleValueBySimpleType(genericType));
                     } else {
                         // private List<User> users; 的情况，找到java文件，递归
-                        File fieldTypeJavaFile = filterFileByFieldTypeName(files,
-                                TypeHelper.getTypeName(TypeHelper.getGenericType(fieldType)));
-                        CompilationUnit unit;
-                        try (FileInputStream in = new FileInputStream(fieldTypeJavaFile)) {
-                            unit = JavaParser.parse(in);
-                        }
-                        TypeDeclaration modelType = unit.getTypes().get(0);
+                        String typeName = TypeHelper.getTypeName(TypeHelper.getGenericType(fieldType));
+                        TypeDeclaration modelType = JavaLoader.loadClassByClassName(DocConfig.basePackagePath,
+                                typeName);
                         StringBuilder sbEx = new StringBuilder(400);
                         analysisField(sbEx, modelType, true);
                         sb.append(sbEx);
@@ -78,12 +71,9 @@ public class SampleJsonParser {
                     sb.append(",");
                 } else {
                     // private User user; 的情况，找到java文件，递归
-                    File fieldTypeJavaFile = filterFileByFieldTypeName(files, TypeHelper.getTypeName(fieldType));
-                    CompilationUnit unit;
-                    try (FileInputStream in = new FileInputStream(fieldTypeJavaFile)) {
-                        unit = JavaParser.parse(in);
-                    }
-                    TypeDeclaration modelType = unit.getTypes().get(0);
+                    String typeName = TypeHelper.getTypeName(TypeHelper.getGenericType(fieldType));
+                    TypeDeclaration modelType = JavaLoader.loadClassByClassName(DocConfig.basePackagePath,
+                            typeName);
                     StringBuilder sbEx = new StringBuilder(400);
                     analysisField(sbEx, modelType, true);
 
