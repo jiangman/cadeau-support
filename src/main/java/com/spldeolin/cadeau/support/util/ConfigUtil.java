@@ -155,6 +155,13 @@ public class ConfigUtil {
     private static String page = "";
 
     /**
+     * PageParam的Reference
+     */
+    @Getter
+    @Setter
+    private String pageParam = "";
+
+    /**
      * ServiceException的Reference
      */
     @Getter
@@ -386,6 +393,13 @@ public class ConfigUtil {
             return;
         } else {
             ConfigUtil.page = page;
+        }
+        String pageParam = props.getProperty("page-param");
+        if (StringUtils.isBlank(pageParam) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath, pageParam)) {
+            log.info("\t“PageParam类”未指定或是路径不存在，请指定");
+            return;
+        } else {
+            ConfigUtil.pageParam = pageParam;
         }
         String serviceException = props.getProperty("service-exception");
         if (StringUtils.isBlank(serviceException) ||

@@ -25,6 +25,8 @@ public class ServiceImplFTL {
 
     private String pageRef;
 
+    private String pageParamRef;
+
     private String serviceExceptionRef;
 
 }

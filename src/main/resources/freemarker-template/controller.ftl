@@ -16,6 +16,7 @@ import ${basePackage}.model${bussinessPart}.${modelName};
 import ${basePackage}.input${bussinessPart}.${modelName}Input;
 import ${basePackage}.service${bussinessPart}.${modelName}Service;
 import ${pageRef};
+import ${pageParamRef};
 
 /**
  * “${modelCn}”管理
@@ -45,8 +46,8 @@ public class ${modelName}Controller {
      * @param id 待获取“${modelCn}”的ID
      * @return ${modelCn}
      */
-    @GetMapping("/get/{id}")
-    ${modelName} get(@PathVariable Long id) {
+    @GetMapping("/get")
+    ${modelName} get(@RequestParam Long id) {
         return ${modelName ?uncap_first}Service.getEX(id);
     }
 
@@ -56,8 +57,8 @@ public class ${modelName}Controller {
      * @param id 待更新“${modelCn}”的ID
      * @param ${modelName ?uncap_first}Input 待更新的“${modelCn}”
      */
-    @PostMapping("/update/{id}")
-    void update(@PathVariable Long id, @RequestBody @Valid ${modelName}Input ${modelName ?uncap_first}Input) {
+    @PostMapping("/update")
+    void update(@RequestParam Long id, @RequestBody @Valid ${modelName}Input ${modelName ?uncap_first}Input) {
         ${modelName ?uncap_first}Service.updateEX(${modelName ?uncap_first}Input.toModel().setId(id));
     }
 
@@ -66,22 +67,20 @@ public class ${modelName}Controller {
      *
      * @param id 待删除“${modelCn}”的ID
      */
-    @PostMapping("/delete/{id}")
-    void delete(@PathVariable Long id) {
+    @PostMapping("/delete")
+    void delete(@RequestParam Long id) {
         ${modelName ?uncap_first}Service.deleteEX(id);
     }
 
     /**
      * 获取一批“${modelCn}”
      *
-     * @param pageNo 页码
-     * @param pageSize 每页条目数
+     * @param pageParam 页码和每页条目数
      * @return “${modelCn}”分页
      */
     @GetMapping("/search")
-    Page<${modelName}> search(@RequestParam(defaultValue = "1") int pageNo,
-            @RequestParam(defaultValue = "10") @Max(1000) int pageSize) {
-        return ${modelName ?uncap_first}Service.page(pageNo, pageSize);
+    Page<${modelName}> search(PageParam pageParam) {
+        return ${modelName ?uncap_first}Service.page(pageParam);
     }
 
     /**
@@ -91,7 +90,7 @@ public class ${modelName}Controller {
      * @return 删除情况
      */
     @PostMapping("/batchDelete")
-    String delete(@RequestBody List<Long> ids) {
+    String delete(@RequestParam List<Long> ids) {
         return ${modelName ?uncap_first}Service.deleteEX(ids);
     }
 

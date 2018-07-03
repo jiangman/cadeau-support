@@ -23,4 +23,6 @@ public class ServiceFTL {
 
     private String pageRef;
 
+    private String pageParamRef;
+
 }

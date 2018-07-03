@@ -10,6 +10,7 @@ import java.util.List;
 import ${basePackage}.model${bussinessPart}.${modelName};
 import ${derivedServiceRef};
 import ${pageRef};
+import ${pageParamRef};
 
 /**
  * “${modelCn}”业务
@@ -62,12 +63,9 @@ public interface ${modelName}Service extends ${derivedServiceName}<${modelName}>
     /**
      * 分页获取资源
      *
-     * @param pageNo 页码
-     * @param pageSize 分页尺寸
+     * @param pageParam 页码和每页条目数
      * @return Page 分页对象
      */
-    Page<${modelName}> page(Integer pageNo, Integer pageSize); // 根据具体需求拓展这个方法（追加搜索用参数等）
-
-	// 其他方法声明
+    Page<${modelName}> page(PageParam pageParam); // 根据具体需求拓展这个方法（追加搜索用参数等）
 
 }

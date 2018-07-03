@@ -19,5 +19,6 @@ public class ControllerFTL {
 
     private String pageRef;
 
+    private String pageParamRef;
 
 }

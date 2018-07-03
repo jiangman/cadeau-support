@@ -38,6 +38,7 @@ public class ControllerGenerator {
             template.setModelName(modelName);
             template.setModelCn(modelCn);
             template.setPageRef(ConfigUtil.getPage());
+            template.setPageParamRef(ConfigUtil.getPageParam());
             String controllerContent = FreeMarkerUtil.format(true, "controller.ftl", template);
             if (ConfigUtil.getOverWrite()) {
                 FileUtils.write(new File(ConfigUtil.getControllerPath() + modelName + "Controller.java"),
