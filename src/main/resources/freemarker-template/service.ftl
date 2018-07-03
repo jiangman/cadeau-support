@@ -7,6 +7,7 @@
 package ${basePackage}.service${bussinessPart};
 
 import java.util.List;
+import java.util.Optional;
 import ${basePackage}.model${bussinessPart}.${modelName};
 import ${derivedServiceRef};
 import ${pageRef};
@@ -45,7 +46,7 @@ public interface ${modelName}Service extends ${derivedServiceName}<${modelName}>
 
     /**
      * 删除一个“${modelCn}”
-     * 
+     * （附带业务校验）
      *
      * @param id 待删除“${modelCn}”的ID
      */
@@ -53,7 +54,7 @@ public interface ${modelName}Service extends ${derivedServiceName}<${modelName}>
 
     /**
      * 删除多个资源
-     （附带业务校验，并返回详细情况）
+     * （附带业务校验，并返回详细情况）
      *
      * @param ids 待删除资源的ID列表
      * @return 删除情况
