@@ -45,7 +45,7 @@ public class AnnotationAddPlugin extends PluginAdapter {
         if ("insertedAt".equals(field.getName())) {
             field.addAnnotation("@JsonIgnore");
         }
-        if ("isDeleted".equals(field.getName())) {
+        if ("deletionFlag".equals(field.getName())) {
             field.addAnnotation("@JsonIgnore");
         }
         // 文件类型（比较少见）

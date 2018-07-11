@@ -32,8 +32,8 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
             IntrospectedTable introspectedTable, Plugin.ModelClassType modelClassType) {
         String fieldName = field.getName();
         FullyQualifiedJavaType fieldType = field.getType();
-        // 忽略insertedAt，isDeleted和byte[]类型字段
-        if (StringUtils.equalsAny(fieldName, "insertedAt", "isDeleted") || "byte[]".equals(fieldType.getShortName())) {
+        // 忽略insertedAt，deletionFlag和byte[]类型字段
+        if (StringUtils.equalsAny(fieldName, "insertedAt", "deletionFlag") || "byte[]".equals(fieldType.getShortName())) {
             return true;
         }
         File folder = new File(ftlPath);
