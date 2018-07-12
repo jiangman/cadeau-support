@@ -90,7 +90,7 @@ public class ${modelName}Controller {
      * @return 删除情况
      */
     @PostMapping("/batchDelete")
-    String delete(@RequestParam List<Long> ids) {
+    String delete(@RequestBody List<Long> ids) {
         return ${modelName ?uncap_first}Service.deleteEX(ids);
     }
 
