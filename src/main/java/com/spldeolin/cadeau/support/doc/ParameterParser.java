@@ -10,6 +10,7 @@ import com.google.common.collect.Maps;
 import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.JsonTypeHelper;
 import com.spldeolin.cadeau.support.doc.helper.ParameterHelper;
+import com.spldeolin.cadeau.support.doc.helper.TypeDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.TypeHelper;
 import com.spldeolin.cadeau.support.util.JsonFormatUtil;
 import com.spldeolin.cadeau.support.util.Nulls;
@@ -140,10 +141,10 @@ public class ParameterParser {
 
     private static void parseNonBodyField(List<MarkdownDocFTL.PField> pFields, Parameter parameter,
             Map<String, String> descs, int loopCount, StringBuilder url) {
-        MarkdownDocFTL.PField pField = new MarkdownDocFTL.PField();
         String parameterName = ParameterHelper.getParameterName(parameter);
         Type parameterType = ParameterHelper.getParameterType(parameter);
         if (TypeHelper.isSimpleType(parameterType)) {
+            MarkdownDocFTL.PField pField = new MarkdownDocFTL.PField();
             // paramName
             pField.setParamName(parameterName);
             // paramPlace
@@ -181,6 +182,30 @@ public class ParameterParser {
                 url.append(parameterName);
                 url.append("=");
             }
+        } else {
+            TypeDeclaration typeDeclaration = SampleJsonParser.getTypeFromTypeName(
+                    TypeHelper.getTypeName(parameterType));
+            List<MarkdownDocFTL.PField> pFieldsEx = Lists.newArrayList();
+            for (FieldDeclaration field : TypeDeclarationHelper.listFields(typeDeclaration)) {
+                if (field.toString().contains("final")) {
+                    continue;
+                }
+                MarkdownDocFTL.PField pField = new MarkdownDocFTL.PField();
+                pField.setParamName(FieldDeclarationHelper.getFieldName(field));
+                pField.setParamPlace("query");
+                if (FieldDeclarationHelper.hasAnnotation(field, "NotNull")
+                        || FieldDeclarationHelper.hasAnnotation(field, "NotEmpty")
+                        || FieldDeclarationHelper.hasAnnotation(field, "NotBlank")) {
+                    pField.setParamRequired("必传");
+                } else {
+                    pField.setParamRequired("非必传");
+                }
+                pField.setParamType(
+                        JsonTypeHelper.getJsonTypeFromJavaSimpleType(FieldDeclarationHelper.getFieldType(field)));
+                pField.setParamDesc(FieldDeclarationHelper.getFieldDesc(field));
+                pFieldsEx.add(pField);
+            }
+            pFields.addAll(pFieldsEx);
         }
     }
 

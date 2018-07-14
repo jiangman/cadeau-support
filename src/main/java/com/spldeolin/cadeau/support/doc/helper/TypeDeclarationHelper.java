@@ -5,9 +5,11 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import com.spldeolin.cadeau.support.util.Nulls;
+import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
+import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.TypeDeclaration;
 import japa.parser.ast.comments.Comment;
 import japa.parser.ast.expr.AnnotationExpr;
@@ -21,6 +23,20 @@ import lombok.extern.log4j.Log4j2;
 @UtilityClass
 @Log4j2
 public class TypeDeclarationHelper {
+
+    public static List<FieldDeclaration> listFields(TypeDeclaration typeDeclaration) {
+        List<FieldDeclaration> result = Lists.newArrayList();
+        List<BodyDeclaration> bodyDeclarations = typeDeclaration.getMembers();
+        if (bodyDeclarations != null) {
+            for (BodyDeclaration bodyDeclaration : bodyDeclarations) {
+                if (bodyDeclaration instanceof FieldDeclaration) {
+                    FieldDeclaration fieldDeclaration = (FieldDeclaration) bodyDeclaration;
+                    result.add(fieldDeclaration);
+                }
+            }
+        }
+        return result;
+    }
 
     public static String getName(TypeDeclaration typeDeclaration) {
         return typeDeclaration.getName();
