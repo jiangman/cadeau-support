@@ -3,11 +3,9 @@ package com.spldeolin.cadeau.support.doc;
 import java.io.File;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import com.google.common.collect.Lists;
 import com.spldeolin.cadeau.support.doc.helper.FieldDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.TypeHelper;
-import com.spldeolin.cadeau.support.util.StringCaseUtil;
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
 import japa.parser.ast.body.TypeDeclaration;
@@ -21,18 +19,23 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class SampleJsonParser {
 
-    private static List<File> files;
-
     static {
         // 加载所有Java
-        files = Lists.newArrayList(FileUtils.iterateFiles(new File(DocConfig.basePackagePath), new String[] {"java"},
-                true));
+        List<File> files = Lists.newArrayList(
+                FileUtils.iterateFiles(new File(DocConfig.basePackagePath), new String[] {"java"}, true));
         // 文件名重名检查
         JavaLoader.sameFilenameCheck(files);
     }
 
+    private static List<TypeDeclaration> recursiveTypes = Lists.newArrayList();
+
+    public static void clearRecursiveTypes() {
+        recursiveTypes = Lists.newArrayList();
+    }
+
     @SneakyThrows
     public static void analysisField(StringBuilder sb, TypeDeclaration typeDeclaration, boolean ignoreUpdatedAt) {
+        recursiveTypes.add(typeDeclaration);
         sb.append("{");
         for (BodyDeclaration bodyDeclaration : typeDeclaration.getMembers()) {
             if (bodyDeclaration instanceof FieldDeclaration) {
@@ -64,7 +67,9 @@ public class SampleJsonParser {
                         TypeDeclaration modelType = JavaLoader.loadClassByClassName(DocConfig.basePackagePath,
                                 typeName);
                         StringBuilder sbEx = new StringBuilder(400);
-                        analysisField(sbEx, modelType, true);
+                        if (!existInRecursiveTypes(modelType)) {
+                            analysisField(sbEx, modelType, true);
+                        }
                         sb.append(sbEx);
                     }
                     sb.append("]");
@@ -75,7 +80,9 @@ public class SampleJsonParser {
                     TypeDeclaration modelType = JavaLoader.loadClassByClassName(DocConfig.basePackagePath,
                             typeName);
                     StringBuilder sbEx = new StringBuilder(400);
-                    analysisField(sbEx, modelType, true);
+                    if (!existInRecursiveTypes(modelType)) {
+                        analysisField(sbEx, modelType, true);
+                    }
 
                     sb.append(sbEx);
                     sb.append(",");
@@ -91,11 +98,13 @@ public class SampleJsonParser {
                 () -> new RuntimeException("找不到" + typeName + "，原因是读取失败或是未考虑到的简单类型"));
     }
 
-    private static File filterFileByFieldTypeName(List<File> files, String fieldName) {
-        String filename = StringCaseUtil.upperFirstChar(fieldName);
-        return files.stream().filter(
-                file -> FilenameUtils.getBaseName(file.getName()).equals(filename)).findFirst().orElseThrow(
-                () -> new RuntimeException("文件" + filename + ".java不存在"));
+    private static boolean existInRecursiveTypes(TypeDeclaration type) {
+        for (TypeDeclaration recursiveType : recursiveTypes) {
+            if (type.getName().equals(recursiveType.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

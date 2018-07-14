@@ -12,9 +12,9 @@ public class DocConfig {
 
     public static final String TEMP_DIRECTORY_PATH = System.getProperty("user.dir") + sep + "doc-temp" + sep;
 
-    static String basePackagePath = "C:\\java-development\\projects-repo\\women-projects\\船友-core\\src\\main\\java\\com\\womenhz\\shipmate\\core";
+    static String basePackagePath = "C:\\java-development\\projects-repo\\women-projects\\sf-sparepart-end\\src\\main\\java\\com\\womenhz\\sfsparepart";
 
-    static String controllerPackagePath = "C:\\java-development\\projects-repo\\women-projects\\船友-core\\src\\main\\java\\com\\womenhz\\shipmate\\core\\controller";
+    static String controllerPackagePath = "C:\\java-development\\projects-repo\\women-projects\\sf-sparepart-end\\src\\main\\java\\com\\womenhz\\sfsparepart\\controller";
 
     static String apiKey = "6f73675a637d1215cb237a68f053c0181418538293";
 

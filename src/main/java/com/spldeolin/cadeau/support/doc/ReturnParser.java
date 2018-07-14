@@ -52,6 +52,7 @@ public class ReturnParser {
             }
             TypeDeclaration returnTypeDeclaration = SampleJsonParser.getTypeFromTypeName(genericReturnTypeName);
             StringBuilder sb = new StringBuilder(400);
+            SampleJsonParser.clearRecursiveTypes();
             SampleJsonParser.analysisField(sb, returnTypeDeclaration, false);
             sampleJson = sb.toString();
             // 修剪掉多余的逗号
@@ -155,7 +156,6 @@ public class ReturnParser {
         List<String> commentLines = newArrayList(Nulls.toEmpty(comment.getContent()).split("\n"));
         for (String commentLine : commentLines) {
             commentLine = commentLine.replaceFirst("\\*", "").trim();
-            String[] nodes = commentLine.split(" ");
             if (!commentLine.startsWith("@return ")) {
                 continue;
             }

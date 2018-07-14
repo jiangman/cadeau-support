@@ -195,6 +195,7 @@ public class ParameterParser {
             TypeDeclaration parameterTypeDeclaration = SampleJsonParser.getTypeFromTypeName(
                     TypeHelper.getTypeName(genericReturnType));
             StringBuilder sb = new StringBuilder(400);
+            SampleJsonParser.clearRecursiveTypes();
             SampleJsonParser.analysisField(sb, parameterTypeDeclaration, false);
             sampleJson = sb.toString();
             // 修剪掉多余的逗号
