@@ -55,9 +55,13 @@ public class ControllerParser {
                 // 返回值
                 try {
                     ReturnParser.parseReturn(ftl, requestMethod);
+
+                    ReturnParser.clearRecursiveReturnTypes();
                     ReturnParser.parseReturnFields(ftl, requestMethod);
+
                     // 非简单类型 或 有@return说明，则显示“返回值说明”
-                    if (Boolean.FALSE.equals(ftl.getIsRetrunSimpleType()) || StringUtils.isNotBlank(ftl.getReturnDesc())) {
+                    if (Boolean.FALSE.equals(ftl.getIsRetrunSimpleType()) ||
+                            StringUtils.isNotBlank(ftl.getReturnDesc())) {
                         ftl.setDisplayReturnInfo(true);
                     }
                 } catch (Exception e) {

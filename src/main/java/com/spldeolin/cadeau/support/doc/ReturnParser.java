@@ -27,6 +27,12 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ReturnParser {
 
+    private static List<TypeDeclaration> recursiveTypes = Lists.newArrayList();
+
+    public static void clearRecursiveReturnTypes() {
+        recursiveTypes = Lists.newArrayList();
+    }
+
     /**
      * generate json sample
      */
@@ -78,12 +84,13 @@ public class ReturnParser {
         }
         TypeDeclaration returnType = SampleJsonParser.getTypeFromTypeName(TypeHelper.getTypeName(genericReturnType));
         List<MarkdownDocFTL.RField> rFields = Lists.newArrayList();
-        generateRField(rFields, returnType.getMembers(), "", false);
+        generateRField(rFields, returnType.getMembers(), "", false, returnType);
         ftl.setReturnFields(rFields);
     }
 
     private static void generateRField(List<MarkdownDocFTL.RField> rFields, List<BodyDeclaration> members,
-            String prefix, boolean ignoreUpdatedAt) {
+            String prefix, boolean ignoreUpdatedAt, TypeDeclaration type) {
+        recursiveTypes.add(type);
         if (members != null) {
             for (BodyDeclaration bodyDeclaration : members) {
                 if (bodyDeclaration instanceof FieldDeclaration) {
@@ -128,7 +135,9 @@ public class ReturnParser {
                             fieldTypeName = FieldDeclarationHelper.getFieldType(fieldDeclaration);
                         }
                         TypeDeclaration fieldType = SampleJsonParser.getTypeFromTypeName(fieldTypeName);
-                        generateRField(rFields, fieldType.getMembers(), returnName, true);
+                        if (!existInRecursiveTypes(type)) {
+                            generateRField(rFields, fieldType.getMembers(), returnName, true, fieldType);
+                        }
                     }
                 }
             }
@@ -162,6 +171,15 @@ public class ReturnParser {
             return commentLine.replace("@return ", "");
         }
         return null;
+    }
+
+    private static boolean existInRecursiveTypes(TypeDeclaration type) {
+        for (TypeDeclaration recursiveType : recursiveTypes) {
+            if (type.getName().equals(recursiveType.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
