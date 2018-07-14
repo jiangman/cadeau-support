@@ -143,44 +143,44 @@ public class ParameterParser {
         MarkdownDocFTL.PField pField = new MarkdownDocFTL.PField();
         String parameterName = ParameterHelper.getParameterName(parameter);
         Type parameterType = ParameterHelper.getParameterType(parameter);
-        // paramName
-        pField.setParamName(parameterName);
-        // paramPlace
-        if (ParameterHelper.isRequestParam(parameter)) {
-            pField.setParamPlace("query");
-        } else {
-            pField.setParamPlace("path");
-        }
-        // paramType
         if (TypeHelper.isSimpleType(parameterType)) {
+            // paramName
+            pField.setParamName(parameterName);
+            // paramPlace
+            if (ParameterHelper.isRequestParam(parameter)) {
+                pField.setParamPlace("query");
+            } else {
+                pField.setParamPlace("path");
+            }
+            // paramType
             String parameterTypeName = TypeHelper.getTypeName(parameterType);
             pField.setParamType(JsonTypeHelper.getJsonTypeFromJavaSimpleType(parameterTypeName));
-        }
-        // paramDesc
-        String paramDesc = descs.get(parameterName);
-        if (StringUtils.isBlank(paramDesc)) {
-            paramDesc = ParameterHelper.getDescription(parameter);
-        }
-        if (StringUtils.isBlank(paramDesc)) {
-            paramDesc = "　";
-        }
-        pField.setParamDesc(paramDesc);
-        // paramRequired
-        if (ParameterHelper.isRequiredFalse(parameter) || ParameterHelper.isAssignedDefaultValue(parameter)) {
-            pField.setParamRequired("非必传");
-        } else {
-            pField.setParamRequired("必传");
-        }
-        pFields.add(pField);
-        // 在URL后追加?a=&b=
-        if (ParameterHelper.isRequestParam(parameter)) {
-            if (loopCount == 0) {
-                url.append("?");
-            } else {
-                url.append("&");
+            // paramDesc
+            String paramDesc = descs.get(parameterName);
+            if (StringUtils.isBlank(paramDesc)) {
+                paramDesc = ParameterHelper.getDescription(parameter);
             }
-            url.append(parameterName);
-            url.append("=");
+            if (StringUtils.isBlank(paramDesc)) {
+                paramDesc = "　";
+            }
+            pField.setParamDesc(paramDesc);
+            // paramRequired
+            if (ParameterHelper.isRequiredFalse(parameter) || ParameterHelper.isAssignedDefaultValue(parameter)) {
+                pField.setParamRequired("非必传");
+            } else {
+                pField.setParamRequired("必传");
+            }
+            pFields.add(pField);
+            // 在URL后追加?a=&b=
+            if (ParameterHelper.isRequestParam(parameter)) {
+                if (loopCount == 0) {
+                    url.append("?");
+                } else {
+                    url.append("&");
+                }
+                url.append(parameterName);
+                url.append("=");
+            }
         }
     }
 
