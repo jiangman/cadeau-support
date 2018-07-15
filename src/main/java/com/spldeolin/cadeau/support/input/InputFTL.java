@@ -32,6 +32,8 @@ public class InputFTL implements Comparable<InputFTL> {
 
     private List<DtoFieldFTL> fields;
 
+    private List<String> stringFieldNames;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

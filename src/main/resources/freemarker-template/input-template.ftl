@@ -23,7 +23,7 @@ import ${modelPackage}.${model};
 ${classDocEnd}
 @Data
 @Accessors(chain = true)
-public class ${model}Input implements Serializable {
+public class ${model}Input implements Serializable, EnsureStringFieldsTrimmed {
 
 	<#list fields as field>
 <#if field.javadoc ??>
@@ -43,6 +43,15 @@ public class ${model}Input implements Serializable {
 
     public ${model} toModel() {
         return ${model}.builder()<#list fields as field>.${field.name}(${field.name})</#list>.build();
+    }
+
+    @Override
+    public void trimStringFields() {
+<#list stringFieldNames as stringFieldName>
+        if (${stringFieldName} != null) {
+    ${stringFieldName} = ${stringFieldName}.trim();
+        }
+</#list>
     }
 
 }

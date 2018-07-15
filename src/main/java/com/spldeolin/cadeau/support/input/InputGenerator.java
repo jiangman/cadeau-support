@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import com.google.common.collect.Lists;
 import com.spldeolin.cadeau.support.util.ConfigUtil;
 import com.spldeolin.cadeau.support.util.FileMoveUtil;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
@@ -51,13 +52,18 @@ public class InputGenerator {
         inputFTLs = inputFTLs.stream().distinct().collect(Collectors.toList());
         // 重新遍历inputFTLs，选择属于自己的field
         for (InputFTL inputFTL : inputFTLs) {
-            List<DtoFieldFTL> fields = new ArrayList<>();
+            List<DtoFieldFTL> fields = Lists.newArrayList();
+            List<String> stringFieldNames = Lists.newArrayList();
             for (Map.Entry<String, DtoFieldFTL> entry : entries) {
                 if (inputFTL.getModel().equals(modelFromEntry(entry))) {
                     fields.add(entry.getValue());
                 }
+                if ("String".equals(entry.getValue().getType())) {
+                    stringFieldNames.add(entry.getValue().getName());
+                }
             }
             inputFTL.setFields(fields);
+            inputFTL.setStringFieldNames(stringFieldNames);
         }
         // 根据inputFTLs，生成Java文件
         for (InputFTL inputFTL : inputFTLs) {
