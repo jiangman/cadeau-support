@@ -4,10 +4,10 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import com.spldeolin.cadeau.support.util.ConfigUtil;
-import com.spldeolin.cadeau.support.util.FileMoveUtil;
+import com.spldeolin.cadeau.support.util.ConfigUtils;
+import com.spldeolin.cadeau.support.util.FileMoveUtils;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
-import com.spldeolin.cadeau.support.util.StringCaseUtil;
+import com.spldeolin.cadeau.support.util.StringCaseUtils;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
@@ -18,15 +18,15 @@ public class ControllerGenerator {
 
     @SneakyThrows
     public static void controller() {
-        String[] tableNames = ConfigUtil.getTableNames();
-        String[] modelCns = ConfigUtil.getModelCns();
+        String[] tableNames = ConfigUtils.getTableNames();
+        String[] modelCns = ConfigUtils.getModelCns();
         for (int i = 0; i < tableNames.length; i++) {
-            String modelName = StringCaseUtil.snakeToUpperCamel(tableNames[i]);
+            String modelName = StringCaseUtils.snakeToUpperCamel(tableNames[i]);
             String modelCn = modelCns[i];
             ControllerFTL template = new ControllerFTL();
-            template.setBasePackage(ConfigUtil.getBasePackage());
-            template.setClassDocEnd(ConfigUtil.getClassDocEnd());
-            String bussiness = ConfigUtil.getBussiness();
+            template.setBasePackage(ConfigUtils.getBasePackage());
+            template.setClassDocEnd(ConfigUtils.getClassDocEnd());
+            String bussiness = ConfigUtils.getBussiness();
             String bussinessPart;
             if (StringUtils.isBlank(bussiness)) {
                 bussinessPart = "";
@@ -37,16 +37,16 @@ public class ControllerGenerator {
             template.setBussinessPart(bussinessPart);
             template.setModelName(modelName);
             template.setModelCn(modelCn);
-            template.setPageRef(ConfigUtil.getPage());
-            template.setPageParamRef(ConfigUtil.getPageParam());
+            template.setPageRef(ConfigUtils.getPage());
+            template.setPageParamRef(ConfigUtils.getPageParam());
             String controllerContent = FreeMarkerUtil.format(true, "controller.ftl", template);
-            if (ConfigUtil.getOverWrite()) {
-                FileUtils.write(new File(ConfigUtil.getControllerPath() + modelName + "Controller.java"),
+            if (ConfigUtils.getOverWrite()) {
+                FileUtils.write(new File(ConfigUtils.getControllerPath() + modelName + "Controller.java"),
                         controllerContent, StandardCharsets.UTF_8);
             } else {
-                File f = new File(ConfigUtil.getControllerPath() + modelName + "Controller.java");
+                File f = new File(ConfigUtils.getControllerPath() + modelName + "Controller.java");
                 if (f.exists()) {
-                    f = FileMoveUtil.renameFile(f, 1);
+                    f = FileMoveUtils.renameFile(f, 1);
                 }
                 FileUtils.write(f, controllerContent, StandardCharsets.UTF_8);
             }

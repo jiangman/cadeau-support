@@ -16,7 +16,7 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.internal.util.StringUtility;
-import com.spldeolin.cadeau.support.util.ConfigUtil;
+import com.spldeolin.cadeau.support.util.ConfigUtils;
 
 /**
  * model类注释生成器，同时这个类还会生成model类属性的注解
@@ -92,9 +92,9 @@ public class CommentGenerator implements org.mybatis.generator.api.CommentGenera
     @Override
     public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         String tableName = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
-        int index = ArrayUtils.indexOf(ConfigUtil.getTableNames(), tableName);
-        String tableCommtent = ConfigUtil.getTableComments()[index];
-        String modelCn = ConfigUtil.getModelCns()[index];
+        int index = ArrayUtils.indexOf(ConfigUtils.getTableNames(), tableName);
+        String tableCommtent = ConfigUtils.getTableComments()[index];
+        String modelCn = ConfigUtils.getModelCns()[index];
         String description;
         if (StringUtils.isNotBlank(tableCommtent)) {
             description = tableCommtent;
@@ -105,7 +105,7 @@ public class CommentGenerator implements org.mybatis.generator.api.CommentGenera
         }
         topLevelClass.addJavaDocLine("/**");
         topLevelClass.addJavaDocLine(" * " + description);
-        topLevelClass.addJavaDocLine(ConfigUtil.getClassDocEnd());
+        topLevelClass.addJavaDocLine(ConfigUtils.getClassDocEnd());
     }
 
     @Override

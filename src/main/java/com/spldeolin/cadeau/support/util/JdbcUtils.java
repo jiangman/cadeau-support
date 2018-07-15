@@ -12,15 +12,15 @@ import java.util.Map;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class JdbcUtil {
+public class JdbcUtils {
 
-    private static Connection conn = null;
+    private static Connection conn;
 
     static {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(ConfigUtil.getMysqlUrl(), ConfigUtil.getMysqlUsername(),
-                    ConfigUtil.getMysqlPassword());
+            conn = DriverManager.getConnection(ConfigUtils.getMysqlUrl(), ConfigUtils.getMysqlUsername(),
+                    ConfigUtils.getMysqlPassword());
         } catch (Exception e) {
             log.error("checked", e);
             throw new RuntimeException();
@@ -33,7 +33,7 @@ public class JdbcUtil {
             Statement stat = conn.createStatement();
             ResultSet rs = stat.executeQuery(
                     "SELECT TABLE_NAME, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = '" +
-                            ConfigUtil.getMysqlDatabase() + "'");
+                            ConfigUtils.getMysqlDatabase() + "'");
             while (rs.next()) {
                 tableCommtents = rs.getString("TABLE_COMMENT");
             }

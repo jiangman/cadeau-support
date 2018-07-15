@@ -9,7 +9,7 @@ import lombok.extern.log4j.Log4j2;
  * 文件移动工具类
  */
 @Log4j2
-public class FileMoveUtil {
+public class FileMoveUtils {
 
     public static void move(File srcFile, File destFolder, boolean overWrite) {
         if (overWrite) {

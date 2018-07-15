@@ -3,7 +3,7 @@ package com.spldeolin.cadeau.support.util;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
-public class ConstantUtil {
+public class ConstantUtils {
 
     public final static char sep = File.separatorChar;
 

@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-public class SingularAndPluralUtil {
+public class SingularAndPluralUtils {
 
     private static List<RuleAndReplacement> plurals = new ArrayList<>();
 
@@ -117,22 +117,24 @@ public class SingularAndPluralUtil {
 
     public static void main(String[] args) {
         // 单数转复数
-        System.out.println(SingularAndPluralUtil.pluralize("basic_woman"));
-        System.out.println(SingularAndPluralUtil.pluralize("box"));
-        System.out.println(SingularAndPluralUtil.pluralize("tomato"));
+        System.out.println(SingularAndPluralUtils.pluralize("basic_woman"));
+        System.out.println(SingularAndPluralUtils.pluralize("box"));
+        System.out.println(SingularAndPluralUtils.pluralize("tomato"));
         // 复数转单数
-        System.out.println(SingularAndPluralUtil.singularize("women"));
-        System.out.println(SingularAndPluralUtil.singularize(""));
+        System.out.println(SingularAndPluralUtils.singularize("women"));
+        System.out.println(SingularAndPluralUtils.singularize(""));
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class RuleAndReplacement {
+
+        private String rule;
+
+        private String replacement;
+
     }
 
 }
 
-@Data
-@AllArgsConstructor
-class RuleAndReplacement {
 
-    private String rule;
-
-    private String replacement;
-
-}

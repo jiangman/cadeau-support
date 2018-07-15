@@ -1,6 +1,6 @@
 package com.spldeolin.cadeau.support.util;
 
-import static com.spldeolin.cadeau.support.util.ConstantUtil.sep;
+import static com.spldeolin.cadeau.support.util.ConstantUtils.sep;
 
 import java.io.File;
 import java.io.IOException;

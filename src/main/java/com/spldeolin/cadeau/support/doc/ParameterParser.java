@@ -12,7 +12,7 @@ import com.spldeolin.cadeau.support.doc.helper.JsonTypeHelper;
 import com.spldeolin.cadeau.support.doc.helper.ParameterHelper;
 import com.spldeolin.cadeau.support.doc.helper.TypeDeclarationHelper;
 import com.spldeolin.cadeau.support.doc.helper.TypeHelper;
-import com.spldeolin.cadeau.support.util.JsonFormatUtil;
+import com.spldeolin.cadeau.support.util.JsonFormatUtils;
 import com.spldeolin.cadeau.support.util.Nulls;
 import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
@@ -224,12 +224,12 @@ public class ParameterParser {
             SampleJsonParser.analysisField(sb, parameterTypeDeclaration, false);
             sampleJson = sb.toString();
             // 修剪掉多余的逗号
-            sampleJson = JsonFormatUtil.trim(sampleJson);
+            sampleJson = JsonFormatUtils.trim(sampleJson);
         }
         // 包裹List或Page
         sampleJson = ReturnParser.wrapArrayOrPage(sampleJson, rawParameterType);
         // 美化JSON
-        sampleJson = JsonFormatUtil.formatJson(sampleJson);
+        sampleJson = JsonFormatUtils.formatJson(sampleJson);
         ftl.setBodyJson(sampleJson);
     }
 

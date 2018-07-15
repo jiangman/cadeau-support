@@ -6,15 +6,7 @@ import lombok.extern.log4j.Log4j2;
  * @author Deolin 2018/06/10
  */
 @Log4j2
-public class JsonFormatUtil {
-
-    public static void main(String[] args) {
-        String str = "{\"content\":\"this is the msg content.\",\"tousers\":\"user1|user2\",\"msgtype\":\"texturl\"," +
-                "\"appkey\":\"test\",\"domain\":\"test\",\"system\":{\"wechat\":[{\"safe\":1},{\"safe\":2},{\"safe\"" +
-                ":3}]},\"texturl\":{\"urltype\":\"0\",\"user1\":{\"spStatus\":\"user01\",\"workid\":\"work01\"},\"" +
-                "user2\":{\"spStatus\":\"user02\",\"workid\":\"work02\"}}}";
-        log.info(JsonFormatUtil.formatJson(str));
-    }
+public class JsonFormatUtils {
 
     /**
      * 格式化

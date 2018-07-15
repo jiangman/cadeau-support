@@ -10,7 +10,7 @@ import lombok.extern.log4j.Log4j2;
  * MultipartFile类型与File类型文件的解析工具类。
  */
 @Log4j2
-public class FileParseUtil {
+public class FileParseUtils {
 
     /**
      * 文件全名<br>

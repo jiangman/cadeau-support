@@ -1,6 +1,6 @@
 package com.spldeolin.cadeau.support.doc;
 
-import static com.spldeolin.cadeau.support.util.ConstantUtil.sep;
+import static com.spldeolin.cadeau.support.util.ConstantUtils.sep;
 
 import lombok.extern.log4j.Log4j2;
 

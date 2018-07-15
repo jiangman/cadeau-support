@@ -1,10 +1,10 @@
 package com.spldeolin.cadeau.support.util;
 
-import static com.spldeolin.cadeau.support.util.ConstantUtil.SDF;
-import static com.spldeolin.cadeau.support.util.ConstantUtil.br;
-import static com.spldeolin.cadeau.support.util.ConstantUtil.mavenJava;
-import static com.spldeolin.cadeau.support.util.ConstantUtil.mavenRes;
-import static com.spldeolin.cadeau.support.util.ConstantUtil.sep;
+import static com.spldeolin.cadeau.support.util.ConstantUtils.SDF;
+import static com.spldeolin.cadeau.support.util.ConstantUtils.br;
+import static com.spldeolin.cadeau.support.util.ConstantUtils.mavenJava;
+import static com.spldeolin.cadeau.support.util.ConstantUtils.mavenRes;
+import static com.spldeolin.cadeau.support.util.ConstantUtils.sep;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -22,7 +22,7 @@ import lombok.extern.log4j.Log4j2;
 
 @UtilityClass
 @Log4j2
-public class ConfigUtil {
+public class ConfigUtils {
 
     @Getter
     @Setter
@@ -257,7 +257,7 @@ public class ConfigUtil {
     @SneakyThrows
     private static void readProps() {
         log.info("读取配置文件");
-        props.load(new InputStreamReader(ConfigUtil.class.getClassLoader().getResourceAsStream("生成配置.properties"),
+        props.load(new InputStreamReader(ConfigUtils.class.getClassLoader().getResourceAsStream("生成配置.properties"),
                 StandardCharsets.UTF_8));
         log.info("读取配置文件完成");
     }
@@ -269,19 +269,19 @@ public class ConfigUtil {
         if (StringUtils.isBlank(author)) {
             log.info("\t“作者”未指定，使用缺省配置");
         } else {
-            ConfigUtil.author = author;
+            ConfigUtils.author = author;
         }
         String date = props.getProperty("date");
         if (StringUtils.isBlank(date)) {
             log.info("\t“生成日期”未指定，使用缺省配置");
-            ConfigUtil.date = SDF.format(new Date());
+            ConfigUtils.date = SDF.format(new Date());
         } else {
             try {
                 SDF.parse(date);
-                ConfigUtil.date = date;
+                ConfigUtils.date = date;
             } catch (ParseException e) {
                 log.info("\t“生成日期”无法解析，使用缺省配置");
-                ConfigUtil.date = SDF.format(new Date());
+                ConfigUtils.date = SDF.format(new Date());
             }
         }
         // bussiness
@@ -289,7 +289,7 @@ public class ConfigUtil {
         if (StringUtils.isBlank(bussiness)) {
             log.info("\t“业务模块”未指定，使用缺省配置");
         } else {
-            ConfigUtil.bussiness = bussiness;
+            ConfigUtils.bussiness = bussiness;
         }
         // names
         String tableNames = props.getProperty("tableNames");
@@ -304,8 +304,8 @@ public class ConfigUtil {
             log.error("表名与模型名个数不完全一致。");
             throw new RuntimeException();
         }
-        ConfigUtil.tableNames = a1;
-        ConfigUtil.modelCns = a2;
+        ConfigUtils.tableNames = a1;
+        ConfigUtils.modelCns = a2;
         // mysql
         String mysqlIp = props.getProperty("mysql-ip");
         String mysqlPort = props.getProperty("mysql-port");
@@ -316,14 +316,14 @@ public class ConfigUtil {
             log.info("\t“数据库IP”、“端口”、“用户名”、“密码”未完全指定，使用缺省配置。");
         } else {
             mysqlUrl = mysqlUrl.replace("localhost", mysqlIp).replace("3306", mysqlPort);
-            ConfigUtil.mysqlUsername = mysqlUsername;
-            ConfigUtil.mysqlPassword = mysqlPassword;
+            ConfigUtils.mysqlUsername = mysqlUsername;
+            ConfigUtils.mysqlPassword = mysqlPassword;
         }
         if (StringUtils.isBlank(mysqlDatabase)) {
             log.info("\t“数据库名”未指定，使用缺省配置。");
         } else {
             mysqlUrl = mysqlUrl.replace("information_schema", mysqlDatabase);
-            ConfigUtil.mysqlDatabase = mysqlDatabase;
+            ConfigUtils.mysqlDatabase = mysqlDatabase;
         }
         // over-write
         String overWrite = props.getProperty("over-write");
@@ -333,7 +333,7 @@ public class ConfigUtil {
             if (!"true".equalsIgnoreCase(overWrite)) {
                 log.info("\t“文件重名时是否覆盖”不是true，使用缺省配置");
             } else {
-                ConfigUtil.overWrite = true;
+                ConfigUtils.overWrite = true;
             }
         }
         // path package
@@ -341,72 +341,73 @@ public class ConfigUtil {
         if (!new File(projectPath).exists()) {
             log.info("\t“项目路径”未指定或是路径不存在，使用缺省配置");
         } else {
-            ConfigUtil.projectPath = projectPath;
+            ConfigUtils.projectPath = projectPath;
         }
         String basePackage = props.getProperty("base-package");
-        if (StringUtils.isBlank(basePackage) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath, basePackage)) {
+        if (StringUtils.isBlank(basePackage) || !FileExistsUtils.referenceExist(ConfigUtils.projectPath, basePackage)) {
             log.info("\t“基础包名”未指定或是路径不存在，使用缺省配置");
         } else {
-            ConfigUtil.basePackage = basePackage;
+            ConfigUtils.basePackage = basePackage;
         }
-        if (StringUtils.isBlank(mapperFolder) || !FileExistsUtil.resourceExist(ConfigUtil.projectPath, mapperFolder)) {
+        if (StringUtils.isBlank(mapperFolder) ||
+                !FileExistsUtils.resourceExist(ConfigUtils.projectPath, mapperFolder)) {
             log.info("\t“mapper.xml文件夹”未指定或是路径不存在，使用缺省配置");
-            ConfigUtil.mapperFolder = projectPath + mavenRes + mapperFolder.replace('.', sep) + "mapper";
+            ConfigUtils.mapperFolder = projectPath + mavenRes + mapperFolder.replace('.', sep) + "mapper";
         } else {
-            ConfigUtil.mapperFolder = mapperFolder;
+            ConfigUtils.mapperFolder = mapperFolder;
         }
         // component
         String derivedService = props.getProperty("derived-service");
         if (StringUtils.isBlank(derivedService) ||
-                !FileExistsUtil.referenceExist(ConfigUtil.projectPath, derivedService)) {
+                !FileExistsUtils.referenceExist(ConfigUtils.projectPath, derivedService)) {
             log.info("\t“通用Service接口”未指定或是路径不存在，请指定");
-            ConfigUtil.derivedService = "com.spldeolin.cadeau.library.inherited.CommonService";
+            ConfigUtils.derivedService = "com.spldeolin.cadeau.library.inherited.CommonService";
         } else {
-            ConfigUtil.derivedService = derivedService;
+            ConfigUtils.derivedService = derivedService;
         }
         String derivedServiceImpl = props.getProperty("derived-service-impl");
         if (StringUtils.isBlank(derivedServiceImpl) ||
-                !FileExistsUtil.referenceExist(ConfigUtil.projectPath, derivedServiceImpl)) {
+                !FileExistsUtils.referenceExist(ConfigUtils.projectPath, derivedServiceImpl)) {
             log.info("\t“通用ServiceImpl抽象类”未指定或是路径不存在，请指定");
-            ConfigUtil.derivedServiceImpl = "com.spldeolin.cadeau.library.inherited.CommonServiceImpl";
+            ConfigUtils.derivedServiceImpl = "com.spldeolin.cadeau.library.inherited.CommonServiceImpl";
         } else {
-            ConfigUtil.derivedServiceImpl = derivedServiceImpl;
+            ConfigUtils.derivedServiceImpl = derivedServiceImpl;
         }
         String derivedMapper = props.getProperty("derived-mapper");
-        if (StringUtils.isBlank(derivedMapper) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath,
+        if (StringUtils.isBlank(derivedMapper) || !FileExistsUtils.referenceExist(ConfigUtils.projectPath,
                 derivedMapper)) {
             log.info("\t“通用Mapper接口”未指定或是路径不存在，请指定");
-            ConfigUtil.derivedMapper = "com.spldeolin.cadeau.library.inherited.CommonMapper";
+            ConfigUtils.derivedMapper = "com.spldeolin.cadeau.library.inherited.CommonMapper";
         } else {
-            ConfigUtil.derivedMapper = derivedMapper;
+            ConfigUtils.derivedMapper = derivedMapper;
         }
         String textOption = props.getProperty("text-option");
-        if (StringUtils.isBlank(textOption) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath, textOption)) {
+        if (StringUtils.isBlank(textOption) || !FileExistsUtils.referenceExist(ConfigUtils.projectPath, textOption)) {
             log.info("\t“TextOption类”未指定或是路径不存在，请指定");
-            ConfigUtil.textOption = "com.spldeolin.cadeau.library.valid.annotation.TextOption";
+            ConfigUtils.textOption = "com.spldeolin.cadeau.library.valid.annotation.TextOption";
         } else {
-            ConfigUtil.textOption = textOption;
+            ConfigUtils.textOption = textOption;
         }
         String page = props.getProperty("page");
-        if (StringUtils.isBlank(page) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath, page)) {
+        if (StringUtils.isBlank(page) || !FileExistsUtils.referenceExist(ConfigUtils.projectPath, page)) {
             log.info("\t“Page类”未指定或是路径不存在，请指定");
             return;
         } else {
-            ConfigUtil.page = page;
+            ConfigUtils.page = page;
         }
         String pageParam = props.getProperty("page-param");
-        if (StringUtils.isBlank(pageParam) || !FileExistsUtil.referenceExist(ConfigUtil.projectPath, pageParam)) {
+        if (StringUtils.isBlank(pageParam) || !FileExistsUtils.referenceExist(ConfigUtils.projectPath, pageParam)) {
             log.info("\t“PageParam类”未指定或是路径不存在，请指定");
             return;
         } else {
-            ConfigUtil.pageParam = pageParam;
+            ConfigUtils.pageParam = pageParam;
         }
         String serviceException = props.getProperty("service-exception");
         if (StringUtils.isBlank(serviceException) ||
-                !FileExistsUtil.referenceExist(ConfigUtil.projectPath, serviceException)) {
+                !FileExistsUtils.referenceExist(ConfigUtils.projectPath, serviceException)) {
             log.info("\t“ServiceException类”未指定或是路径不存在，请指定");
         } else {
-            ConfigUtil.serviceException = serviceException;
+            ConfigUtils.serviceException = serviceException;
         }
         log.info("初始化配置完成");
     }
@@ -418,7 +419,7 @@ public class ConfigUtil {
         // table comment
         tableComments = new String[tableNames.length];
         for (String tableName : tableNames) {
-            ArrayUtils.add(tableComments, JdbcUtil.getTableCommtents(tableName));
+            ArrayUtils.add(tableComments, JdbcUtils.getTableCommtents(tableName));
         }
         // final package
         String bussinessPart = bussiness;

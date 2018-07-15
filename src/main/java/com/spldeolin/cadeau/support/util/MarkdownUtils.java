@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @UtilityClass
 @Log4j2
-public class MarkdownUtil {
+public class MarkdownUtils {
 
     public static String toHtml(String markdownContent) {
         MutableDataSet options = new MutableDataSet();

@@ -1,6 +1,6 @@
 package com.spldeolin.cadeau.support.util;
 
-public class StringCaseUtil {
+public class StringCaseUtils {
 
     /**
      * @param s 任意字符串
