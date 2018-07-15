@@ -46,3 +46,4 @@ public class ${model}Input implements Serializable {
     }
 
 }
+// <#list fields as field>${field.name}<#if field_has_next>, </#if></#list>
