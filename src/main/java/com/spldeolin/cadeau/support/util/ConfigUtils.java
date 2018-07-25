@@ -42,13 +42,6 @@ public class ConfigUtils {
     private static String date;
 
     /**
-     * 业务模块
-     */
-    @Getter
-    @Setter
-    private static String bussiness;
-
-    /**
      * 表名数组
      */
     @Getter
@@ -185,31 +178,31 @@ public class ConfigUtils {
 
     @Getter
     @Setter
-    private static String daoPackage = "${basePackage}.dao${bussinessPart}";
+    private static String daoPackage;
 
     @Getter
     @Setter
-    private static String mapperPackage = "mapper${bussinessPart}";
+    private static String mapperPackage;
 
     @Getter
     @Setter
-    private static String modelPackage = "${basePackage}.model${bussinessPart}";
+    private static String modelPackage;
 
     @Getter
     @Setter
-    private static String inputPackage = "${basePackage}.input${bussinessPart}";
+    private static String inputPackage;
 
     @Getter
     @Setter
-    private static String servicePackage = "${basePackage}.service${bussinessPart}";
+    private static String servicePackage;
 
     @Getter
     @Setter
-    private static String serviceImplPackage = "${basePackage}.service.impl${bussinessPart}";
+    private static String serviceImplPackage;
 
     @Getter
     @Setter
-    private static String controllerPackage = "${basePackage}.controller${bussinessPart}";
+    private static String controllerPackage;
 
     // 最终包名 end
 
@@ -253,6 +246,7 @@ public class ConfigUtils {
 
     private static void initDefaultProperties() {
         date = Times.toString(LocalDateTime.now());
+        mapperPackage = "mapper";
     }
 
     @SneakyThrows
@@ -270,18 +264,9 @@ public class ConfigUtils {
             author = authorProp;
         }
 
-        // bussiness
-        String bussinessProp = props.getProperty("bussiness");
-        if (StringUtils.isBlank(bussinessProp)) {
-            log.info("bussiness 未指定");
-            bussiness = "";
-        } else {
-            bussiness = bussinessProp;
-        }
-
         // names
-        String tableNames = props.getProperty("tableNames");
-        String modelCns = props.getProperty("modelCns");
+        String tableNames = props.getProperty("table-names");
+        String modelCns = props.getProperty("model-cns");
         if (StringUtils.isAnyBlank(tableNames, modelCns)) {
             log.error("tableNames, modelCns 未完全指定");
             System.exit(0);
@@ -289,7 +274,7 @@ public class ConfigUtils {
         String[] a1 = tableNames.split("\\+");
         String[] a2 = modelCns.split("\\+");
         if (a1.length != a2.length) {
-            log.error("tableNames, modelCns 格式非法");
+            log.error("table-names, model-cns 格式非法");
             System.exit(0);
         }
         ConfigUtils.tableNames = a1;
@@ -373,18 +358,18 @@ public class ConfigUtils {
         page = pageProp;
         String pageParamProp = props.getProperty("page-param");
         if (StringUtils.isBlank(pageParamProp) || !FileExistsUtils
-                .referenceExist(ConfigUtils.projectPath, pageParamProp)) {
+                .referenceExist(projectPath, pageParamProp)) {
             log.error("page-param 文件不存在");
             System.exit(0);
         }
         pageParam = pageParamProp;
-        String serviceException = props.getProperty("service-exception");
-        if (StringUtils.isBlank(serviceException) ||
-                !FileExistsUtils.referenceExist(ConfigUtils.projectPath, serviceException)) {
-            log.info("\t“ServiceException类”未指定或是路径不存在，请指定");
-        } else {
-            ConfigUtils.serviceException = serviceException;
+        String serviceExceptionProp = props.getProperty("service-exception");
+        if (StringUtils.isBlank(serviceExceptionProp) ||
+                !FileExistsUtils.referenceExist(projectPath, serviceExceptionProp)) {
+            log.error("service-exception 文件不存在");
+            System.exit(0);
         }
+        serviceException = serviceExceptionProp;
     }
 
     private static void figureValues() {
@@ -398,21 +383,21 @@ public class ConfigUtils {
             ArrayUtils.add(tableComments, JdbcUtils.getTableCommtents(tableName));
         }
 
+        log.info("项目路径 " + projectPath);
+
         // final package
-        String bussinessPart = bussiness;
-        if (StringUtils.isNotBlank(bussinessPart)) {
-            bussinessPart = "." + bussinessPart;
-        }
-        daoPackage = daoPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}", bussinessPart);
-        mapperPackage = mapperPackage.replace("${bussinessPart}", bussinessPart);
-        modelPackage = modelPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}", bussinessPart);
-        inputPackage = inputPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}", bussinessPart);
-        servicePackage = servicePackage.replace("${basePackage}", basePackage).replace("${bussinessPart}",
-                bussinessPart);
-        serviceImplPackage = serviceImplPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}",
-                bussinessPart);
-        controllerPackage = controllerPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}",
-                bussinessPart);
+        daoPackage = basePackage + ".dao";
+        log.info("包名 " + daoPackage);
+        modelPackage = basePackage + ".model";
+        log.info("包名 " + modelPackage);
+        inputPackage = basePackage + ".input";
+        log.info("包名 " + inputPackage);
+        servicePackage = basePackage + ".service";
+        log.info("包名 " + servicePackage);
+        serviceImplPackage = basePackage + ".service.impl";
+        log.info("包名 " + serviceImplPackage);
+        controllerPackage = basePackage + ".controller";
+        log.info("包名 " + controllerPackage);
 
         // final path
         daoPath4mbg = projectPath + mavenJava;

@@ -4,15 +4,15 @@
  * https://github.com/spldeolin/cadeau-support
  */
 
-package ${basePackage}.service.impl${bussinessPart};
+package ${basePackage}.service.impl;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ${derivedServiceImplRef};
-import ${basePackage}.dao${bussinessPart}.${modelName}Mapper;
-import ${basePackage}.model${bussinessPart}.${modelName};
-import ${basePackage}.service${bussinessPart}.${modelName}Service;
+import ${basePackage}.dao.${modelName}Mapper;
+import ${basePackage}.model.${modelName};
+import ${basePackage}.service.${modelName}Service;
 import lombok.extern.log4j.Log4j2;
 import tk.mybatis.mapper.entity.Condition;
 import ${serviceExceptionRef};

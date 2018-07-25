@@ -4,7 +4,7 @@
  * https://github.com/spldeolin/cadeau-support
  */
 
-package ${basePackage}.controller${bussinessPart};
+package ${basePackage}.controller;
 
 import java.util.List;
 import javax.validation.Valid;
@@ -12,9 +12,9 @@ import javax.validation.constraints.Max;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ${basePackage}.model${bussinessPart}.${modelName};
-import ${basePackage}.input${bussinessPart}.${modelName}Input;
-import ${basePackage}.service${bussinessPart}.${modelName}Service;
+import ${basePackage}.model.${modelName};
+import ${basePackage}.input.${modelName}Input;
+import ${basePackage}.service.${modelName}Service;
 import ${pageRef};
 import ${pageParamRef};
 

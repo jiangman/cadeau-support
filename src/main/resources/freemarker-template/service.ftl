@@ -4,11 +4,11 @@
  * https://github.com/spldeolin/cadeau-support
  */
 
-package ${basePackage}.service${bussinessPart};
+package ${basePackage}.service;
 
 import java.util.List;
 import java.util.Optional;
-import ${basePackage}.model${bussinessPart}.${modelName};
+import ${basePackage}.model.${modelName};
 import ${derivedServiceRef};
 import ${pageRef};
 import ${pageParamRef};

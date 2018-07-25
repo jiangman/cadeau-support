@@ -9,8 +9,6 @@ public class ControllerFTL {
 
     private String basePackage;
 
-    private String bussinessPart;
-
     private String modelName;
 
     private String modelCn;

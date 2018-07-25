@@ -3,7 +3,6 @@ package com.spldeolin.cadeau.support.controller;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import com.spldeolin.cadeau.support.util.ConfigUtils;
 import com.spldeolin.cadeau.support.util.FileMoveUtils;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
@@ -26,15 +25,6 @@ public class ControllerGenerator {
             ControllerFTL template = new ControllerFTL();
             template.setBasePackage(ConfigUtils.getBasePackage());
             template.setClassDocEnd(ConfigUtils.getClassDocEnd());
-            String bussiness = ConfigUtils.getBussiness();
-            String bussinessPart;
-            if (StringUtils.isBlank(bussiness)) {
-                bussinessPart = "";
-            } else {
-                bussinessPart = "." + bussiness;
-            }
-
-            template.setBussinessPart(bussinessPart);
             template.setModelName(modelName);
             template.setModelCn(modelCn);
             template.setPageRef(ConfigUtils.getPage());

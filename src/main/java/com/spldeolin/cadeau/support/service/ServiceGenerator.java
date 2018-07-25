@@ -3,7 +3,6 @@ package com.spldeolin.cadeau.support.service;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import com.spldeolin.cadeau.support.util.ConfigUtils;
 import com.spldeolin.cadeau.support.util.FileMoveUtils;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
@@ -31,14 +30,6 @@ public class ServiceGenerator {
     private static void service(String modelName, String modelCn) {
         ServiceFTL template = new ServiceFTL();
         template.setBasePackage(ConfigUtils.getBasePackage());
-        String bussiness = ConfigUtils.getBussiness();
-        String bussinessPart;
-        if (StringUtils.isBlank(bussiness)) {
-            bussinessPart = "";
-        } else {
-            bussinessPart = "." + bussiness;
-        }
-        template.setBussinessPart(bussinessPart);
         template.setModelName(modelName);
         template.setModelCn(modelCn);
         template.setClassDocEnd(ConfigUtils.getClassDocEnd());
@@ -65,14 +56,6 @@ public class ServiceGenerator {
     private static void serviceImpl(String modelName, String modelCn) {
         ServiceImplFTL template = new ServiceImplFTL();
         template.setBasePackage(ConfigUtils.getBasePackage());
-        String bussiness = ConfigUtils.getBussiness();
-        String bussinessPart;
-        if (StringUtils.isBlank(bussiness)) {
-            bussinessPart = "";
-        } else {
-            bussinessPart = "." + bussiness;
-        }
-        template.setBussinessPart(bussinessPart);
         template.setModelName(modelName);
         template.setModelCn(modelCn);
         template.setClassDocEnd(ConfigUtils.getClassDocEnd());
