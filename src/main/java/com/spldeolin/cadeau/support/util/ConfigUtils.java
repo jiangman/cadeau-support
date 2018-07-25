@@ -1,6 +1,5 @@
 package com.spldeolin.cadeau.support.util;
 
-import static com.spldeolin.cadeau.support.util.ConstantUtils.SDF;
 import static com.spldeolin.cadeau.support.util.ConstantUtils.br;
 import static com.spldeolin.cadeau.support.util.ConstantUtils.mavenJava;
 import static com.spldeolin.cadeau.support.util.ConstantUtils.mavenRes;
@@ -9,10 +8,10 @@ import static com.spldeolin.cadeau.support.util.ConstantUtils.sep;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Properties;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,14 +25,14 @@ public class ConfigUtils {
 
     @Getter
     @Setter
-    private static Properties props = new Properties();
+    private static Properties props;
 
     /**
      * 作者
      */
     @Getter
     @Setter
-    private static String author = "Deolin";
+    private static String author;
 
     /**
      * 生成日期
@@ -47,7 +46,7 @@ public class ConfigUtils {
      */
     @Getter
     @Setter
-    private static String bussiness = "";
+    private static String bussiness;
 
     /**
      * 表名数组
@@ -68,84 +67,84 @@ public class ConfigUtils {
      */
     @Getter
     @Setter
-    private static String mysqlUrl = "jdbc:mysql://localhost:3306/information_schema?useSSL=false";
+    private static String mysqlUrl;
 
     /**
      * 数据库名
      */
     @Getter
     @Setter
-    private static String mysqlDatabase = "information_schema";
+    private static String mysqlDatabase;
 
     /**
      * 数据库用户名
      */
     @Getter
     @Setter
-    private static String mysqlUsername = "root";
+    private static String mysqlUsername;
 
     /**
      * 数据库密码
      */
     @Getter
     @Setter
-    private static String mysqlPassword = "root";
+    private static String mysqlPassword;
 
     /**
      * 文件重名时是否覆盖
      */
     @Getter
     @Setter
-    private static Boolean overWrite = false;
+    private static Boolean overWrite;
 
     /**
      * 项目路径
      */
     @Getter
     @Setter
-    private static String projectPath = System.getProperty("user.dir") + sep;
+    private static String projectPath;
 
     /**
      * 基础包名
      */
     @Getter
     @Setter
-    private static String basePackage = "com.spldeolin.cadeau.demo";
+    private static String basePackage;
 
     /**
      * mapper.xml文件夹的Reference
      */
     @Getter
     @Setter
-    private static String mapperFolder = "mapper";
+    private static String mapperFolder;
 
     /**
      * 通用Service接口的Reference
      */
     @Getter
     @Setter
-    private static String derivedService = "";
+    private static String commonService;
 
     /**
      * 通用ServiceImpl抽象类的Reference
      */
     @Getter
     @Setter
-    private static String derivedServiceImpl = "";
+    private static String commonServiceImpl;
 
     /**
      * 通用Mapper接口的Reference
      */
     @Getter
     @Setter
-    private static String derivedMapper = "tk.mybatis.mapper.inherited.Mapper";
+    private static String commonMapper;
 
     /**
      * TextOption的Reference
      */
     @Getter
     @Setter
-    private static String textOption = "";
+    private static String option;
 
     /**
      * Page的Reference
@@ -180,7 +179,7 @@ public class ConfigUtils {
      */
     @Getter
     @Setter
-    private static String classDocEnd = " *" + br + " * @author ${author} ${date}" + br + " */";
+    private static String classDocEnd;
 
     // 最终包名 start
 
@@ -247,161 +246,138 @@ public class ConfigUtils {
     // 最终路径 end
 
     static {
-        readProps();
-        initValues();
+        initDefaultProperties();
+        loadPropertiesFile();
         figureValues();
     }
 
-    public static void assign() {}
-
-    @SneakyThrows
-    private static void readProps() {
-        log.info("读取配置文件");
-        props.load(new InputStreamReader(ConfigUtils.class.getClassLoader().getResourceAsStream("生成配置-sf.properties"),
-                StandardCharsets.UTF_8));
-        log.info("读取配置文件完成");
+    private static void initDefaultProperties() {
+        date = Times.toString(LocalDateTime.now());
     }
 
-    private static void initValues() {
-        log.info("初始化配置");
-        // author date
-        String author = props.getProperty("author");
-        if (StringUtils.isBlank(author)) {
-            log.info("\t“作者”未指定，使用缺省配置");
+    @SneakyThrows
+    private static void loadPropertiesFile() {
+        // 读取文件
+        props = new Properties();
+        props.load(new InputStreamReader(ConfigUtils.class.getClassLoader().getResourceAsStream("生成配置-sf.properties"),
+                StandardCharsets.UTF_8));
+
+        String authorProp = props.getProperty("author");
+        if (StringUtils.isBlank(authorProp)) {
+            log.error("author 未指定");
+            System.exit(0);
         } else {
-            ConfigUtils.author = author;
+            author = authorProp;
         }
-        String date = props.getProperty("date");
-        if (StringUtils.isBlank(date)) {
-            log.info("\t“生成日期”未指定，使用缺省配置");
-            ConfigUtils.date = SDF.format(new Date());
-        } else {
-            try {
-                SDF.parse(date);
-                ConfigUtils.date = date;
-            } catch (ParseException e) {
-                log.info("\t“生成日期”无法解析，使用缺省配置");
-                ConfigUtils.date = SDF.format(new Date());
-            }
-        }
+
         // bussiness
-        String bussiness = props.getProperty("bussiness");
-        if (StringUtils.isBlank(bussiness)) {
-            log.info("\t“业务模块”未指定，使用缺省配置");
+        String bussinessProp = props.getProperty("bussiness");
+        if (StringUtils.isBlank(bussinessProp)) {
+            log.info("bussiness 未指定");
+            bussiness = "";
         } else {
-            ConfigUtils.bussiness = bussiness;
+            bussiness = bussinessProp;
         }
+
         // names
         String tableNames = props.getProperty("tableNames");
         String modelCns = props.getProperty("modelCns");
         if (StringUtils.isAnyBlank(tableNames, modelCns)) {
-            log.error("表名或模型名未完全指定。");
-            throw new RuntimeException();
+            log.error("tableNames, modelCns 未完全指定");
+            System.exit(0);
         }
         String[] a1 = tableNames.split("\\+");
         String[] a2 = modelCns.split("\\+");
         if (a1.length != a2.length) {
-            log.error("表名与模型名个数不完全一致。");
-            throw new RuntimeException();
+            log.error("tableNames, modelCns 格式非法");
+            System.exit(0);
         }
         ConfigUtils.tableNames = a1;
         ConfigUtils.modelCns = a2;
+
         // mysql
-        String mysqlIp = props.getProperty("mysql-ip");
-        String mysqlPort = props.getProperty("mysql-port");
-        String mysqlUsername = props.getProperty("mysql-username");
-        String mysqlPassword = props.getProperty("mysql-password");
-        String mysqlDatabase = props.getProperty("mysql-database");
-        if (StringUtils.isAnyBlank(mysqlIp, mysqlPort, mysqlUsername, mysqlPassword)) {
-            log.info("\t“数据库IP”、“端口”、“用户名”、“密码”未完全指定，使用缺省配置。");
-        } else {
-            mysqlUrl = mysqlUrl.replace("localhost", mysqlIp).replace("3306", mysqlPort);
-            ConfigUtils.mysqlUsername = mysqlUsername;
-            ConfigUtils.mysqlPassword = mysqlPassword;
+        String mysqlIpProp = props.getProperty("mysql-ip");
+        String mysqlPortProp = props.getProperty("mysql-port");
+        String mysqlUsernameProp = props.getProperty("mysql-username");
+        String mysqlPasswordProp = props.getProperty("mysql-password");
+        String mysqlDatabaseProp = props.getProperty("mysql-database");
+        if (StringUtils
+                .isAnyBlank(mysqlIpProp, mysqlPortProp, mysqlUsernameProp, mysqlPasswordProp, mysqlDatabaseProp)) {
+            log.error("mysql-* 未完全指定");
+            System.exit(0);
         }
-        if (StringUtils.isBlank(mysqlDatabase)) {
-            log.info("\t“数据库名”未指定，使用缺省配置。");
-        } else {
-            mysqlUrl = mysqlUrl.replace("information_schema", mysqlDatabase);
-            ConfigUtils.mysqlDatabase = mysqlDatabase;
-        }
+        mysqlUrl = "jdbc:mysql://" + mysqlIpProp + ":" + mysqlPortProp + "/" + mysqlDatabaseProp + "?useSSL=false";
+        mysqlUsername = mysqlUsernameProp;
+        mysqlPassword = mysqlPasswordProp;
+        mysqlDatabase = mysqlDatabaseProp;
+
         // over-write
-        String overWrite = props.getProperty("over-write");
-        if (StringUtils.isBlank(overWrite)) {
-            log.info("\t“文件重名时是否覆盖”未指定，使用缺省配置");
+        String overWriteProp = props.getProperty("over-write");
+        if (StringUtils.isBlank(overWriteProp)) {
+            log.info("over-write 未指定");
+            overWrite = true;
         } else {
-            if (!"true".equalsIgnoreCase(overWrite)) {
-                log.info("\t“文件重名时是否覆盖”不是true，使用缺省配置");
-            } else {
-                ConfigUtils.overWrite = true;
-            }
+            overWrite = BooleanUtils.toBoolean(overWriteProp);
         }
-        // path package
-        String projectPath = props.getProperty("project-path");
-        if (!new File(projectPath).exists()) {
-            log.info("\t“项目路径”未指定或是路径不存在，使用缺省配置");
+
+        // project-path
+        String projectPathProp = props.getProperty("project-path");
+        if (!new File(projectPathProp).exists()) {
+            log.error("project-path 目录不存在");
+            System.exit(0);
+        }
+        projectPath = projectPathProp;
+
+        // base-package
+        String basePackageProp = props.getProperty("base-package");
+        if (StringUtils.isBlank(basePackageProp) || !FileExistsUtils.referenceExist(projectPath, basePackageProp)) {
+            log.error("base-package 目录不存在");
+            System.exit(0);
+        }
+        basePackage = basePackageProp;
+
+        // api
+        String commonMapperProp = props.getProperty("common-mapper");
+        if (StringUtils.isBlank(commonMapperProp) || !FileExistsUtils.referenceExist(projectPath, commonMapperProp)) {
+            log.error("common-mapper 文件不存在");
+            System.exit(0);
         } else {
-            ConfigUtils.projectPath = projectPath;
+            commonMapper = commonMapperProp;
         }
-        String basePackage = props.getProperty("base-package");
-        if (StringUtils.isBlank(basePackage) || !FileExistsUtils.referenceExist(ConfigUtils.projectPath, basePackage)) {
-            log.info("\t“基础包名”未指定或是路径不存在，使用缺省配置");
+        String commonServiceProp = props.getProperty("common-service");
+        if (StringUtils.isBlank(commonServiceProp) ||
+                !FileExistsUtils.referenceExist(projectPath, commonServiceProp)) {
+            log.error("common-service 文件不存在");
+            System.exit(0);
         } else {
-            ConfigUtils.basePackage = basePackage;
+            commonService = commonServiceProp;
         }
-        if (StringUtils.isBlank(mapperFolder) ||
-                !FileExistsUtils.resourceExist(ConfigUtils.projectPath, mapperFolder)) {
-            log.info("\t“mapper.xml文件夹”未指定或是路径不存在，使用缺省配置");
-            ConfigUtils.mapperFolder = projectPath + mavenRes + mapperFolder.replace('.', sep) + "mapper";
-        } else {
-            ConfigUtils.mapperFolder = mapperFolder;
+        String commonServiceImplProp = props.getProperty("common-service-impl");
+        if (StringUtils.isBlank(commonServiceImplProp) ||
+                !FileExistsUtils.referenceExist(projectPath, commonServiceImplProp)) {
+            log.error("common-service-impl 文件不存在");
+            System.exit(0);
         }
-        // component
-        String derivedService = props.getProperty("derived-service");
-        if (StringUtils.isBlank(derivedService) ||
-                !FileExistsUtils.referenceExist(ConfigUtils.projectPath, derivedService)) {
-            log.info("\t“通用Service接口”未指定或是路径不存在，请指定");
-            ConfigUtils.derivedService = "com.spldeolin.cadeau.library.inherited.CommonService";
-        } else {
-            ConfigUtils.derivedService = derivedService;
+        commonServiceImpl = commonServiceImplProp;
+        String optionProp = props.getProperty("option");
+        if (StringUtils.isBlank(optionProp) || !FileExistsUtils.referenceExist(projectPath, optionProp)) {
+            log.error("option 文件不存在");
+            System.exit(0);
         }
-        String derivedServiceImpl = props.getProperty("derived-service-impl");
-        if (StringUtils.isBlank(derivedServiceImpl) ||
-                !FileExistsUtils.referenceExist(ConfigUtils.projectPath, derivedServiceImpl)) {
-            log.info("\t“通用ServiceImpl抽象类”未指定或是路径不存在，请指定");
-            ConfigUtils.derivedServiceImpl = "com.spldeolin.cadeau.library.inherited.CommonServiceImpl";
-        } else {
-            ConfigUtils.derivedServiceImpl = derivedServiceImpl;
+        option = optionProp;
+        String pageProp = props.getProperty("page");
+        if (StringUtils.isBlank(pageProp) || !FileExistsUtils.referenceExist(projectPath, pageProp)) {
+            log.error("page 文件不存在");
+            System.exit(0);
         }
-        String derivedMapper = props.getProperty("derived-mapper");
-        if (StringUtils.isBlank(derivedMapper) || !FileExistsUtils.referenceExist(ConfigUtils.projectPath,
-                derivedMapper)) {
-            log.info("\t“通用Mapper接口”未指定或是路径不存在，请指定");
-            ConfigUtils.derivedMapper = "com.spldeolin.cadeau.library.inherited.CommonMapper";
-        } else {
-            ConfigUtils.derivedMapper = derivedMapper;
+        page = pageProp;
+        String pageParamProp = props.getProperty("page-param");
+        if (StringUtils.isBlank(pageParamProp) || !FileExistsUtils
+                .referenceExist(ConfigUtils.projectPath, pageParamProp)) {
+            log.error("page-param 文件不存在");
+            System.exit(0);
         }
-        String textOption = props.getProperty("text-option");
-        if (StringUtils.isBlank(textOption) || !FileExistsUtils.referenceExist(ConfigUtils.projectPath, textOption)) {
-            log.info("\t“TextOption类”未指定或是路径不存在，请指定");
-            ConfigUtils.textOption = "com.spldeolin.cadeau.library.valid.annotation.TextOption";
-        } else {
-            ConfigUtils.textOption = textOption;
-        }
-        String page = props.getProperty("page");
-        if (StringUtils.isBlank(page) || !FileExistsUtils.referenceExist(ConfigUtils.projectPath, page)) {
-            log.info("\t“Page类”未指定或是路径不存在，请指定");
-            return;
-        } else {
-            ConfigUtils.page = page;
-        }
-        String pageParam = props.getProperty("page-param");
-        if (StringUtils.isBlank(pageParam) || !FileExistsUtils.referenceExist(ConfigUtils.projectPath, pageParam)) {
-            log.info("\t“PageParam类”未指定或是路径不存在，请指定");
-            return;
-        } else {
-            ConfigUtils.pageParam = pageParam;
-        }
+        pageParam = pageParamProp;
         String serviceException = props.getProperty("service-exception");
         if (StringUtils.isBlank(serviceException) ||
                 !FileExistsUtils.referenceExist(ConfigUtils.projectPath, serviceException)) {
@@ -409,18 +385,19 @@ public class ConfigUtils {
         } else {
             ConfigUtils.serviceException = serviceException;
         }
-        log.info("初始化配置完成");
     }
 
     private static void figureValues() {
-        log.info("计算最终包名、最终路径");
         // tag
+        classDocEnd = " *" + br + " * @author ${author} ${date}" + br + " */";
         classDocEnd = classDocEnd.replace("${author}", author).replace("${date}", date);
+
         // table comment
         tableComments = new String[tableNames.length];
         for (String tableName : tableNames) {
             ArrayUtils.add(tableComments, JdbcUtils.getTableCommtents(tableName));
         }
+
         // final package
         String bussinessPart = bussiness;
         if (StringUtils.isNotBlank(bussinessPart)) {
@@ -436,6 +413,7 @@ public class ConfigUtils {
                 bussinessPart);
         controllerPackage = controllerPackage.replace("${basePackage}", basePackage).replace("${bussinessPart}",
                 bussinessPart);
+
         // final path
         daoPath4mbg = projectPath + mavenJava;
         mapperPath4mbg = projectPath + mavenRes;
@@ -444,7 +422,6 @@ public class ConfigUtils {
         servicePath = projectPath + mavenJava + servicePackage.replace('.', sep) + sep;
         serviceImplPath = projectPath + mavenJava + serviceImplPackage.replace('.', sep) + sep;
         controllerPath = projectPath + mavenJava + controllerPackage.replace('.', sep) + sep;
-        log.info("计算最终包名、最终路径完成");
     }
 
 }

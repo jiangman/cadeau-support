@@ -39,7 +39,7 @@ public class InputGenerator {
             InputFTL inputFTL = new InputFTL();
             inputFTL.setIndex(Integer.parseInt(index));
             inputFTL.setInputPackage(ConfigUtils.getInputPackage());
-            inputFTL.setTextOption(ConfigUtils.getTextOption());
+            inputFTL.setTextOption(ConfigUtils.getOption());
             inputFTL.setDescription("“" + getModelCnsByModel(model) + "”Input类");
             inputFTL.setAuthor(ConfigUtils.getAuthor());
             inputFTL.setDate(ConfigUtils.getDate());

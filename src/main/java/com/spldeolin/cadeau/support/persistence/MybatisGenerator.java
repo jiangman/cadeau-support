@@ -94,7 +94,7 @@ public class MybatisGenerator {
     private static void configCommonMapper() {
         PluginConfiguration mapperPlugin = new PluginConfiguration();
         mapperPlugin.setConfigurationType("tk.mybatis.mapper.generator.MapperPlugin");
-        mapperPlugin.addProperty("mappers", ConfigUtils.getDerivedMapper());
+        mapperPlugin.addProperty("mappers", ConfigUtils.getCommonMapper());
         mapperPlugin.addProperty("caseSensitive", "true");
         mapperPlugin.addProperty("useMapperCommentGenerator", "false");
         CONTEXT.addPluginConfiguration(mapperPlugin);

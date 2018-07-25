@@ -1,8 +1,9 @@
 package com.spldeolin.cadeau.support.client;
 
+import com.spldeolin.cadeau.support.controller.ControllerGenerator;
+import com.spldeolin.cadeau.support.input.InputGenerator;
 import com.spldeolin.cadeau.support.persistence.MybatisGenerator;
 import com.spldeolin.cadeau.support.service.ServiceGenerator;
-import com.spldeolin.cadeau.support.util.ConfigUtils;
 
 /**
  * @author Deolin
@@ -10,12 +11,12 @@ import com.spldeolin.cadeau.support.util.ConfigUtils;
 public class CadeauSupport {
 
 
-    public static void main(String[] args) {
-        ConfigUtils.assign();
+    public static void main(String[] args) throws ClassNotFoundException {
+        Class.forName("com.spldeolin.cadeau.support.util.ConfigUtils");
         MybatisGenerator.daoMapperModel();
         ServiceGenerator.serviceServiceImpl();
-//        ControllerGenerator.controller();
-//        InputGenerator.input();
+        ControllerGenerator.controller();
+        InputGenerator.input();
     }
 
 }
