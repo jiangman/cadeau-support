@@ -13,7 +13,6 @@ target/
 # Logs
 cadeau-support/cadeau-support-log/
 
-# Demo
-cadeau-support/src/main/java/com/spldeolin/cadeau/demo/
-cadeau-support/src/main/resources/mapper/
-cadeau-support/src/main/resources/ftl/
+# 生成配置
+src/main/resources/生成配置-*.properties
+

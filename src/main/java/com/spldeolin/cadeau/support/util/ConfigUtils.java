@@ -257,7 +257,7 @@ public class ConfigUtils {
     @SneakyThrows
     private static void readProps() {
         log.info("读取配置文件");
-        props.load(new InputStreamReader(ConfigUtils.class.getClassLoader().getResourceAsStream("生成配置.properties"),
+        props.load(new InputStreamReader(ConfigUtils.class.getClassLoader().getResourceAsStream("生成配置-sf.properties"),
                 StandardCharsets.UTF_8));
         log.info("读取配置文件完成");
     }
