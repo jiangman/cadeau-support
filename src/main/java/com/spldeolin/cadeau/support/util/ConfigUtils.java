@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Properties;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -253,8 +254,12 @@ public class ConfigUtils {
     private static void loadPropertiesFile() {
         // 读取文件
         props = new Properties();
-        props.load(new InputStreamReader(ConfigUtils.class.getClassLoader().getResourceAsStream("生成配置-sf.properties"),
+        props.load(new InputStreamReader(ConfigUtils.class.getClassLoader().getResourceAsStream("project.properties"),
                 StandardCharsets.UTF_8));
+        String replaceTo = props.getProperty("replace-to");
+        if (StringUtils.isNotBlank(replaceTo)) {
+            props.load(FileUtils.openInputStream(new File(replaceTo)));
+        }
 
         String authorProp = props.getProperty("author");
         if (StringUtils.isBlank(authorProp)) {

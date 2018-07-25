@@ -14,5 +14,5 @@ target/
 cadeau-support/cadeau-support-log/
 
 # 生成配置
-src/main/resources/生成配置-*.properties
+src/main/resources/project-*.properties
 
