@@ -17,10 +17,11 @@ public class JdbcUtils {
     private static Connection conn;
 
     static {
+        ProjectProperties properties = ProjectProperties.instance();
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(ConfigUtils.getMysqlUrl(), ConfigUtils.getMysqlUsername(),
-                    ConfigUtils.getMysqlPassword());
+            conn = DriverManager.getConnection(properties.getMysqlUrl(), properties.getMysqlUsername(),
+                    properties.getMysqlPassword());
         } catch (Exception e) {
             log.error("checked", e);
             throw new RuntimeException();
@@ -28,12 +29,13 @@ public class JdbcUtils {
     }
 
     public static String getTableCommtents(String tableName) {
+        ProjectProperties properties = ProjectProperties.instance();
         String tableCommtents = "";
         try {
             Statement stat = conn.createStatement();
             ResultSet rs = stat.executeQuery(
                     "SELECT TABLE_NAME, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = '" +
-                            ConfigUtils.getMysqlDatabase() + "'");
+                            properties.getMysqlDatabase() + "'");
             while (rs.next()) {
                 tableCommtents = rs.getString("TABLE_COMMENT");
             }

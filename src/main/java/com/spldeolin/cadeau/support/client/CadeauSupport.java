@@ -11,8 +11,7 @@ import com.spldeolin.cadeau.support.service.ServiceGenerator;
 public class CadeauSupport {
 
 
-    public static void main(String[] args) throws ClassNotFoundException {
-        Class.forName("com.spldeolin.cadeau.support.util.ConfigUtils");
+    public static void main(String[] args) {
         MybatisGenerator.daoMapperModel();
         ServiceGenerator.serviceServiceImpl();
         ControllerGenerator.controller();

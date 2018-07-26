@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import com.google.common.collect.Lists;
-import com.spldeolin.cadeau.support.util.ConfigUtils;
+import com.spldeolin.cadeau.support.util.ProjectProperties;
 import com.spldeolin.cadeau.support.util.FileMoveUtils;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
 import com.spldeolin.cadeau.support.util.StringCaseUtils;
@@ -23,6 +23,7 @@ public class InputGenerator {
 
     @SneakyThrows
     public static void input() {
+        ProjectProperties properties = ProjectProperties.instance();
         List<InputFTL> inputFTLs = new ArrayList<>();
         // 获取fields并排序
         List<Map.Entry<String, DtoFieldFTL>> entries = new ArrayList<>(
@@ -38,13 +39,13 @@ public class InputGenerator {
             String model = modelFromEntry(entry);
             InputFTL inputFTL = new InputFTL();
             inputFTL.setIndex(Integer.parseInt(index));
-            inputFTL.setInputPackage(ConfigUtils.getInputPackage());
-            inputFTL.setTextOption(ConfigUtils.getOption());
+            inputFTL.setInputPackage(properties.getInputPackage());
+            inputFTL.setTextOption(properties.getOption());
             inputFTL.setDescription("“" + getModelCnsByModel(model) + "”Input类");
-            inputFTL.setAuthor(ConfigUtils.getAuthor());
-            inputFTL.setDate(ConfigUtils.getDate());
-            inputFTL.setClassDocEnd(ConfigUtils.getClassDocEnd());
-            inputFTL.setModelPackage(ConfigUtils.getModelPackage());
+            inputFTL.setAuthor(properties.getAuthor());
+            inputFTL.setDate(properties.getDate());
+            inputFTL.setClassDocEnd(properties.getClassDocEnd());
+            inputFTL.setModelPackage(properties.getModelPackage());
             inputFTL.setModel(model);
             inputFTLs.add(inputFTL);
         }
@@ -68,11 +69,11 @@ public class InputGenerator {
         // 根据inputFTLs，生成Java文件
         for (InputFTL inputFTL : inputFTLs) {
             String content = FreeMarkerUtil.format(true, "input-template.ftl", inputFTL);
-            if (ConfigUtils.getOverWrite()) {
-                FileUtils.write(new File(ConfigUtils.getInputPath() + inputFTL.getModel() + "Input.java"),
+            if (properties.getOverWrite()) {
+                FileUtils.write(new File(properties.getInputPath() + inputFTL.getModel() + "Input.java"),
                         content, StandardCharsets.UTF_8);
             } else {
-                File f = new File(ConfigUtils.getInputPath() + inputFTL.getModel() + "Input.java");
+                File f = new File(properties.getInputPath() + inputFTL.getModel() + "Input.java");
                 if (f.exists()) {
                     f = FileMoveUtils.renameFile(f, 1);
                 }
@@ -82,8 +83,9 @@ public class InputGenerator {
     }
 
     private static String getModelCnsByModel(String model) {
-        int index = ArrayUtils.indexOf(ConfigUtils.getTableNames(), StringCaseUtils.camelToSnake(model));
-        return ConfigUtils.getModelCns()[index];
+        ProjectProperties properties = ProjectProperties.instance();
+        int index = ArrayUtils.indexOf(properties.getTableNames(), StringCaseUtils.camelToSnake(model));
+        return properties.getModelCns()[index];
     }
 
     private static String indexFromEntry(Map.Entry<String, DtoFieldFTL> entry) {

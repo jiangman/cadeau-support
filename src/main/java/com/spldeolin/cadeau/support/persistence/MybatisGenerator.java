@@ -27,7 +27,7 @@ import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
-import com.spldeolin.cadeau.support.util.ConfigUtils;
+import com.spldeolin.cadeau.support.util.ProjectProperties;
 import com.spldeolin.cadeau.support.util.FileParseUtils;
 import com.spldeolin.cadeau.support.util.JdbcUtils;
 import com.spldeolin.cadeau.support.util.StringCaseUtils;
@@ -60,6 +60,7 @@ public class MybatisGenerator {
      * 生成持久层与input类属性片段
      */
     public static void daoMapperModel() {
+        ProjectProperties properties = ProjectProperties.instance();
         // 重写jdbcConnection标签的属性
         configJdbc();
         // 重写通用Mapper接口
@@ -72,7 +73,7 @@ public class MybatisGenerator {
         configMapper();
         // 重写javaClientGenerator标签
         configDao();
-        for (String tableName : ConfigUtils.getTableNames()) {
+        for (String tableName : properties.getTableNames()) {
             // 重写table标签
             configTable(tableName);
             // 生成
@@ -85,16 +86,18 @@ public class MybatisGenerator {
     }
 
     private static void configJdbc() {
+        ProjectProperties properties = ProjectProperties.instance();
         JDBCConnectionConfiguration mysqlConfig = CONTEXT.getJdbcConnectionConfiguration();
-        mysqlConfig.setConnectionURL(ConfigUtils.getMysqlUrl());
-        mysqlConfig.setUserId(ConfigUtils.getMysqlUsername());
-        mysqlConfig.setPassword(ConfigUtils.getMysqlPassword());
+        mysqlConfig.setConnectionURL(properties.getMysqlUrl());
+        mysqlConfig.setUserId(properties.getMysqlUsername());
+        mysqlConfig.setPassword(properties.getMysqlPassword());
     }
 
     private static void configCommonMapper() {
+        ProjectProperties properties = ProjectProperties.instance();
         PluginConfiguration mapperPlugin = new PluginConfiguration();
         mapperPlugin.setConfigurationType("tk.mybatis.mapper.generator.MapperPlugin");
-        mapperPlugin.addProperty("mappers", ConfigUtils.getCommonMapper());
+        mapperPlugin.addProperty("mappers", properties.getCommonMapper());
         mapperPlugin.addProperty("caseSensitive", "true");
         mapperPlugin.addProperty("useMapperCommentGenerator", "false");
         CONTEXT.addPluginConfiguration(mapperPlugin);
@@ -102,37 +105,42 @@ public class MybatisGenerator {
 
     @SneakyThrows
     private static void addInputGeneratePlugin() {
+        ProjectProperties properties = ProjectProperties.instance();
         // 清除临时文件
-        FileUtils.deleteDirectory(new File(ConfigUtils.getProjectPath() + mavenRes + "ftl"));
+        FileUtils.deleteDirectory(new File(properties.getProjectPath() + mavenRes + "ftl"));
         PluginConfiguration plugin = new PluginConfiguration();
         plugin.setConfigurationType("com.spldeolin.cadeau.support.input.InputFieldGeneratePlugin");
         CONTEXT.addPluginConfiguration(plugin);
     }
 
     private static void configModel() {
+        ProjectProperties properties = ProjectProperties.instance();
         JavaModelGeneratorConfiguration config = CONTEXT.getJavaModelGeneratorConfiguration();
-        config.setTargetProject(ConfigUtils.getModelPath4mbg());
-        config.setTargetPackage(ConfigUtils.getModelPackage());
+        config.setTargetProject(properties.getModelPath4mbg());
+        config.setTargetPackage(properties.getModelPackage());
     }
 
     private static void configMapper() {
+        ProjectProperties properties = ProjectProperties.instance();
         SqlMapGeneratorConfiguration config = CONTEXT.getSqlMapGeneratorConfiguration();
-        config.setTargetProject(ConfigUtils.getMapperPath4mbg());
-        config.setTargetPackage(ConfigUtils.getMapperPackage());
+        config.setTargetProject(properties.getMapperPath4mbg());
+        config.setTargetPackage(properties.getMapperPackage());
     }
 
     private static void configDao() {
+        ProjectProperties properties = ProjectProperties.instance();
         JavaClientGeneratorConfiguration config = CONTEXT.getJavaClientGeneratorConfiguration();
-        config.setTargetProject(ConfigUtils.getDaoPath4mbg());
-        config.setTargetPackage(ConfigUtils.getDaoPackage());
+        config.setTargetProject(properties.getDaoPath4mbg());
+        config.setTargetPackage(properties.getDaoPackage());
     }
 
     private static void configTable(String tableName) {
+        ProjectProperties properties = ProjectProperties.instance();
         // 表名
         TableConfiguration tableConfiguration = CONTEXT.getTableConfigurations().get(0);
         tableConfiguration.setTableName(tableName);
         // 添加columnOverride标签
-        for (Map<String, String> column : JdbcUtils.listColumnType(ConfigUtils.getMysqlDatabase(), tableName)) {
+        for (Map<String, String> column : JdbcUtils.listColumnType(properties.getMysqlDatabase(), tableName)) {
             String jdbcType = column.get("columnType");
             if ("datetime".equals(jdbcType)) {
                 jdbcType = "timestamp";
@@ -158,7 +166,8 @@ public class MybatisGenerator {
 
     @SneakyThrows
     private static void generte() {
-        DefaultShellCallback callback = new DefaultShellCallback(ConfigUtils.getOverWrite());
+        ProjectProperties properties = ProjectProperties.instance();
+        DefaultShellCallback callback = new DefaultShellCallback(properties.getOverWrite());
         MyBatisGenerator myBatisGenerator;
         myBatisGenerator = new MyBatisGenerator(CONFIGURATION, callback, MBG_WARNINGS);
         myBatisGenerator.generate(null);
@@ -166,8 +175,9 @@ public class MybatisGenerator {
 
     @SneakyThrows
     private static void addMapperAnnotation() {
+        ProjectProperties properties = ProjectProperties.instance();
         Iterator<File> files = FileUtils.iterateFiles(
-                new File(ConfigUtils.getDaoPath4mbg() + ConfigUtils.getDaoPackage().replace('.', sep)),
+                new File(properties.getDaoPath4mbg() + properties.getDaoPackage().replace('.', sep)),
                 new String[] {"java"}, true);
         while (files.hasNext()) {
             File file = files.next();
@@ -176,7 +186,7 @@ public class MybatisGenerator {
                 continue;
             }
             String header = "public interface";
-            String doc = "/**" + br + " * “" + getModelCnsByFile(file) + "”数据库映射" + br + ConfigUtils.getClassDocEnd();
+            String doc = "/**" + br + " * “" + getModelCnsByFile(file) + "”数据库映射" + br + properties.getClassDocEnd();
             content = content.replace(header,
                     "import org.apache.ibatis.annotations.Mapper;" + br + doc + br + "@Mapper" + br + header);
             FileUtils.write(file, content, StandardCharsets.UTF_8);
@@ -185,11 +195,12 @@ public class MybatisGenerator {
 
     @SneakyThrows
     private static void addGeneratedInfo() {
+        ProjectProperties properties = ProjectProperties.instance();
         String generatedInfo = "/*" + br + " * Generated by Cadeau Support." + br + " *" +
                 " * https://github.com/spldeolin/cadeau-support" + br + " */" + br;
         // DAO
         Iterator<File> daoFiles = FileUtils.iterateFiles(
-                new File(ConfigUtils.getDaoPath4mbg() + ConfigUtils.getDaoPackage().replace('.', sep)),
+                new File(properties.getDaoPath4mbg() + properties.getDaoPackage().replace('.', sep)),
                 new String[] {"java"}, true);
         while (daoFiles.hasNext()) {
             File file = daoFiles.next();
@@ -203,7 +214,7 @@ public class MybatisGenerator {
 
         // Mapper
         Iterator<File> mapperFiles = FileUtils.iterateFiles(
-                new File(ConfigUtils.getMapperPath4mbg() + ConfigUtils.getMapperPackage().replace('.', sep)),
+                new File(properties.getMapperPath4mbg() + properties.getMapperPackage().replace('.', sep)),
                 new String[] {"xml"}, true);
         while (mapperFiles.hasNext()) {
             File file = mapperFiles.next();
@@ -213,13 +224,13 @@ public class MybatisGenerator {
             }
             String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
             content = content.replace(xmlHeader, xmlHeader + br + "<!--" + br + "  Generated by Cadeau Support at " +
-                    ConfigUtils.getDate() + "." + br + "  https://github.com/spldeolin/cadeau-support" + br + "-->");
+                    properties.getDate() + "." + br + "  https://github.com/spldeolin/cadeau-support" + br + "-->");
             FileUtils.write(file, content, StandardCharsets.UTF_8);
         }
 
         // Model
         Iterator<File> modelFiles = FileUtils.iterateFiles(
-                new File(ConfigUtils.getDaoPath4mbg() + ConfigUtils.getDaoPackage().replace('.', sep)),
+                new File(properties.getDaoPath4mbg() + properties.getDaoPackage().replace('.', sep)),
                 new String[] {"java"}, true);
         while (modelFiles.hasNext()) {
             File file = modelFiles.next();
@@ -234,10 +245,11 @@ public class MybatisGenerator {
     }
 
     private static String getModelCnsByFile(File file) {
+        ProjectProperties properties = ProjectProperties.instance();
         String fileName = FileParseUtils.fileName(file);
-        int index = ArrayUtils.indexOf(ConfigUtils.getTableNames(),
+        int index = ArrayUtils.indexOf(properties.getTableNames(),
                 StringCaseUtils.camelToSnake(fileName.replace("Mapper", "")));
-        return ConfigUtils.getModelCns()[index];
+        return properties.getModelCns()[index];
     }
 
 }

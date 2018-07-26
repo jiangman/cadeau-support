@@ -3,7 +3,7 @@ package com.spldeolin.cadeau.support.service;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
-import com.spldeolin.cadeau.support.util.ConfigUtils;
+import com.spldeolin.cadeau.support.util.ProjectProperties;
 import com.spldeolin.cadeau.support.util.FileMoveUtils;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
 import com.spldeolin.cadeau.support.util.StringCaseUtils;
@@ -16,8 +16,9 @@ import lombok.extern.log4j.Log4j2;
 public class ServiceGenerator {
 
     public static void serviceServiceImpl() {
-        String[] tableNames = ConfigUtils.getTableNames();
-        String[] modelCns = ConfigUtils.getModelCns();
+        ProjectProperties properties = ProjectProperties.instance();
+        String[] tableNames = properties.getTableNames();
+        String[] modelCns = properties.getModelCns();
         for (int i = 0; i < tableNames.length; i++) {
             String modelName = StringCaseUtils.snakeToUpperCamel(tableNames[i]);
             String modelCn = modelCns[i];
@@ -28,23 +29,24 @@ public class ServiceGenerator {
 
     @SneakyThrows
     private static void service(String modelName, String modelCn) {
+        ProjectProperties properties = ProjectProperties.instance();
         ServiceFTL template = new ServiceFTL();
-        template.setBasePackage(ConfigUtils.getBasePackage());
+        template.setBasePackage(properties.getBasePackage());
         template.setModelName(modelName);
         template.setModelCn(modelCn);
-        template.setClassDocEnd(ConfigUtils.getClassDocEnd());
-        String derivedService = ConfigUtils.getCommonService();
+        template.setClassDocEnd(properties.getClassDocEnd());
+        String derivedService = properties.getCommonService();
         template.setDerivedServiceRef(derivedService);
         String[] parts = derivedService.split("\\.");
         template.setDerivedServiceName(parts[parts.length - 1]);
-        template.setPageRef(ConfigUtils.getPage());
-        template.setPageParamRef(ConfigUtils.getPageParam());
+        template.setPageRef(properties.getPage());
+        template.setPageParamRef(properties.getPageParam());
         String serviceContent = FreeMarkerUtil.format(true, "service.ftl", template);
-        if (ConfigUtils.getOverWrite()) {
-            FileUtils.write(new File(ConfigUtils.getServicePath() + modelName + "Service.java"),
+        if (properties.getOverWrite()) {
+            FileUtils.write(new File(properties.getServicePath() + modelName + "Service.java"),
                     serviceContent, StandardCharsets.UTF_8);
         } else {
-            File f = new File(ConfigUtils.getServicePath() + modelName + "Service.java");
+            File f = new File(properties.getServicePath() + modelName + "Service.java");
             if (f.exists()) {
                 f = FileMoveUtils.renameFile(f, 1);
             }
@@ -54,25 +56,26 @@ public class ServiceGenerator {
 
     @SneakyThrows
     private static void serviceImpl(String modelName, String modelCn) {
+        ProjectProperties properties = ProjectProperties.instance();
         ServiceImplFTL template = new ServiceImplFTL();
-        template.setBasePackage(ConfigUtils.getBasePackage());
+        template.setBasePackage(properties.getBasePackage());
         template.setModelName(modelName);
         template.setModelCn(modelCn);
-        template.setClassDocEnd(ConfigUtils.getClassDocEnd());
-        String derivedServiceImpl = ConfigUtils.getCommonServiceImpl();
-        template.setDerivedServiceRef(ConfigUtils.getCommonService());
+        template.setClassDocEnd(properties.getClassDocEnd());
+        String derivedServiceImpl = properties.getCommonServiceImpl();
+        template.setDerivedServiceRef(properties.getCommonService());
         template.setDerivedServiceImplRef(derivedServiceImpl);
         String[] parts = derivedServiceImpl.split("\\.");
         template.setDerivedServiceImplName(parts[parts.length - 1]);
-        template.setPageRef(ConfigUtils.getPage());
-        template.setPageParamRef(ConfigUtils.getPageParam());
-        template.setServiceExceptionRef(ConfigUtils.getServiceException());
+        template.setPageRef(properties.getPage());
+        template.setPageParamRef(properties.getPageParam());
+        template.setServiceExceptionRef(properties.getServiceException());
         String serviceImplContent = FreeMarkerUtil.format(true, "service-impl.ftl", template);
-        if (ConfigUtils.getOverWrite()) {
-            FileUtils.write(new File(ConfigUtils.getServiceImplPath() + modelName + "ServiceImpl.java"),
+        if (properties.getOverWrite()) {
+            FileUtils.write(new File(properties.getServiceImplPath() + modelName + "ServiceImpl.java"),
                     serviceImplContent, StandardCharsets.UTF_8);
         } else {
-            File f = new File(ConfigUtils.getServiceImplPath() + modelName + "ServiceImpl.java");
+            File f = new File(properties.getServiceImplPath() + modelName + "ServiceImpl.java");
             if (f.exists()) {
                 f = FileMoveUtils.renameFile(f, 1);
             }

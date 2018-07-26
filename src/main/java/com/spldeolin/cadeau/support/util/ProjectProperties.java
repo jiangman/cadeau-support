@@ -14,251 +14,187 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 
-@UtilityClass
+@Data
 @Log4j2
-public class ConfigUtils {
+public class ProjectProperties {
 
-    @Getter
-    @Setter
-    private static Properties props;
+    private static final ProjectProperties instance = new ProjectProperties();
+
+    static {
+        instance.initDefaultProperties();
+        instance.loadPropertiesFile();
+        instance.figureValues();
+    }
+
+    private ProjectProperties() {
+    }
+
+    public static ProjectProperties instance() {
+        return instance;
+    }
+
+    private Properties props;
 
     /**
      * 作者
      */
-    @Getter
-    @Setter
-    private static String author;
+    private String author;
 
     /**
      * 生成日期
      */
-    @Getter
-    @Setter
-    private static String date;
+    private String date;
 
     /**
      * 表名数组
      */
-    @Getter
-    @Setter
-    private static String[] tableNames;
+    private String[] tableNames;
 
     /**
      * 模型中文名数组
      */
-    @Getter
-    @Setter
-    private static String[] modelCns;
+    private String[] modelCns;
 
     /**
      * 数据库URL
      */
-    @Getter
-    @Setter
-    private static String mysqlUrl;
+    private String mysqlUrl;
 
     /**
      * 数据库名
      */
-    @Getter
-    @Setter
-    private static String mysqlDatabase;
+    private String mysqlDatabase;
 
     /**
      * 数据库用户名
      */
-    @Getter
-    @Setter
-    private static String mysqlUsername;
+    private String mysqlUsername;
 
     /**
      * 数据库密码
      */
-    @Getter
-    @Setter
-    private static String mysqlPassword;
+    private String mysqlPassword;
 
     /**
      * 文件重名时是否覆盖
      */
-    @Getter
-    @Setter
-    private static Boolean overWrite;
+    private Boolean overWrite;
 
     /**
      * 项目路径
      */
-    @Getter
-    @Setter
-    private static String projectPath;
+    private String projectPath;
 
     /**
      * 基础包名
      */
-    @Getter
-    @Setter
-    private static String basePackage;
+    private String basePackage;
 
     /**
      * mapper.xml文件夹的Reference
      */
-    @Getter
-    @Setter
-    private static String mapperFolder;
+    private String mapperFolder;
 
     /**
      * 通用Service接口的Reference
      */
-    @Getter
-    @Setter
-    private static String commonService;
+    private String commonService;
 
     /**
      * 通用ServiceImpl抽象类的Reference
      */
-    @Getter
-    @Setter
-    private static String commonServiceImpl;
+    private String commonServiceImpl;
 
     /**
      * 通用Mapper接口的Reference
      */
-    @Getter
-    @Setter
-    private static String commonMapper;
+    private String commonMapper;
 
     /**
      * TextOption的Reference
      */
-    @Getter
-    @Setter
-    private static String option;
+    private String option;
 
     /**
      * Page的Reference
      */
-    @Getter
-    @Setter
-    private static String page = "";
+    private String page;
 
     /**
      * PageParam的Reference
      */
-    @Getter
-    @Setter
-    private String pageParam = "";
+    private String pageParam;
 
     /**
      * ServiceException的Reference
      */
-    @Getter
-    @Setter
-    private static String serviceException = "";
+    private String serviceException;
 
     /**
      * 表注释数组
      */
-    @Getter
-    @Setter
-    private static String[] tableComments;
+    private String[] tableComments;
 
     /**
      * 最终类级注释tag
      */
-    @Getter
-    @Setter
-    private static String classDocEnd;
+    private String classDocEnd;
 
     // 最终包名 start
 
-    @Getter
-    @Setter
-    private static String daoPackage;
+    private String daoPackage;
 
-    @Getter
-    @Setter
-    private static String mapperPackage;
+    private String mapperPackage;
 
-    @Getter
-    @Setter
-    private static String modelPackage;
+    private String modelPackage;
 
-    @Getter
-    @Setter
-    private static String inputPackage;
+    private String inputPackage;
 
-    @Getter
-    @Setter
-    private static String servicePackage;
+    private String servicePackage;
 
-    @Getter
-    @Setter
-    private static String serviceImplPackage;
+    private String serviceImplPackage;
 
-    @Getter
-    @Setter
-    private static String controllerPackage;
+    private String controllerPackage;
 
     // 最终包名 end
 
     // 最终路径 start
 
-    @Getter
-    @Setter
-    private static String daoPath4mbg;
+    private String daoPath4mbg;
 
-    @Getter
-    @Setter
-    private static String mapperPath4mbg;
+    private String mapperPath4mbg;
 
-    @Getter
-    @Setter
-    private static String modelPath4mbg;
+    private String modelPath4mbg;
 
-    @Getter
-    @Setter
-    private static String inputPath;
+    private String inputPath;
 
-    @Getter
-    @Setter
-    private static String servicePath;
+    private String servicePath;
 
-    @Getter
-    @Setter
-    private static String serviceImplPath;
+    private String serviceImplPath;
 
-    @Getter
-    @Setter
-    private static String controllerPath;
+    private String controllerPath;
 
     // 最终路径 end
 
-    static {
-        initDefaultProperties();
-        loadPropertiesFile();
-        figureValues();
-    }
-
-    private static void initDefaultProperties() {
+    private void initDefaultProperties() {
         date = Times.toString(LocalDateTime.now());
         mapperPackage = "mapper";
     }
 
     @SneakyThrows
-    private static void loadPropertiesFile() {
+    private void loadPropertiesFile() {
         // 读取文件
         props = new Properties();
-        props.load(new InputStreamReader(ConfigUtils.class.getClassLoader().getResourceAsStream("project.properties"),
+        props.load(new InputStreamReader(
+                FileUtils.openInputStream(new File(System.getProperty("user.dir") + mavenRes + "project.properties")),
                 StandardCharsets.UTF_8));
         String replaceTo = props.getProperty("replace-to");
         if (StringUtils.isNotBlank(replaceTo)) {
-            props.load(FileUtils.openInputStream(new File(replaceTo)));
+            props.load(new InputStreamReader(FileUtils.openInputStream(new File(replaceTo)), StandardCharsets.UTF_8));
         }
 
         String authorProp = props.getProperty("author");
@@ -270,20 +206,20 @@ public class ConfigUtils {
         }
 
         // names
-        String tableNames = props.getProperty("table-names");
-        String modelCns = props.getProperty("model-cns");
-        if (StringUtils.isAnyBlank(tableNames, modelCns)) {
+        String tableNamesProp = props.getProperty("table-names");
+        String modelCnsProp = props.getProperty("model-cns");
+        if (StringUtils.isAnyBlank(tableNamesProp, modelCnsProp)) {
             log.error("tableNames, modelCns 未完全指定");
             System.exit(0);
         }
-        String[] a1 = tableNames.split("\\+");
-        String[] a2 = modelCns.split("\\+");
+        String[] a1 = tableNamesProp.split("\\+");
+        String[] a2 = modelCnsProp.split("\\+");
         if (a1.length != a2.length) {
             log.error("table-names, model-cns 格式非法");
             System.exit(0);
         }
-        ConfigUtils.tableNames = a1;
-        ConfigUtils.modelCns = a2;
+        tableNames = a1;
+        modelCns = a2;
 
         // mysql
         String mysqlIpProp = props.getProperty("mysql-ip");
@@ -377,7 +313,7 @@ public class ConfigUtils {
         serviceException = serviceExceptionProp;
     }
 
-    private static void figureValues() {
+    private void figureValues() {
         // tag
         classDocEnd = " *" + br + " * @author ${author} ${date}" + br + " */";
         classDocEnd = classDocEnd.replace("${author}", author).replace("${date}", date);

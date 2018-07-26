@@ -14,7 +14,7 @@ import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import com.spldeolin.cadeau.support.util.ConfigUtils;
+import com.spldeolin.cadeau.support.util.ProjectProperties;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -88,9 +88,10 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
      * @return e.g.   "('male','female')"
      */
     private String enumStr(IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable) {
+        ProjectProperties properties = ProjectProperties.instance();
         if (introspectedColumn.getJdbcType() == 1) {
             // JdbcType为1时，Mysql类型是char或enum，通过查information_schema表获取真正的类型，如果是enum，追加@TextOption
-            String columnType = getColumnType(ConfigUtils.getMysqlDatabase(),
+            String columnType = getColumnType(properties.getMysqlDatabase(),
                     introspectedTable.getFullyQualifiedTable().toString(),
                     introspectedColumn.getActualColumnName());
             if (StringUtils.startsWithIgnoreCase(columnType, "enum")) {
