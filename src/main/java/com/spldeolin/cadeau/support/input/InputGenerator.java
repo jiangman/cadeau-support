@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import com.google.common.collect.Lists;
-import com.spldeolin.cadeau.support.util.ProjectProperties;
 import com.spldeolin.cadeau.support.util.FileMoveUtils;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
+import com.spldeolin.cadeau.support.util.ProjectProperties;
 import com.spldeolin.cadeau.support.util.StringCaseUtils;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
@@ -24,6 +24,12 @@ public class InputGenerator {
     @SneakyThrows
     public static void input() {
         ProjectProperties properties = ProjectProperties.instance();
+
+        if (!properties.getGenerateControllerAndInput()) {
+            log.info("不生成Input类");
+            return;
+        }
+
         List<InputFTL> inputFTLs = new ArrayList<>();
         // 获取fields并排序
         List<Map.Entry<String, DtoFieldFTL>> entries = new ArrayList<>(

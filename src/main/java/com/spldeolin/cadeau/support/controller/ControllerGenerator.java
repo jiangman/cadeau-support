@@ -3,9 +3,9 @@ package com.spldeolin.cadeau.support.controller;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
-import com.spldeolin.cadeau.support.util.ProjectProperties;
 import com.spldeolin.cadeau.support.util.FileMoveUtils;
 import com.spldeolin.cadeau.support.util.FreeMarkerUtil;
+import com.spldeolin.cadeau.support.util.ProjectProperties;
 import com.spldeolin.cadeau.support.util.StringCaseUtils;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
@@ -18,6 +18,12 @@ public class ControllerGenerator {
     @SneakyThrows
     public static void controller() {
         ProjectProperties properties = ProjectProperties.instance();
+
+        if (!properties.getGenerateControllerAndInput()) {
+            log.info("不生成控制层");
+            return;
+        }
+
         String[] tableNames = properties.getTableNames();
         String[] modelCns = properties.getModelCns();
         for (int i = 0; i < tableNames.length; i++) {

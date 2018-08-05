@@ -60,6 +60,11 @@ public class ProjectProperties {
     private String[] modelCns;
 
     /**
+     * 是否生成控制层和Input类
+     */
+    private Boolean generateControllerAndInput;
+
+    /**
      * 数据库URL
      */
     private String mysqlUrl;
@@ -220,6 +225,14 @@ public class ProjectProperties {
         }
         tableNames = a1;
         modelCns = a2;
+
+        String generateControllerAndInputProp = props.getProperty("generate-controller-and-input");
+        if (StringUtils.isBlank(generateControllerAndInputProp)) {
+            log.error("generate-controller-and-input 未指定");
+            System.exit(0);
+        } else {
+            overWrite = BooleanUtils.toBoolean(generateControllerAndInputProp);
+        }
 
         // mysql
         String mysqlIpProp = props.getProperty("mysql-ip");
