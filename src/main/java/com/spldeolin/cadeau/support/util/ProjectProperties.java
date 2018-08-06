@@ -231,7 +231,7 @@ public class ProjectProperties {
             log.error("generate-controller-and-input 未指定");
             System.exit(0);
         } else {
-            overWrite = BooleanUtils.toBoolean(generateControllerAndInputProp);
+            generateControllerAndInput = BooleanUtils.toBoolean(generateControllerAndInputProp);
         }
 
         // mysql
