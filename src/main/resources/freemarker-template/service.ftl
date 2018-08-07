@@ -18,55 +18,16 @@ import ${pageParamRef};
 ${classDocEnd}
 public interface ${modelName}Service extends ${derivedServiceName}<${modelName}> {
 
-    /**
-     * 创建一个“${modelCn}”
-     * （附带业务校验）
-     *
-     * @param ${modelName?uncap_first} 待创建“${modelCn}”
-     * @return 自增ID
-     */
     Long createEX(${modelName} ${modelName?uncap_first});
 
-    /**
-     * 获取一个“${modelCn}”
-     * （附带业务校验）
-     *
-     * @param id 待获取“${modelCn}”的ID
-     * @return “${modelCn}”
-     */
     ${modelName} getEX(Long id);
 
-    /**
-     * 更新一个“${modelCn}”
-     * （附带业务校验）
-     *
-     * @param ${modelName?uncap_first} 待更新“${modelCn}”
-     */
     void updateEX(${modelName} ${modelName?uncap_first});
 
-    /**
-     * 删除一个“${modelCn}”
-     * （附带业务校验）
-     *
-     * @param id 待删除“${modelCn}”的ID
-     */
     void deleteEX(Long id);
 
-    /**
-     * 删除多个资源
-     * （附带业务校验，并返回详细情况）
-     *
-     * @param ids 待删除资源的ID列表
-     * @return 删除情况
-     */
     String deleteEX(List<Long> ids);
 
-    /**
-     * 分页获取资源
-     *
-     * @param pageParam 页码和每页条目数
-     * @return Page 分页对象
-     */
-    Page<${modelName}> page(PageParam pageParam); // 根据具体需求拓展这个方法（追加搜索用参数等）
+    Page<${modelName}> page(PageParam pageParam);
 
 }

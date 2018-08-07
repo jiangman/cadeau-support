@@ -34,7 +34,7 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
 
     @Override
     public Long createEX(${modelName} ${modelName?uncap_first}) {
-        /* 业务校验 */
+
         super.create(${modelName?uncap_first});
         return ${modelName?uncap_first}.getId();
     }
@@ -49,7 +49,7 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
         if (!isExist(${modelName?uncap_first}.getId())) {
             throw new ServiceException("${modelCn}不存在或是已被删除");
         }
-        /* 业务校验 */
+
         if (!super.update(${modelName?uncap_first})) {
             throw new ServiceException("${modelCn}数据过时");
         }
@@ -60,7 +60,7 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
         if (!isExist(id)) {
             throw new ServiceException("${modelCn}不存在或是已被删除");
         }
-        /* 业务校验 */
+
         super.delete(id);
     }
 
@@ -70,7 +70,7 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
         if (exist.size() == 0) {
             throw new ServiceException("选中的${modelCn}全部不存在或是已被删除");
         }
-        /* 业务校验 */
+
         super.delete(ids);
         return "操作成功";
     }
@@ -78,7 +78,8 @@ public class ${modelName}ServiceImpl extends ${derivedServiceImplName}<${modelNa
     @Override
     public Page<${modelName}> page(PageParam pageParam) {
         Condition condition = new Condition(${modelName}.class);
-        condition.createCriteria()/* 添加条件 */;
+        condition.createCriteria();
+
         pageParam.startPage();
         return Page.wrap(${modelName?uncap_first}Mapper.selectBatchByCondition(condition));
     }
