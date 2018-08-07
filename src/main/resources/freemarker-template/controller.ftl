@@ -8,7 +8,7 @@ package ${basePackage}.controller;
 
 import java.util.List;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -90,7 +90,7 @@ public class ${modelName}Controller {
      * @return 删除情况
      */
     @PostMapping("/batchDelete")
-    String delete(@RequestBody List<Long> ids) {
+    String delete(@RequestBody @Size(min = 1) List<Long> ids) {
         return ${modelName ?uncap_first}Service.deleteEX(ids);
     }
 
