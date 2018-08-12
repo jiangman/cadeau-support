@@ -140,6 +140,11 @@ public class ProjectProperties {
     private String serviceException;
 
     /**
+     * ControllerAspectPreprocess的Reference
+     */
+    private String controllerAspectPreprocess;
+
+    /**
      * 表注释数组
      */
     private String[] tableComments;
@@ -324,6 +329,14 @@ public class ProjectProperties {
             System.exit(0);
         }
         serviceException = serviceExceptionProp;
+        String controllerAspectPreprocessProp = props.getProperty("controller-aspect-preprocess");
+        if (StringUtils.isBlank(controllerAspectPreprocessProp) ||
+                !FileExistsUtils.referenceExist(projectPath, controllerAspectPreprocessProp)) {
+            log.error("controller-aspect-preprocess 文件不存在");
+            System.exit(0);
+        }
+        controllerAspectPreprocess = controllerAspectPreprocessProp;
+
     }
 
     private void figureValues() {

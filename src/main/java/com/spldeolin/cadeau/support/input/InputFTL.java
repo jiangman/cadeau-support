@@ -16,7 +16,9 @@ public class InputFTL implements Comparable<InputFTL> {
 
     private String inputPackage;
 
-    private String textOption;
+    private String option;
+
+    private String controllerAspectPreprocess;
 
     private String description;
 
@@ -32,12 +34,18 @@ public class InputFTL implements Comparable<InputFTL> {
 
     private List<DtoFieldFTL> fields;
 
+    private Boolean hasStringField;
+
     private List<String> stringFieldNames;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         InputFTL inputTemplate = (InputFTL) o;
         return model.equals(inputTemplate.model);
     }

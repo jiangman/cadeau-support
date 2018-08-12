@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -32,7 +33,7 @@ public class InputGenerator {
 
         List<InputFTL> inputFTLs = new ArrayList<>();
         // 获取fields并排序
-        List<Map.Entry<String, DtoFieldFTL>> entries = new ArrayList<>(
+        List<Entry<String, DtoFieldFTL>> entries = new ArrayList<>(
                 DTOFieldFTLHolder.getInstance().getFields().entrySet());
         entries.sort((entry1, entry2) -> {
             int index1 = Integer.parseInt(indexFromEntry(entry1));
@@ -40,13 +41,14 @@ public class InputGenerator {
             return index1 - index2;
         });
         // 遍历fields，作成inputFTLs
-        for (Map.Entry<String, DtoFieldFTL> entry : entries) {
+        for (Entry<String, DtoFieldFTL> entry : entries) {
             String index = indexFromEntry(entry);
             String model = modelFromEntry(entry);
             InputFTL inputFTL = new InputFTL();
             inputFTL.setIndex(Integer.parseInt(index));
             inputFTL.setInputPackage(properties.getInputPackage());
-            inputFTL.setTextOption(properties.getOption());
+            inputFTL.setOption(properties.getOption());
+            inputFTL.setControllerAspectPreprocess(properties.getControllerAspectPreprocess());
             inputFTL.setDescription("“" + getModelCnsByModel(model) + "”Input类");
             inputFTL.setAuthor(properties.getAuthor());
             inputFTL.setDate(properties.getDate());
@@ -61,17 +63,31 @@ public class InputGenerator {
         for (InputFTL inputFTL : inputFTLs) {
             List<DtoFieldFTL> fields = Lists.newArrayList();
             List<String> stringFieldNames = Lists.newArrayList();
-            for (Map.Entry<String, DtoFieldFTL> entry : entries) {
+            for (Entry<String, DtoFieldFTL> entry : entries) {
                 if (inputFTL.getModel().equals(modelFromEntry(entry))) {
                     fields.add(entry.getValue());
-                }
-                if ("String".equals(entry.getValue().getType())) {
-                    stringFieldNames.add(entry.getValue().getName());
                 }
             }
             inputFTL.setFields(fields);
             inputFTL.setStringFieldNames(stringFieldNames);
         }
+
+        // string field
+        for (InputFTL inputFTL : inputFTLs) {
+            List<String> stringFieldNames = Lists.newArrayList();
+            for (DtoFieldFTL fieldFTL : inputFTL.getFields()) {
+                if ("String".equals(fieldFTL.getType())) {
+                    stringFieldNames.add(fieldFTL.getName());
+                }
+            }
+            inputFTL.setStringFieldNames(stringFieldNames);
+            if (stringFieldNames.size() == 0) {
+                inputFTL.setHasStringField(false);
+            } else {
+                inputFTL.setHasStringField(true);
+            }
+        }
+
         // 根据inputFTLs，生成Java文件
         for (InputFTL inputFTL : inputFTLs) {
             String content = FreeMarkerUtil.format(true, "input-template.ftl", inputFTL);

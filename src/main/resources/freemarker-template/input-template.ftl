@@ -15,7 +15,8 @@ import org.springframework.beans.BeanUtils;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import ${textOption};
+import ${option};
+import ${controllerAspectPreprocess};
 import ${modelPackage}.${model};
 
 /**
@@ -23,7 +24,7 @@ import ${modelPackage}.${model};
 ${classDocEnd}
 @Data
 @Accessors(chain = true)
-public class ${model}Input implements Serializable, EnsureStringFieldsTrimmed {
+public class ${model}Input implements Serializable, ControllerAspectPreprocess {
 
 	<#list fields as field>
 <#if field.javadoc ??>
@@ -46,10 +47,12 @@ public class ${model}Input implements Serializable, EnsureStringFieldsTrimmed {
     }
 
     @Override
-    public void trimStringFields() {
+    public void nullToEmptyAndTrim() {
 <#list stringFieldNames as stringFieldName>
         if (${stringFieldName} != null) {
     ${stringFieldName} = ${stringFieldName}.trim();
+        } else {
+    ${stringFieldName} = "";
         }
 </#list>
     }
