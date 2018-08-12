@@ -49,7 +49,7 @@ public class InputFieldGeneratePlugin extends PluginAdapter {
         // @Length
         if (enumStr == null && new FullyQualifiedJavaType("java.lang.String").equals(fieldType)) {
             topLevelClass.addImportedType(new FullyQualifiedJavaType("javax.validation.constraints.Size"));
-            invalidAnnotations.add("@Length(max = " + introspectedColumn.getLength() + ")");
+            invalidAnnotations.add("@Size(max = " + introspectedColumn.getLength() + ")");
         }
         // @Digits
         if (new FullyQualifiedJavaType("java.math.BigDecimal").equals(fieldType) ||
