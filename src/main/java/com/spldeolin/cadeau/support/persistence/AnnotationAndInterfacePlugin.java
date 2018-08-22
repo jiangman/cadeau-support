@@ -9,8 +9,9 @@ import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import com.spldeolin.cadeau.support.util.ProjectProperties;
 
-public class AnnotationAddPlugin extends PluginAdapter {
+public class AnnotationAndInterfacePlugin extends PluginAdapter {
 
     @Override
     public boolean validate(List<String> warnings) {
@@ -23,7 +24,8 @@ public class AnnotationAddPlugin extends PluginAdapter {
     @Override
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,
             IntrospectedTable introspectedTable) {
-        addDataAnnotation(topLevelClass, introspectedTable);
+        addAnnotations(topLevelClass);
+        addInterfaces(topLevelClass);
         return true;
     }
 
@@ -33,7 +35,8 @@ public class AnnotationAddPlugin extends PluginAdapter {
     @Override
     public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass,
             IntrospectedTable introspectedTable) {
-        addDataAnnotation(topLevelClass, introspectedTable);
+        addAnnotations(topLevelClass);
+        addInterfaces(topLevelClass);
         return true;
     }
 
@@ -61,13 +64,13 @@ public class AnnotationAddPlugin extends PluginAdapter {
     @Override
     public boolean modelRecordWithBLOBsClassGenerated(
             TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        addDataAnnotation(topLevelClass, introspectedTable);
+        addAnnotations(topLevelClass);
+        addInterfaces(topLevelClass);
         return true;
     }
 
     /**
-     * Prevents all getters from being generated.
-     * See SimpleModelGenerator
+     * Prevents all getters from being generated. See SimpleModelGenerator
      */
     @Override
     public boolean modelGetterMethodGenerated(Method method,
@@ -79,8 +82,7 @@ public class AnnotationAddPlugin extends PluginAdapter {
     }
 
     /**
-     * Prevents all setters from being generated
-     * See SimpleModelGenerator
+     * Prevents all setters from being generated See SimpleModelGenerator
      */
     @Override
     public boolean modelSetterMethodGenerated(Method method,
@@ -94,7 +96,7 @@ public class AnnotationAddPlugin extends PluginAdapter {
     /**
      * Adds the @Data lombok import and annotation to the class
      */
-    protected void addDataAnnotation(TopLevelClass clazz, IntrospectedTable table) {
+    protected void addAnnotations(TopLevelClass clazz) {
         // import语句
         clazz.addImportedType(new FullyQualifiedJavaType("lombok.AllArgsConstructor"));
         clazz.addImportedType(new FullyQualifiedJavaType("lombok.Builder"));
@@ -107,6 +109,18 @@ public class AnnotationAddPlugin extends PluginAdapter {
         clazz.addAnnotation("@AllArgsConstructor");
         clazz.addAnnotation("@Builder");
         clazz.addAnnotation("@Accessors(chain = true)");
+    }
+
+    protected void addInterfaces(TopLevelClass clazz) {
+        ProjectProperties properties = ProjectProperties.instance();
+        FullyQualifiedJavaType idGetable = new FullyQualifiedJavaType(properties.getIdGetable());
+        FullyQualifiedJavaType serializable = new FullyQualifiedJavaType("java.io.Serializable");
+
+        clazz.addImportedType(idGetable);
+        clazz.addImportedType(serializable);
+
+        clazz.addSuperInterface(idGetable);
+        clazz.addSuperInterface(serializable);
     }
 
 }

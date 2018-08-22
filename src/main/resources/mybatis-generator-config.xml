@@ -8,9 +8,7 @@
 
         <property name="useMapperCommentGenerator" value="false"/>
 
-        <plugin type="com.spldeolin.cadeau.support.persistence.AnnotationAddPlugin"/>
-
-        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <plugin type="com.spldeolin.cadeau.support.persistence.AnnotationAndInterfacePlugin"/>
 
         <commentGenerator type="com.spldeolin.cadeau.support.persistence.CommentGenerator"/>
 

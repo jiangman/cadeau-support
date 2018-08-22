@@ -145,6 +145,11 @@ public class ProjectProperties {
     private String controllerAspectPreprocess;
 
     /**
+     * idGetable的Reference
+     */
+    private String idGetable;
+
+    /**
      * 表注释数组
      */
     private String[] tableComments;
@@ -336,7 +341,13 @@ public class ProjectProperties {
             System.exit(0);
         }
         controllerAspectPreprocess = controllerAspectPreprocessProp;
-
+        String idGetableProp = props.getProperty("id-getable");
+        if (StringUtils.isBlank(idGetableProp) ||
+                !FileExistsUtils.referenceExist(projectPath, idGetableProp)) {
+            log.error("id-getable 文件不存在");
+            System.exit(0);
+        }
+        idGetable = idGetableProp;
     }
 
     private void figureValues() {
