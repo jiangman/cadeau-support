@@ -3,11 +3,15 @@ package com.spldeolin.cadeau.support.persistence;
 import java.util.List;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.IntrospectedTable.TargetRuntime;
 import org.mybatis.generator.api.Plugin;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.InnerEnum;
+import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import com.spldeolin.cadeau.support.util.ProjectProperties;
 
@@ -24,8 +28,7 @@ public class AnnotationAndInterfacePlugin extends PluginAdapter {
     @Override
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,
             IntrospectedTable introspectedTable) {
-        addAnnotations(topLevelClass);
-        addInterfaces(topLevelClass);
+        add(topLevelClass, introspectedTable);
         return true;
     }
 
@@ -35,8 +38,7 @@ public class AnnotationAndInterfacePlugin extends PluginAdapter {
     @Override
     public boolean modelPrimaryKeyClassGenerated(TopLevelClass topLevelClass,
             IntrospectedTable introspectedTable) {
-        addAnnotations(topLevelClass);
-        addInterfaces(topLevelClass);
+        add(topLevelClass, introspectedTable);
         return true;
     }
 
@@ -64,8 +66,7 @@ public class AnnotationAndInterfacePlugin extends PluginAdapter {
     @Override
     public boolean modelRecordWithBLOBsClassGenerated(
             TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        addAnnotations(topLevelClass);
-        addInterfaces(topLevelClass);
+        add(topLevelClass, introspectedTable);
         return true;
     }
 
@@ -93,10 +94,17 @@ public class AnnotationAndInterfacePlugin extends PluginAdapter {
         return false;
     }
 
+    private void add(TopLevelClass clazz, IntrospectedTable table) {
+        addAnnotations(clazz);
+        addInterfaces(clazz);
+        addFieldEnum(clazz);
+        addSerialVersionUID(clazz, table);
+    }
+
     /**
      * Adds the @Data lombok import and annotation to the class
      */
-    protected void addAnnotations(TopLevelClass clazz) {
+    private void addAnnotations(TopLevelClass clazz) {
         // import语句
         clazz.addImportedType(new FullyQualifiedJavaType("lombok.AllArgsConstructor"));
         clazz.addImportedType(new FullyQualifiedJavaType("lombok.Builder"));
@@ -111,7 +119,7 @@ public class AnnotationAndInterfacePlugin extends PluginAdapter {
         clazz.addAnnotation("@Accessors(chain = true)");
     }
 
-    protected void addInterfaces(TopLevelClass clazz) {
+    private void addInterfaces(TopLevelClass clazz) {
         ProjectProperties properties = ProjectProperties.instance();
         FullyQualifiedJavaType idGetable = new FullyQualifiedJavaType(properties.getIdGetable());
         FullyQualifiedJavaType serializable = new FullyQualifiedJavaType("java.io.Serializable");
@@ -121,6 +129,47 @@ public class AnnotationAndInterfacePlugin extends PluginAdapter {
 
         clazz.addSuperInterface(idGetable);
         clazz.addSuperInterface(serializable);
+    }
+
+    private void addSerialVersionUID(TopLevelClass clazz, IntrospectedTable table) {
+        Field field = new Field();
+        field.setVisibility(JavaVisibility.PRIVATE);
+        field.setStatic(true);
+        field.setFinal(true);
+        field.setType(new FullyQualifiedJavaType("long"));
+        field.setName("serialVersionUID");
+        field.setInitializationString("1L");
+
+        if (table.getTargetRuntime() == TargetRuntime.MYBATIS3_DSQL) {
+            context.getCommentGenerator().addFieldAnnotation(field, table, clazz.getImportedTypes());
+        } else {
+            context.getCommentGenerator().addFieldComment(field, table);
+        }
+
+        clazz.addField(field);
+    }
+
+    private void addFieldEnum(TopLevelClass clazz) {
+        String enumName = "Property";
+        InnerEnum innerEnum = new InnerEnum(new FullyQualifiedJavaType(enumName));
+        innerEnum.setVisibility(JavaVisibility.PUBLIC);
+        innerEnum.setStatic(true);
+        innerEnum.setFinal(true);
+
+        for (Field field : clazz.getFields()) {
+            innerEnum.addEnumConstant(field.getName() + "(\"" + field.getName() + "\")");
+        }
+
+        innerEnum.addField(new Field("fieldName", new FullyQualifiedJavaType("java.lang.String")));
+
+        Method constructor = new Method();
+        constructor.setConstructor(true);
+        constructor.setName(enumName);
+        constructor.addParameter(new Parameter(new FullyQualifiedJavaType("java.lang.String"), "fieldName"));
+        constructor.addBodyLine("this.fieldName = fieldName;");
+        innerEnum.addMethod(constructor);
+
+        clazz.addInnerEnum(innerEnum);
     }
 
 }
