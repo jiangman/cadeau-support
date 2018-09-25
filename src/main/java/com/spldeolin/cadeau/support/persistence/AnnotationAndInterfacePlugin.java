@@ -152,7 +152,7 @@ public class AnnotationAndInterfacePlugin extends PluginAdapter {
     private void addFieldEnum(TopLevelClass clazz) {
         String enumName = "Property";
         InnerEnum innerEnum = new InnerEnum(new FullyQualifiedJavaType(enumName));
-        innerEnum.addJavaDocLine("属性");
+//        innerEnum.addJavaDocLine("属性");
         innerEnum.setVisibility(JavaVisibility.PUBLIC);
         innerEnum.setStatic(true);
         innerEnum.setFinal(true);
