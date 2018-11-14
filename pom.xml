@@ -81,6 +81,18 @@
             <version>1.18.2</version>
             <scope>provided</scope>
         </dependency>
+        <!-- hikari -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <!-- dbutils -->
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.7</version>
+        </dependency>
         <dependency>
             <groupId>com.sun</groupId>
             <artifactId>tools</artifactId>
