@@ -26,6 +26,7 @@ import freemarker.template.Version;
 import lombok.extern.log4j.Log4j2;
 import newmind.dto.ColumnDTO;
 import newmind.dto.JdbcProperties;
+import newmind.dto.MapperJavaFtl;
 import newmind.dto.ModelFtl;
 import newmind.dto.TableColumnDTO;
 
@@ -68,12 +69,22 @@ public class ModelGenerator {
         fillColumnInfoToDTO(columnInfos, tableColumns);
         log.info(tableColumns);
 
-        // Freemarker
-        List<ModelFtl> modelFtls = createModelFtls(tableColumns);
-        Map<String, String> fileName2Content = formatFtls(modelFtls, "model.ftl");
+        // Model Freemarker
+        Map<String, String> modelFileName2Content = formatModelFtls(createModelFtls(tableColumns));
 
-        // 输出文件
-        writeFiles(fileName2Content);
+        // Model 输出文件
+        writeModelFiles(modelFileName2Content);
+
+        // Mapper.java Freemarker
+        Map<String, String> mapperJavaFileName2Content = formatMapperJavaFtls(createMapperJavaFtls(tableColumns));
+
+        // Mapper.java 输出文件
+        writeModelFiles(mapperJavaFileName2Content);
+
+        // Mapper.xml Freemarker
+
+        // Mapper.xml 输出文件
+
     }
 
     private static StringBuilder appendTableInfoSql(String database, List<String> tableNames) {
@@ -174,7 +185,7 @@ public class ModelGenerator {
         return modelFtls;
     }
 
-    private static Map<String, String> formatFtls(List<ModelFtl> modelFtls, String ftlFileName) {
+    private static Map<String, String> formatModelFtls(List<ModelFtl> modelFtls) {
         Map<String, String> result = Maps.newHashMap();
 
         Version version = new Version("2.3.23");
@@ -183,7 +194,7 @@ public class ModelGenerator {
                 + "new-freemarker-template" + sep;
         try (StringWriter out = new StringWriter()) {
             cfg.setDirectoryForTemplateLoading(new File(folderPath));
-            Template template = cfg.getTemplate(ftlFileName, "utf-8");
+            Template template = cfg.getTemplate("model.ftl", "utf-8");
 
             for (ModelFtl modelFtl : modelFtls) {
                 template.process(modelFtl, out);
@@ -197,12 +208,62 @@ public class ModelGenerator {
         return result;
     }
 
-    private static void writeFiles(Map<String, String> fileName2Content) {
+    private static void writeModelFiles(Map<String, String> fileName2Content) {
         for (Map.Entry<String, String> entry : fileName2Content.entrySet()) {
             String fileName = entry.getKey();
             String fileContent = entry.getValue();
             try {
                 FileUtils.write(new File(PROJECT_PATH + (".src.main.java." + BASE_PACKAGE_REFERENCE + ".model.")
+                        .replace('.', File.separatorChar) + fileName + ".java"), fileContent, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                log.error("", e);
+            }
+        }
+    }
+
+    private static List<MapperJavaFtl> createMapperJavaFtls(Map<String, TableColumnDTO> tableColumns) {
+        List<MapperJavaFtl> modelFtls = Lists.newArrayList();
+        for (TableColumnDTO tableColumnDTO : tableColumns.values()) {
+            MapperJavaFtl mapperJavaFtl = new MapperJavaFtl();
+            mapperJavaFtl.setPackageReference(BASE_PACKAGE_REFERENCE);
+            mapperJavaFtl.setModelCnsName(tableColumnDTO.getComment());
+            mapperJavaFtl.setAuthor(AUTHOR);
+            String tableName = tableColumnDTO.getName();
+            mapperJavaFtl.setModelName(StringCaseUtils.snakeToUpperCamel(tableName));
+            modelFtls.add(mapperJavaFtl);
+        }
+        return modelFtls;
+    }
+
+    private static Map<String, String> formatMapperJavaFtls(List<MapperJavaFtl> mapperJavaFtls) {
+        Map<String, String> result = Maps.newHashMap();
+
+        Version version = new Version("2.3.23");
+        Configuration cfg = new Configuration(version);
+        String folderPath = System.getProperty("user.dir") + sep + "src" + sep + "main" + sep + "resources" + sep
+                + "new-freemarker-template" + sep;
+        try (StringWriter out = new StringWriter()) {
+            cfg.setDirectoryForTemplateLoading(new File(folderPath));
+            Template template = cfg.getTemplate("mapper.java.ftl", "utf-8");
+
+            for (MapperJavaFtl mapperJavaFtl : mapperJavaFtls) {
+                template.process(mapperJavaFtl, out);
+                out.flush();
+                result.put(mapperJavaFtl.getModelName() + "Mapper", out.getBuffer().toString());
+            }
+        } catch (IOException | TemplateException e) {
+            log.error("", e);
+            System.exit(0);
+        }
+        return result;
+    }
+
+    private static void writeMapperJavaFiles(Map<String, String> fileName2Content) {
+        for (Map.Entry<String, String> entry : fileName2Content.entrySet()) {
+            String fileName = entry.getKey();
+            String fileContent = entry.getValue();
+            try {
+                FileUtils.write(new File(PROJECT_PATH + (".src.main.java." + BASE_PACKAGE_REFERENCE + ".dao.")
                         .replace('.', File.separatorChar) + fileName + ".java"), fileContent, StandardCharsets.UTF_8);
             } catch (IOException e) {
                 log.error("", e);

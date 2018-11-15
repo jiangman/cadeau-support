@@ -22,6 +22,8 @@ public class MapperJavaFtl implements Serializable {
 
     private String modelName;
 
+    private String modelCnsName;
+
     private String author;
 
     private static final long serialVersionUID = 1L;
