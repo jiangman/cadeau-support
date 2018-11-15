@@ -35,13 +35,27 @@ import newmind.dto.TableColumnDTO;
 @Log4j2
 public class ModelGenerator {
 
-    private static final String AUTHOR = "Deolin" + " " + Times.toString(LocalDate.now());
+    private static final String AUTHOR = "Deolin" + " " + Times.toString(LocalDate.now(), "yyyy/MM/dd");
 
     private static final String BASE_PACKAGE_REFERENCE = "com.splendid.newmind.core";
 
     private static final String PROJECT_PATH = "C:\\java-development\\projects-repo\\deolin-projects\\new-mind";
 
-    public static void generator(JdbcProperties jdbcProperties, List<String> tableNames) {
+    private static final String JDBC_IP = "192.168.2.2";
+
+    private static final Integer JDBC_PORT = 3306;
+
+    private static final String JDBC_DATABASE = "new_mind";
+
+    private static final String JDBC_USERNAME = "admin";
+
+    private static final String JDBC_PASSWORD = "admin";
+
+    public static void generator(List<String> tableNames) {
+        // JDBC
+        JdbcProperties jdbcProperties = new JdbcProperties(JDBC_IP, JDBC_PORT, JDBC_DATABASE, JDBC_USERNAME,
+                JDBC_PASSWORD);
+
         // 表信息
         StringBuilder tableInfoSql = appendTableInfoSql(jdbcProperties.getDatabase(), tableNames);
         List<Map<String, Object>> tableInfos = selectAsMapList(jdbcProperties.getDataSource(), tableInfoSql.toString());
@@ -57,6 +71,8 @@ public class ModelGenerator {
         // Freemarker
         List<ModelFtl> modelFtls = createModelFtls(tableColumns);
         Map<String, String> fileName2Content = formatFtls(modelFtls, "model.ftl");
+
+        // 输出文件
         writeFiles(fileName2Content);
     }
 
@@ -139,7 +155,7 @@ public class ModelGenerator {
             modelFtl.setAuthor(AUTHOR);
             String tableName = tableColumnDTO.getName();
             modelFtl.setTableName(tableName);
-            modelFtl.setModelName(StringCaseUtils.snakeToLowerCamel(tableName));
+            modelFtl.setModelName(StringCaseUtils.snakeToUpperCamel(tableName));
 
             List<ModelFtl.Property> properties = Lists.newArrayList();
             for (ColumnDTO columnDTO : tableColumnDTO.getColumns()) {
@@ -186,7 +202,7 @@ public class ModelGenerator {
             String fileName = entry.getKey();
             String fileContent = entry.getValue();
             try {
-                FileUtils.write(new File(PROJECT_PATH + (".src.main.java." + BASE_PACKAGE_REFERENCE + ".model")
+                FileUtils.write(new File(PROJECT_PATH + (".src.main.java." + BASE_PACKAGE_REFERENCE + ".model.")
                         .replace('.', File.separatorChar) + fileName + ".java"), fileContent, StandardCharsets.UTF_8);
             } catch (IOException e) {
                 log.error("", e);
@@ -195,8 +211,7 @@ public class ModelGenerator {
     }
 
     public static void main(String[] args) {
-        generator(new JdbcProperties("192.168.2.2", 3306, "new_mind", "admin", "admin"),
-                Lists.newArrayList("generator_demo"));
+        generator(Lists.newArrayList("generator_demo"));
     }
 
 }

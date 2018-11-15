@@ -26,8 +26,8 @@ public class ${modelName} implements IdGetable, Serializable {
      */
     @TableField("${property.columnName}")
     private ${property.fieldType} ${property.fieldName};
-</#list>
 
+</#list>
     private static final long serialVersionUID = 1L;
 
 }
