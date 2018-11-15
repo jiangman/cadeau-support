@@ -8,8 +8,10 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
+<#if modelCnsName??  && modelCnsName?trim != "">
  * ${modelCnsName}
  *
+</#if>
  * @author ${author}
  */
 @Data
