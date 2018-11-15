@@ -8,6 +8,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
+ * ${modelCnsName}
+ *
  * @author ${author}
  */
 @Data
@@ -19,6 +21,9 @@ import lombok.experimental.Accessors;
 public class ${modelName} implements IdGetable, Serializable {
 
 <#list properties as property>
+    /**
+     * ${property.fieldCnsName}
+     */
     @TableField("${property.columnName}")
     private ${property.fieldType} ${property.fieldName};
 </#list>

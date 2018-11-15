@@ -20,6 +20,8 @@ public class ModelFtl implements Serializable {
 
     private String packageReference;
 
+    private String modelCnsName;
+
     private String author;
 
     private String tableName;
@@ -35,7 +37,9 @@ public class ModelFtl implements Serializable {
     @AllArgsConstructor
     @Builder
     @Accessors(chain = true)
-    private static class Property implements Serializable {
+    public static class Property implements Serializable {
+
+        private String fieldCnsName;
 
         private String columnName;
 

@@ -1,17 +1,32 @@
 package newmind;
 
+import static com.spldeolin.cadeau.support.util.ConstantUtils.sep;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.apache.commons.io.FileUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.spldeolin.cadeau.support.util.StringCaseUtils;
+import com.spldeolin.cadeau.support.util.Times;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.Version;
 import lombok.extern.log4j.Log4j2;
 import newmind.dto.ColumnDTO;
 import newmind.dto.JdbcProperties;
+import newmind.dto.ModelFtl;
 import newmind.dto.TableColumnDTO;
 
 /**
@@ -20,18 +35,29 @@ import newmind.dto.TableColumnDTO;
 @Log4j2
 public class ModelGenerator {
 
+    private static final String AUTHOR = "Deolin" + " " + Times.toString(LocalDate.now());
+
+    private static final String BASE_PACKAGE_REFERENCE = "com.splendid.newmind.core";
+
+    private static final String PROJECT_PATH = "C:\\java-development\\projects-repo\\deolin-projects\\new-mind";
+
     public static void generator(JdbcProperties jdbcProperties, List<String> tableNames) {
+        // 表信息
         StringBuilder tableInfoSql = appendTableInfoSql(jdbcProperties.getDatabase(), tableNames);
         List<Map<String, Object>> tableInfos = selectAsMapList(jdbcProperties.getDataSource(), tableInfoSql.toString());
         Map<String, TableColumnDTO> tableColumns = mapTableName2TableComment(tableInfos);
-        log.info(tableColumns);
 
+        // 字段信息
         StringBuilder columnInfoSql = appendColumnInfoSql(jdbcProperties.getDatabase(), tableNames);
         List<Map<String, Object>> columnInfos = selectAsMapList(jdbcProperties.getDataSource(),
                 columnInfoSql.toString());
         fillColumnInfoToDTO(columnInfos, tableColumns);
-
         log.info(tableColumns);
+
+        // Freemarker
+        List<ModelFtl> modelFtls = createModelFtls(tableColumns);
+        Map<String, String> fileName2Content = formatFtls(modelFtls, "model.ftl");
+        writeFiles(fileName2Content);
     }
 
     private static StringBuilder appendTableInfoSql(String database, List<String> tableNames) {
@@ -104,9 +130,73 @@ public class ModelGenerator {
         }
     }
 
+    private static List<ModelFtl> createModelFtls(Map<String, TableColumnDTO> tableColumns) {
+        List<ModelFtl> modelFtls = Lists.newArrayList();
+        for (TableColumnDTO tableColumnDTO : tableColumns.values()) {
+            ModelFtl modelFtl = new ModelFtl();
+            modelFtl.setPackageReference(BASE_PACKAGE_REFERENCE);
+            modelFtl.setModelCnsName(tableColumnDTO.getComment());
+            modelFtl.setAuthor(AUTHOR);
+            String tableName = tableColumnDTO.getName();
+            modelFtl.setTableName(tableName);
+            modelFtl.setModelName(StringCaseUtils.snakeToLowerCamel(tableName));
+
+            List<ModelFtl.Property> properties = Lists.newArrayList();
+            for (ColumnDTO columnDTO : tableColumnDTO.getColumns()) {
+                ModelFtl.Property property = new ModelFtl.Property();
+                property.setFieldCnsName(columnDTO.getComment());
+                String columnName = columnDTO.getName();
+                property.setColumnName(columnName);
+                property.setFieldType(TypeHander.toJavaTypeName(columnDTO));
+                property.setFieldName(StringCaseUtils.snakeToLowerCamel(columnName));
+                properties.add(property);
+            }
+
+            modelFtl.setProperties(properties);
+            modelFtls.add(modelFtl);
+        }
+        return modelFtls;
+    }
+
+    private static Map<String, String> formatFtls(List<ModelFtl> modelFtls, String ftlFileName) {
+        Map<String, String> result = Maps.newHashMap();
+
+        Version version = new Version("2.3.23");
+        Configuration cfg = new Configuration(version);
+        String folderPath = System.getProperty("user.dir") + sep + "src" + sep + "main" + sep + "resources" + sep
+                + "new-freemarker-template" + sep;
+        try (StringWriter out = new StringWriter()) {
+            cfg.setDirectoryForTemplateLoading(new File(folderPath));
+            Template template = cfg.getTemplate(ftlFileName, "utf-8");
+
+            for (ModelFtl modelFtl : modelFtls) {
+                template.process(modelFtl, out);
+                out.flush();
+                result.put(modelFtl.getModelName(), out.getBuffer().toString());
+            }
+        } catch (IOException | TemplateException e) {
+            log.error("", e);
+            System.exit(0);
+        }
+        return result;
+    }
+
+    private static void writeFiles(Map<String, String> fileName2Content) {
+        for (Map.Entry<String, String> entry : fileName2Content.entrySet()) {
+            String fileName = entry.getKey();
+            String fileContent = entry.getValue();
+            try {
+                FileUtils.write(new File(PROJECT_PATH + (".src.main.java." + BASE_PACKAGE_REFERENCE + ".model")
+                        .replace('.', File.separatorChar) + fileName + ".java"), fileContent, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                log.error("", e);
+            }
+        }
+    }
+
     public static void main(String[] args) {
         generator(new JdbcProperties("192.168.2.2", 3306, "new_mind", "admin", "admin"),
-                Lists.newArrayList("user", "permission"));
+                Lists.newArrayList("generator_demo"));
     }
 
 }
