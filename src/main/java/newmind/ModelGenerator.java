@@ -79,7 +79,7 @@ public class ModelGenerator {
         Map<String, String> mapperJavaFileName2Content = formatMapperJavaFtls(createMapperJavaFtls(tableColumns));
 
         // Mapper.java 输出文件
-        writeModelFiles(mapperJavaFileName2Content);
+        writeMapperJavaFiles(mapperJavaFileName2Content);
 
         // Mapper.xml Freemarker
 
