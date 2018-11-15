@@ -43,6 +43,8 @@ public class ModelGenerator {
 
     private static final String PROJECT_PATH = "C:\\java-development\\projects-repo\\deolin-projects\\new-mind";
 
+    private static final String VERSION_COLUMN_NAME = "updated_at";
+
     private static final String JDBC_IP = "192.168.2.2";
 
     private static final Integer JDBC_PORT = 3306;
@@ -176,6 +178,7 @@ public class ModelGenerator {
                 ModelFtl.Property property = new ModelFtl.Property();
                 property.setFieldCnsName(columnDTO.getComment());
                 String columnName = columnDTO.getName();
+                property.setIsVersion(VERSION_COLUMN_NAME.equals(columnName));
                 property.setColumnName(columnName);
                 property.setFieldType(TypeHander.toJavaTypeName(columnDTO));
                 property.setFieldName(StringCaseUtils.snakeToLowerCamel(columnName));
@@ -313,9 +316,8 @@ public class ModelGenerator {
             String fileName = entry.getKey();
             String fileContent = entry.getValue();
             try {
-                FileUtils.write(new File(
-                        PROJECT_PATH + (".src.main.resources.mapper.").replace('.', File.separatorChar) + fileName
-                                + ".xml"), fileContent, StandardCharsets.UTF_8);
+                FileUtils.write(new File(PROJECT_PATH + (".src.main.resources.mapper.").replace('.', File.separatorChar)
+                        + fileName + ".xml"), fileContent, StandardCharsets.UTF_8);
             } catch (IOException e) {
                 log.error("", e);
             }

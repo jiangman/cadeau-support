@@ -26,6 +26,9 @@ public class ${modelName} implements IdGetable, Serializable {
     /**
      * ${property.fieldCnsName}
      */
+<#if property.isVersion>
+    @Version
+</#if>
     @TableField("${property.columnName}")
     private ${property.fieldType} ${property.fieldName};
 
